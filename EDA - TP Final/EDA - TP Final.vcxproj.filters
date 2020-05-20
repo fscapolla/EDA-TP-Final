@@ -16,6 +16,12 @@
     <Filter Include="json">
       <UniqueIdentifier>{93c5ddd5-65e0-4248-b7a1-978939495e5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Imgui_h">
+      <UniqueIdentifier>{87888318-8319-419e-979a-00103beadcf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Imgui_cpp">
+      <UniqueIdentifier>{4e9d609f-ad27-4f36-bf1c-c8a32a164144}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,6 +38,21 @@
     </ClCompile>
     <ClCompile Include="Blockchain.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui_files\imgui.cpp">
+      <Filter>Source Files\Imgui_cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui_files\imgui_demo.cpp">
+      <Filter>Source Files\Imgui_cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui_files\imgui_draw.cpp">
+      <Filter>Source Files\Imgui_cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui_files\imgui_impl_allegro5.cpp">
+      <Filter>Source Files\Imgui_cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui_files\imgui_widgets.cpp">
+      <Filter>Source Files\Imgui_cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -50,10 +71,35 @@
     <ClInclude Include="Blockchain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Imgui_files\imconfig.h">
+      <Filter>Header Files\Imgui_h</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui_files\imgui.h">
+      <Filter>Header Files\Imgui_h</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui_files\imgui_impl_allegro5.h">
+      <Filter>Header Files\Imgui_h</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui_files\imgui_internal.h">
+      <Filter>Header Files\Imgui_h</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui_files\imstb_rectpack.h">
+      <Filter>Header Files\Imgui_h</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui_files\imstb_textedit.h">
+      <Filter>Header Files\Imgui_h</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui_files\imstb_truetype.h">
+      <Filter>Header Files\Imgui_h</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="blockChain.json">
       <Filter>json</Filter>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Imgui_files\imgui.ini">
+      <Filter>Source Files\Imgui_cpp</Filter>
     </None>
   </ItemGroup>
 </Project>
