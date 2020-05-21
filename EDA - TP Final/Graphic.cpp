@@ -102,7 +102,7 @@ bool Graphic::print_current_state(Estado CurrentState)
 	bool userEvento = false;
 	switch (CurrentState)
 	{
-	case Estado::MainMenu:					//En MainMenu apareceran los eventos StartComp StartDecomp 
+	case Estado::MainMenu:					
 		if (print_MainMenu() && EventoActual != Evento::gotoMainMenu)
 		{
 			userEvento = true;
@@ -112,14 +112,14 @@ bool Graphic::print_current_state(Estado CurrentState)
 	case Estado::SelectingBlocks:
 		if (print_SelectBlocks())
 		{
-			userEvento = true;			//se terminaron de seleccionar las imagenes
+			userEvento = true;			
 		}
 		break;
 
 	case Estado::Error:
 		if (print_Error())
 		{
-			userEvento = true;			//Se cerro display
+			userEvento = true;			
 		}
 		break;
 
@@ -290,24 +290,24 @@ void Graphic::parsingBlockchain(json chain_JData)
 				tempTx.vIn.push_back(tempVin);
 			}
 
-			/* VOUTS */
-			json VoutObj = TXX["vout"];
+			///* VOUTS */
+			//json VoutObj = TXX["vout"];
 
-			for (const auto& VOUTdata : VoutObj)
-			{
-				VoutS tempVout;
-				auto AMNT = VOUTdata["amount"];
-				tempVout.amount = AMNT;
-				cout << AMNT << endl;
+			//for (const auto& VOUTdata : VoutObj)
+			//{
+			//	VoutS tempVout;
+			//	auto AMNT = VOUTdata["amount"];
+			//	tempVout.amount = AMNT;
+			//	cout << AMNT << endl;
 
 
-				auto PBID = VOUTdata["publicid"];
-				tempVout.publicID = PBID.get<string>();
-				cout << PBID << endl;
+			//	auto PBID = VOUTdata["publicid"];
+			//	tempVout.publicID = PBID.get<string>();
+			//	cout << PBID << endl;
 
-				/* Vout temporario listo para agregar al vector de vouts de transaccion temporal*/
-				tempTx.vOut.push_back(tempVout);
-			}
+			//	/* Vout temporario listo para agregar al vector de vouts de transaccion temporal*/
+			//	tempTx.vOut.push_back(tempVout);
+			//}
 
 			/* Transacciones listas para agregar a bloque temmportal*/
 			tempBlock.setTX(tempTx);
@@ -336,7 +336,7 @@ bool Graphic::print_SelectBlocks()
 
 	for (i = 0; i < BlocksArr.size(); i++)
 	{
-		//ImGui::Checkbox(BlocksArr[i].getBlockID().c_str(), &checks[i]);
+		ImGui::Checkbox(BlocksArr[i].getBlockID().c_str(), &checks[i]);
 	}
 
 	if (ImGui::Button("Buscar Info"))

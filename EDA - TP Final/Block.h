@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cmath>
 
-
+#define IDSIZE 8
 #define MAX_TX 12
 typedef unsigned long int uint;
 //typedef string newIDstr;
@@ -119,7 +119,8 @@ public:
 
 	bool validateMerkleRoot(string MerkleRoot_);
 
-	/*void getMerkleTree(void);*/
+	void createMerkleLeaves(void);
+	
 
 
 private:
@@ -130,7 +131,7 @@ private:
 	uint ntx;
 	uint nonce;			//??
 	string prevBlockID;
-	//MerkleTree Tree;
+	MerkleTree Tree;
 	vector<Transaction> TxVector; //No necesitamos un vector de transacciones
 	Transaction tx; 
 

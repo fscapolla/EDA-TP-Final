@@ -78,25 +78,46 @@ bool Block::validateMerkleRoot(string MerkleRoot_)
 	else return false;
 }
 
-//void Block::getMerkleTree(void)
-//{
-//	uint numOfLeaves = pow(2, ceil(log((long double)ntx) / log(2))); //Busco la potencia de dos más cercana. Gracias StackOverflow por el código
-//	for (int i = 0; i < ntx; i++)
-//	{
-//		uint numOfTransactions = TxVector[i].nTxin;
-//		for (int j = 0; j < numOfTransactions; j++)
-//		{
-//			string newID;
-//			uint tempID;
-//			tempID = generateID((unsigned char*)(TxVector[i].vIn[j].txID).c_str());
-//			newID = to_string(tempID);
-//			//Convertir newID a HexaASCII
-//			//Tree.Tree.push_back(newIDstr)
-//			//Preguntar: se supone que el nodo del árbol sería concatenar todos los txid de Vin de un Tx[i]?
-//			//Es decir, una transacción sería todo el conjunto de Vin, o cada uno de ese conjunto es una transacción diferente?
-//		}
-//	}
-//}
+
+void Block::createMerkleLeaves(void)
+{
+	//uint numOfLeaves = pow(2, ceil(log((long double)ntx) / log(2))); //Busco la potencia de dos más cercana. Gracias StackOverflow por el código
+	
+	for (int i = 0; i < ntx; i++)
+	{
+		string txID="";
+		for (int j = 0; j < TxVector[i].nTxin; j++)
+		{
+			string newID;
+			uint tempID;
+			tempID = generateID((unsigned char*)(TxVector[i].vIn[j].txID).c_str());
+			newID = to_string(tempID);
+			while (newID.size() < IDSIZE) {
+				newID = "0" + newID;
+			}
+			txID += newID;
+		}
+		
+
+		unsigned int ID = generateID((unsigned char*)(txID.c_str()));
+		txID = to_string(ID);
+		while (txID.size() < IDSIZE) {
+			txID = "0" + txID;
+		}
+		
+		Tree.Tree.push_back(txID);
+		
+		if ((i = ntx - 1) && ntx % 2 != 0) {
+
+			Tree.Tree.push_back(txID);
+
+		}
+		
+		
+	}
+
+	
+}
 
 static unsigned int generateID(unsigned char *str)
 {
