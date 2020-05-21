@@ -10,32 +10,33 @@
 
 #define MAX_TX 12
 typedef unsigned long int uint;
-typedef string newIDstr;
+//typedef string newIDstr;
 using namespace std;
 
 static unsigned int generateID(unsigned char *str);
 
 struct VinS {
 
-	string blockID;
+	string LilblockID;
 	uint outputIndex;
 	string signature;
 	string txID;
 
+	/*
 	VinS() {
-		blockID = "";
+		LilblockID = "";
 		outputIndex = 0;
 		signature = "";
 		txID = "";
 	}
 
 	VinS(const VinS& VinS_) {
-		blockID = VinS_.blockID;
+		LilblockID = VinS_.LilblockID;
 		outputIndex = VinS_.outputIndex;
 		signature = VinS_.signature;
 		txID = VinS_.txID;
 	}
-
+	*/
 };
 
 struct VoutS {
@@ -43,6 +44,7 @@ struct VoutS {
 	uint amount;
 	string publicID;
 
+	/*
 	VoutS() {
 		amount = 0;
 		publicID = "";
@@ -52,7 +54,7 @@ struct VoutS {
 		amount = VoutS_.amount;
 		publicID = VoutS_.publicID;
 	}
-
+	*/
 };
 
 struct Transaction {
@@ -63,6 +65,7 @@ struct Transaction {
 	vector<VinS> vIn;
 	vector<VoutS> vOut;
 
+	/*
 	Transaction() {
 		nTxin = 0;
 		nTxout = 0;
@@ -76,6 +79,7 @@ struct Transaction {
 		VinS (VinS_);
 		VoutS (VoutS_);
 	}
+	*/
 };
 
 struct MerkleTree {
@@ -111,6 +115,8 @@ public:
 	void setNonce(uint nonce_);
 	void setPrevBlockID(string prevBlockID_);
 
+	void setTX(Transaction);
+
 	bool validateMerkleRoot(string MerkleRoot_);
 
 	/*void getMerkleTree(void);*/
@@ -124,8 +130,9 @@ private:
 	uint ntx;
 	uint nonce;			//??
 	string prevBlockID;
-	MerkleTree Tree;
-	vector<Transaction> TxVector;
+	//MerkleTree Tree;
+	vector<Transaction> TxVector; //No necesitamos un vector de transacciones
+	Transaction tx; 
 
 };
 

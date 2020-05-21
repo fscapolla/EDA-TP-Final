@@ -226,83 +226,94 @@ void Graphic::parsingBlockchain(json chain_JData)
 		Block tempBlock;
 
 		string BBID = data["blockid"];
-		tempBlock.setbigBlockID(BBID);
+		tempBlock.setBlockID(BBID);
 
 		string MKLR = data["merkleroot"];
-		tempBlock.setmerkleRoot(MKLR);
+		tempBlock.setMerkleRoot(MKLR);
 
 		uint NTX = data["nTx"];
-		tempBlock.setntx(NTX);
+		tempBlock.setNtx(NTX);
 
 		int NCE = data["nonce"];
 		tempBlock.setNonce(NCE);
 
 		string PBID = data["previousblockid"];
-		tempBlock.setprevBlockID(PBID);
+		tempBlock.setPrevBlockID(PBID);
 
-		vector<vinS> tempVins;
-		vector<voutS> tempVouts;
-		transactions tempTx;
+		json transObj = data["tx"];
 
-		/*
-				auto transObj = data["tx"];					//Voy dividiendo en pequenos jsons
-				for (const auto& TXdata : transObj)
-				{
-					tempTx.nTxin = TXdata["nTxin"];
-					tempTx.nTxout = TXdata["nTxout"];
-					tempTx.txID = TXdata["txid"];					//HASTA ACA FUNCIONA
+		/* TRANSACCIONES */
+		for (const auto& TXX : transObj)			//Voy dividiendo en pequenos jsons
+		{
+			Transaction tempTx;
 
-					auto VinObj = TXdata["vin"];
-					int i = 0;
-					for (const auto& VINdata : VinObj)
-					{
-						string LBID = VINdata["blockid"];
-						tempVins[i].blockID = LBID;
+			uint TXD = TXX["nTxin"];
+			tempTx.nTxin = TXD;
+			cout << tempTx.nTxin << endl;
 
-						uint OUIX = VINdata["outputindex"];
-						tempVins[i].outputIndex = OUIX;
+			uint TXO = TXX["nTxout"];
+			tempTx.nTxout = TXO;
+			cout << tempTx.nTxout << endl;
 
-						int SGT = VINdata["signature"];
-						tempVins[i].signature = SGT;
+			int TXID = TXX["txid"];
+			tempTx.txID = TXID;
+			cout << tempTx.txID << endl;
 
-						int TXID = VINdata["txid"];
-						tempVins[i].signature = TXID;
+			/* VINS */
+			json VinObj = TXX["vin"];
 
-						++i;
-					}
+			for (const auto& VINdata : VinObj)
+			{
+				VinS tempVin;
 
-					i = 0;
-					auto VoutObj = TXdata["out"];
-					for (const auto& VOUTdata : VoutObj)
-					{
-						uint AMNT = VOUTdata["amount"];
-						tempVouts[i].amount = AMNT;
+				auto LBID = VINdata["blockid"];
+				tempVin.LilblockID = LBID.get<string>();
 
-						string PBID = VOUTdata["publicid"];
-						tempVouts[i].publicID = PBID;
-						++i;
-					}
+				cout << LBID << endl;
 
-				}
+				auto OUIX = VINdata["outputIndex"];
+				tempVin.outputIndex = OUIX;
 
-				tempTx.vin = tempVins;
-				tempTx.vout = tempVouts;
+				cout << OUIX << endl;
 
-				tempBlock.setTX(tempTx);
-				int i;
+				auto SGT = VINdata["signature"];
+				tempVin.signature = SGT.get<string>();
 
-				for (i = 0; i < sizeof(tempTx); i++)
-				{
-					//cout << tempTx.vin[i].blockID << endl;
-					//cout << tempTx.vout[i].publicID << endl;
-				}
+				cout << SGT << endl;
 
-				*/
+				auto TXID = VINdata["txid"];
+				tempVin.signature = TXID.get<string>();;
 
-				/* Block temporal listo para pushear a nuestro vector de bloques */
-					//	BlocksArr.push_back(tempBlock);
+				cout << TXID << endl;
+
+				/* Vin temporario listo para agregar al vector de vins de transaccion temporal*/
+				tempTx.vIn.push_back(tempVin);
+			}
+
+			/* VOUTS */
+			json VoutObj = TXX["vout"];
+
+			for (const auto& VOUTdata : VoutObj)
+			{
+				VoutS tempVout;
+				auto AMNT = VOUTdata["amount"];
+				tempVout.amount = AMNT;
+				cout << AMNT << endl;
 
 
+				auto PBID = VOUTdata["publicid"];
+				tempVout.publicID = PBID.get<string>();
+				cout << PBID << endl;
+
+				/* Vout temporario listo para agregar al vector de vouts de transaccion temporal*/
+				tempTx.vOut.push_back(tempVout);
+			}
+
+			/* Transacciones listas para agregar a bloque temmportal*/
+			tempBlock.setTX(tempTx);
+		}
+		/* Block temporal listo para agregar a nuestro vector de bloques */
+		BlocksArr.push_back(tempBlock);
 	}
 }
 

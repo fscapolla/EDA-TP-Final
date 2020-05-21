@@ -50,6 +50,11 @@ void Block::setMerkleRoot(string merkleRoot_)
 	merkleRoot = merkleRoot_;
 }
 
+void Block::setTX(Transaction tx_)
+{
+	tx = tx_;
+}
+
 void Block::setNtx(uint ntx_)
 {
 	ntx = ntx_;
