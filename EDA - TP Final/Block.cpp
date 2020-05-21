@@ -30,7 +30,7 @@ string Block::getPrevBlovkID(void)
 	return prevBlockID;
 }
 
-vector<Transactions>& Block::getTxVector()
+vector<Transaction>& Block::getTxVector()
 {
 	return TxVector;
 }
@@ -100,4 +100,4 @@ static unsigned int generateID(unsigned char *str)
 	while (c = *str++)
 		ID = c + (ID << 6) + (ID << 16) - ID;
 	return ID;
-}
+}
