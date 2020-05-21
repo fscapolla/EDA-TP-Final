@@ -14,6 +14,7 @@ Graphic::Graphic()
 		InputState = false;
 		Error = false;
 		close = false;
+		readString = "";
 		EstadoActual = Estado::MainMenu;
 	}
 	else
@@ -186,7 +187,7 @@ void Graphic::look4BlocksPath()
 		{
 			if (iterator->path().filename().string() == "blockChain.json")
 			{
-				//saveBlockInfo(iterator->path().string());
+				saveBlockInfo(iterator->path().filename().string());
 				std::cout << iterator->path().string() << std::endl;
 
 			}
@@ -200,9 +201,109 @@ void Graphic::look4BlocksPath()
 
 void Graphic::saveBlockInfo(std::string path)
 {
+	std::ifstream chain(path.c_str(), std::ifstream::binary);
 
-	std::cout << "SAVE BLOCK INFO" << std::endl;
+	if (chain)
+	{
+		Jdata = json::parse(chain);
+		parsingBlockchain(Jdata);
+	}
 
+	//CREO Q EN FASE DE VERIFICACION PODEMOS USAR EL CALLBACK DE JSON TALVEZ
+	//https://nlohmann.github.io/json/classnlohmann_1_1basic__json_a265a473e939184aa42655c9ccdf34e58.html#a265a473e939184aa42655c9ccdf34e58
+	else
+	{
+		EstadoActual = Estado::Error;
+	}
+
+}
+
+void Graphic::parsingBlockchain(json chain_JData)
+{
+	/* GETTING BLOCKS */
+	for (const auto& data : chain_JData)
+	{
+		Block tempBlock;
+
+		string BBID = data["blockid"];
+		tempBlock.setbigBlockID(BBID);
+
+		string MKLR = data["merkleroot"];
+		tempBlock.setmerkleRoot(MKLR);
+
+		uint NTX = data["nTx"];
+		tempBlock.setntx(NTX);
+
+		int NCE = data["nonce"];
+		tempBlock.setNonce(NCE);
+
+		string PBID = data["previousblockid"];
+		tempBlock.setprevBlockID(PBID);
+
+		vector<vinS> tempVins;
+		vector<voutS> tempVouts;
+		transactions tempTx;
+
+		/*
+				auto transObj = data["tx"];					//Voy dividiendo en pequenos jsons
+				for (const auto& TXdata : transObj)
+				{
+					tempTx.nTxin = TXdata["nTxin"];
+					tempTx.nTxout = TXdata["nTxout"];
+					tempTx.txID = TXdata["txid"];					//HASTA ACA FUNCIONA
+
+					auto VinObj = TXdata["vin"];
+					int i = 0;
+					for (const auto& VINdata : VinObj)
+					{
+						string LBID = VINdata["blockid"];
+						tempVins[i].blockID = LBID;
+
+						uint OUIX = VINdata["outputindex"];
+						tempVins[i].outputIndex = OUIX;
+
+						int SGT = VINdata["signature"];
+						tempVins[i].signature = SGT;
+
+						int TXID = VINdata["txid"];
+						tempVins[i].signature = TXID;
+
+						++i;
+					}
+
+					i = 0;
+					auto VoutObj = TXdata["out"];
+					for (const auto& VOUTdata : VoutObj)
+					{
+						uint AMNT = VOUTdata["amount"];
+						tempVouts[i].amount = AMNT;
+
+						string PBID = VOUTdata["publicid"];
+						tempVouts[i].publicID = PBID;
+						++i;
+					}
+
+				}
+
+				tempTx.vin = tempVins;
+				tempTx.vout = tempVouts;
+
+				tempBlock.setTX(tempTx);
+				int i;
+
+				for (i = 0; i < sizeof(tempTx); i++)
+				{
+					//cout << tempTx.vin[i].blockID << endl;
+					//cout << tempTx.vout[i].publicID << endl;
+				}
+
+				*/
+
+				/* Block temporal listo para pushear a nuestro vector de bloques */
+					//	BlocksArr.push_back(tempBlock);
+
+
+	}
 }
 
 bool Graphic::print_SelectBlocks()

@@ -6,6 +6,8 @@
 #include <iterator>
 #include <stdio.h>
 #include <iostream>
+#include <iostream>
+#include <fstream>
 
 /* ALLEGRO */
 #include <allegro5/allegro.h>
@@ -27,6 +29,7 @@
 
 /* BLOCKS */
 #include "Block.h"
+#include "json.hpp"
 
 /* DEFINES */
 #define MAX_PATH 500
@@ -39,6 +42,7 @@ enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, Error };
 
 /* Filesystems namespace */
 namespace fs = boost::filesystem;
+using json = nlohmann::json;
 
 class Graphic
 {
@@ -96,6 +100,10 @@ private:
 	std::vector<std::string> BlockIDs;
 	Block selectedBlock;
 	std::vector<Block> BlocksArr;
+	std::string readString;
 
+	/* JSON */
+	json Jdata;
+	void parsingBlockchain(json);
 };
 

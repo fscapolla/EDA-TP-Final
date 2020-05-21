@@ -13,17 +13,17 @@ using namespace std;
 
 typedef struct {
 
-	int blockID;
+	string blockID;
 	uint outputIndex;
 	int signature;
-	int transID;
+	int transID;			//NO ESTOY SEGURA DEL TIPO
 
 } vinS;
 
 typedef struct {
 
 	uint amount;
-	int publicID;
+	string publicID;
 
 } voutS;
 
@@ -41,17 +41,28 @@ typedef struct {
 class Block
 {
 public:
+	Block();
+	/* setters */
+	void setbigBlockID(string);
+	void setmerkleRoot(string);
+	void setntx(uint);
+	void setNonce(int);
+	void setprevBlockID(string);
+	void setTX(transactions);
 
-	//uint getBlockID();
+	/* getters */
+	string getTXBID(uint i);	// get Transaction Block ID
+	string getBBID();			// get Big Block ID
+
 
 private:
 
-	int bigBlockID;
+	string bigBlockID;
 	uint height;
-	int merkleRoot;
+	string merkleRoot;
 	uint ntx;
 	int nonce;			//??
-	int prevBlockID;
+	string prevBlockID;
 	transactions tx;
 
 };
