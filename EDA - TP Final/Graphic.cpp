@@ -187,9 +187,8 @@ void Graphic::look4BlocksPath()
 		{
 			if (iterator->path().filename().string() == "blockChain.json")
 			{
-				saveBlockInfo(iterator->path().filename().string());
 				std::cout << iterator->path().string() << std::endl;
-
+				saveBlockInfo(iterator->path().filename().string());
 			}
 		}
 	}
@@ -247,16 +246,17 @@ void Graphic::parsingBlockchain(json chain_JData)
 		{
 			Transaction tempTx;
 
-			uint TXD = TXX["nTxin"];
+			auto TXD = TXX["nTxin"];
 			tempTx.nTxin = TXD;
 			cout << tempTx.nTxin << endl;
 
-			uint TXO = TXX["nTxout"];
+			auto TXO = TXX["nTxout"];
 			tempTx.nTxout = TXO;
 			cout << tempTx.nTxout << endl;
 
-			int TXID = TXX["txid"];
-			tempTx.txID = TXID;
+			auto TXID = TXX["txid"];
+			tempTx.txID = TXID.get<string>();
+
 			cout << tempTx.txID << endl;
 
 			/* VINS */
