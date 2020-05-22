@@ -39,7 +39,7 @@
 #define SIZE_SCREEN_Y 700
 
 enum class Evento { InsertPic, RemovePic, StartExtraction, Close, Loading, gotoMainMenu };
-enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, Error };
+enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, Error, RequestedInfo};
 
 /* Filesystems namespace */
 namespace fs = boost::filesystem;
@@ -56,7 +56,7 @@ public:
 	void success(); // Le comunica a la gui que se realizó la operación exitosamente
 	void processingRequest();
 	void error();
-	json returnJson();
+	
 
 private:
 	/* FUNCIONES DE GRAPHICS */
@@ -66,7 +66,7 @@ private:
 	void Dispatch(); //Se llama despues de hayEvento y acciona
 	void look4BlocksPath();
 	void flushVariables();
-	void saveBlockInfo(std::string);
+	
 
 	/* FUNCIONES DE IMPRESION */
 	bool print_current_state(Estado);	//Dependiendo del estado del programa imprime la interfaz deseada
@@ -75,7 +75,7 @@ private:
 	void print_Loading();
 	bool print_Done(); //Imprime los resultados de la compression/decompression
 	bool print_Error();
-	void print_tree();
+	bool print_info();
 
 	/* VARIABLES DE ALLEGRO */
 	ALLEGRO_EVENT_QUEUE* queue;
@@ -104,8 +104,6 @@ private:
 	vector<Block> selectedBlocks;
 	std::string readString;
 
-	/* JSON */
-	json Jdata;
 
 
 	/*Puntero a BlockChain*/

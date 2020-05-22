@@ -133,7 +133,12 @@ bool Graphic::print_current_state(Estado CurrentState)
 			userEvento = true;
 		}
 		break;
-
+	case Estado::RequestedInfo:
+		if (print_info())
+		{
+			userEvento = true;
+		}
+		break;
 	default:
 		break;
 	}
@@ -188,7 +193,12 @@ void Graphic::look4BlocksPath()
 			if (iterator->path().filename().string() == "blockChain.json")
 			{
 				std::cout << iterator->path().string() << std::endl;
-				saveBlockInfo(iterator->path().filename().string());
+				if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
+				}
+				else {
+					EstadoActual = Estado::Error;
+				}
+				
 			}
 		}
 	}
@@ -198,24 +208,7 @@ void Graphic::look4BlocksPath()
 	}
 }
 
-void Graphic::saveBlockInfo(std::string path)
-{
-	std::ifstream chain(path.c_str(), std::ifstream::binary);
 
-	if (chain)
-	{
-		Jdata = json::parse(chain);
-		pBchain.parsingBlockchain(Jdata);
-	}
-
-	//CREO Q EN FASE DE VERIFICACION PODEMOS USAR EL CALLBACK DE JSON TALVEZ
-	//https://nlohmann.github.io/json/classnlohmann_1_1basic__json_a265a473e939184aa42655c9ccdf34e58.html#a265a473e939184aa42655c9ccdf34e58
-	else
-	{
-		EstadoActual = Estado::Error;
-	}
-
-}
 
 
 bool Graphic::print_SelectBlocks()
@@ -235,7 +228,7 @@ bool Graphic::print_SelectBlocks()
 	//Checkbox con imgui
 	static bool checks[MAX_BLOCKS] = { false };
 
-	cout << (pBchain.getBlocksArr()).size() << endl;
+	
 
 	for (i = 0; i < (pBchain.getBlocksArr()).size(); i++)
 	{
@@ -321,6 +314,8 @@ void Graphic::flushVariables() {
 	close = false;
 	path = "";
 	directoryName = "";
+	pBchain.getBlocksArr().clear();
+	
 }
 
 void Graphic::print_Loading(void)
@@ -359,8 +354,35 @@ bool Graphic::print_Done(void)
 
 	if (sizeof(selectedBlocks) != 0)
 	{
-		draw_tree();
+		if (ImGui::Button(" Show Information "))
+		{
+			if (!pBchain.getBlocksArr()[0].createMerkleTree()) {
 
+				std::cout << pBchain.getBlocksArr()[0].getCalcMR() << endl;
+				std::cout << "hola man";
+			};
+			std::cout << "hola man";
+			EstadoActual=Estado::RequestedInfo;
+			eventoDone = true;
+		}
+		if (ImGui::Button("Calculate Merkle root "))
+		{
+			EstadoActual = Estado::RequestedInfo;
+			eventoDone = true;
+		}
+		if (ImGui::Button("Validate Merkle root "))
+		{
+			EstadoActual = Estado::RequestedInfo;
+			eventoDone = true;
+		}
+		if (ImGui::Button("Show Merkle tree"))
+		{
+			EstadoActual = Estado::RequestedInfo;
+			eventoDone = true;
+		}
+
+		
+		
 	}
 	else
 	{
@@ -484,13 +506,10 @@ void Graphic::success() // Le comunica a la gui que se realizó la operación exit
 }
 
 
-json Graphic::returnJson() 
-{
-	return Jdata;
-}
 
 
+bool Graphic::print_info(void){
 
-void Graphic::draw_tree(void){
-
+	
+	return true;
 }

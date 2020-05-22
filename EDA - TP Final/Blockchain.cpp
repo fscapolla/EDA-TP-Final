@@ -101,3 +101,22 @@ void Blockchain::parsingBlockchain(json chain_JData)
 		BlocksArr.push_back(tempBlock);
 	}
 }
+int Blockchain::saveBlockInfo(std::string path)
+{
+	std::ifstream chain(path.c_str(), std::ifstream::binary);
+	int result=0;
+
+	if (chain)
+	{
+		Jdata = json::parse(chain);
+		parsingBlockchain(Jdata);
+	}
+
+	//CREO Q EN FASE DE VERIFICACION PODEMOS USAR EL CALLBACK DE JSON TALVEZ
+	//https://nlohmann.github.io/json/classnlohmann_1_1basic__json_a265a473e939184aa42655c9ccdf34e58.html#a265a473e939184aa42655c9ccdf34e58
+	else
+	{
+		result = ERROR;
+	}
+	return result;
+}

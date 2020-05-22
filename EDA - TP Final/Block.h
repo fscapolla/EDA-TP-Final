@@ -124,7 +124,7 @@ public:
 	void generateMarkleRoot(vector<string>& myVec);
 
 	bool createMerkleTree();
-
+	string getCalcMR() { return Tree.merkleRoot; }
 private:
 
 	string BigBlockID;
