@@ -13,6 +13,8 @@ public:
 	void parsingBlockchain(json chain_JData);
 	vector<Block>& getBlocksArr(void) { return BlocksArr; }
 	int saveBlockInfo(std::string);
+
+
 private:
 
 	//list<Block> Bchain;

@@ -6,12 +6,15 @@
 #include <cstdio>
 #include <iostream>
 #include <cmath>
+#include "json.hpp"
 
 #define IDSIZE 8
 #define MAX_TX 12
 typedef unsigned long int uint;
 //typedef string newIDstr;
 using namespace std;
+
+using json = nlohmann::json;
 
 static unsigned int generateID(unsigned char *str);
 
@@ -21,40 +24,12 @@ struct VinS {
 	uint outputIndex;
 	string signature;
 	string txID;
-
-	/*
-	VinS() {
-		LilblockID = "";
-		outputIndex = 0;
-		signature = "";
-		txID = "";
-	}
-
-	VinS(const VinS& VinS_) {
-		LilblockID = VinS_.LilblockID;
-		outputIndex = VinS_.outputIndex;
-		signature = VinS_.signature;
-		txID = VinS_.txID;
-	}
-	*/
 };
 
 struct VoutS {
 
 	uint amount;
 	string publicID;
-
-	/*
-	VoutS() {
-		amount = 0;
-		publicID = "";
-	}
-
-	VoutS(const VoutS& VoutS_) {
-		amount = VoutS_.amount;
-		publicID = VoutS_.publicID;
-	}
-	*/
 };
 
 struct Transaction {
@@ -86,19 +61,23 @@ struct MerkleTree {
 	uint height;
 	string merkleRoot;
 	vector<string> Tree;
+	uint numberOfLeaves;
 
 	MerkleTree() {
 		height = 0;
 		merkleRoot = "";
+		numberOfLeaves = 0;
 		Tree.clear();
 	}
 
-	MerkleTree(const MerkleTree& MerkleTree_) : height(MerkleTree_.height), merkleRoot(MerkleTree_.merkleRoot), Tree(MerkleTree_.Tree) {};
+	MerkleTree(const MerkleTree& MerkleTree_) : height(MerkleTree_.height), merkleRoot(MerkleTree_.merkleRoot), 
+		numberOfLeaves(MerkleTree_.numberOfLeaves), Tree(MerkleTree_.Tree) {};
 };
 
 class Block
 {
 public:
+	Block(const json& j);
 
 	string getBlockID(void);
 	uint getHeight(void);
@@ -121,10 +100,13 @@ public:
 
 	void createMerkleLeaves(void);
 	
-	void generateMarkleRoot(vector<string>& myVec);
+	void generateMerkleRoot(vector<string>& myVec);
 
 	bool createMerkleTree();
 	string getCalcMR() { return Tree.merkleRoot; }
+
+	void printBlockInfo(void);
+
 private:
 
 	string BigBlockID;
@@ -134,7 +116,7 @@ private:
 	uint nonce;			//??
 	string prevBlockID;
 	MerkleTree Tree;
-	vector<string> stringMerkleRoot;
+	vector<string> stringMerkleRoot; //String usado para llenar el árbol?
 	vector<Transaction> TxVector; //No necesitamos un vector de transacciones
 	Transaction tx; 
 

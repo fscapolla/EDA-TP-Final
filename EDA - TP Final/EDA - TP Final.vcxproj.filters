@@ -22,21 +22,18 @@
     <Filter Include="Source Files\Imgui_cpp">
       <UniqueIdentifier>{4e9d609f-ad27-4f36-bf1c-c8a32a164144}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Block/BlockChain">
+      <UniqueIdentifier>{b98df233-060d-4870-9565-e1ddd8474024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Block/BlockChain">
+      <UniqueIdentifier>{3211a397-385e-4bcd-8ab2-e1356fb1f72e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Spv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Blockchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Imgui_files\imgui.cpp">
@@ -54,21 +51,21 @@
     <ClCompile Include="Imgui_files\imgui_widgets.cpp">
       <Filter>Source Files\Imgui_cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>Source Files\Block/BlockChain</Filter>
+    </ClCompile>
+    <ClCompile Include="Blockchain.cpp">
+      <Filter>Source Files\Block/BlockChain</Filter>
+    </ClCompile>
+    <ClCompile Include="Spv.cpp">
+      <Filter>Source Files\Block/BlockChain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Spv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Blockchain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Imgui_files\imconfig.h">
@@ -92,6 +89,15 @@
     <ClInclude Include="Imgui_files\imstb_truetype.h">
       <Filter>Header Files\Imgui_h</Filter>
     </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Header Files\Block/BlockChain</Filter>
+    </ClInclude>
+    <ClInclude Include="Blockchain.h">
+      <Filter>Header Files\Block/BlockChain</Filter>
+    </ClInclude>
+    <ClInclude Include="Spv.h">
+      <Filter>Header Files\Block/BlockChain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="blockChain.json">
@@ -101,5 +107,8 @@
       <Filter>Source Files\Imgui_cpp</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="blockChain (1).json">
+      <Filter>json</Filter>
+    </None>
   </ItemGroup>
 </Project>
