@@ -354,32 +354,33 @@ bool Graphic::print_Done(void)
 
 	if (sizeof(selectedBlocks) != 0)
 	{
-		if (ImGui::Button(" Show Information "))
-		{
-			if (!pBchain.getBlocksArr()[0].createMerkleTree()) {
 
-				std::cout << pBchain.getBlocksArr()[0].getCalcMR() << endl;
-				std::cout << "hola man";
-			};
-			std::cout << "hola man";
-			EstadoActual=Estado::RequestedInfo;
-			eventoDone = true;
-		}
-		if (ImGui::Button("Calculate Merkle root "))
-		{
-			EstadoActual = Estado::RequestedInfo;
-			eventoDone = true;
-		}
-		if (ImGui::Button("Validate Merkle root "))
-		{
-			EstadoActual = Estado::RequestedInfo;
-			eventoDone = true;
-		}
-		if (ImGui::Button("Show Merkle tree"))
-		{
-			EstadoActual = Estado::RequestedInfo;
-			eventoDone = true;
-		}
+
+		if (pBchain.getBlocksArr()[0].createMerkleTree()) {
+			cout << "es igual" << endl;
+		};
+
+
+		//if (ImGui::Button(" Show Information "))
+		//{
+		//	EstadoActual=Estado::RequestedInfo;
+		//	eventoDone = true;
+		//}
+		//if (ImGui::Button("Calculate Merkle root "))
+		//{
+		//	EstadoActual = Estado::RequestedInfo;
+		//	eventoDone = true;
+		//}
+		//if (ImGui::Button("Validate Merkle root "))
+		//{
+		//	EstadoActual = Estado::RequestedInfo;
+		//	eventoDone = true;
+		//}
+		//if (ImGui::Button("Show Merkle tree"))
+		//{
+		//	EstadoActual = Estado::RequestedInfo;
+		//	eventoDone = true;
+		//}
 
 		
 		
@@ -509,7 +510,11 @@ void Graphic::success() // Le comunica a la gui que se realizó la operación exit
 
 
 bool Graphic::print_info(void){
+	std::cout << "arranco";
+	if (!pBchain.getBlocksArr()[0].createMerkleTree()) {
 
-	
+		std::cout << "hola man";
+	};
+	std::cout << "hola man";
 	return true;
 }

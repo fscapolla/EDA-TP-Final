@@ -77,8 +77,8 @@ struct MerkleTree {
 class Block
 {
 public:
-	Block(const json& j);
-
+	//Block(const json& j);
+	Block();
 	string getBlockID(void);
 	uint getHeight(void);
 	string getMerkleRoot(void);
@@ -93,6 +93,7 @@ public:
 	void setNtx(uint ntx_);
 	void setNonce(uint nonce_);
 	void setPrevBlockID(string prevBlockID_);
+	void setPush_Back(Transaction tx_);
 
 	void setTX(Transaction);
 
@@ -103,7 +104,6 @@ public:
 	void generateMerkleRoot(vector<string>& myVec);
 
 	bool createMerkleTree();
-	string getCalcMR() { return Tree.merkleRoot; }
 
 	void printBlockInfo(void);
 

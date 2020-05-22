@@ -67,7 +67,7 @@ void Blockchain::parsingBlockchain(json chain_JData)
 				cout << SGT << endl;
 
 				auto TXID = VINdata["txid"];
-				tempVin.signature = TXID.get<string>();;
+				tempVin.txID = TXID.get<string>();;
 
 				cout << TXID << endl;
 
@@ -95,7 +95,8 @@ void Blockchain::parsingBlockchain(json chain_JData)
 			//}
 
 			/* Transacciones listas para agregar a bloque temmportal*/
-			tempBlock.setTX(tempTx);
+			//tempBlock.setTX(tempTx);
+			tempBlock.setPush_Back(tempTx);
 		}
 		/* Block temporal listo para agregar a nuestro vector de bloques */
 		BlocksArr.push_back(tempBlock);

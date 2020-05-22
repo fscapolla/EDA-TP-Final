@@ -1,58 +1,65 @@
 #include "Block.h"
 #include <iostream>
 
-Block::Block(const json & j)
-{
-	/*Cargo los datos del bloque*/
-	height = j["height"].get<unsigned int>();
-	BigBlockID = j["blockid"].get<string>();
-	prevBlockID = j["previousblockid"].get<string>();
-	ntx = j["nTx"].get<unsigned int>();
-	nonce = j["nonce"].get<unsigned int>();
 
-	//Cargo el arreglo de transacciones
-	auto TxInfo= j["tx"];
-	for (auto& tx_ : TxInfo)
-	{
-		Transaction tempTx;
-		auto nTxin_ = tx_["nTxin"].get<unsigned int>();
-		tempTx.nTxin = nTxin_;
-		auto nTxout_ = tx_["nTxout"].get<unsigned int>();
-		tempTx.nTxout = nTxout_;
-		auto txID_ = tx_["txid"].get<string>();
-		tempTx.txID = txID_;
-		auto Vin_ = tx_["vin"];
-		for (auto& vin_ : Vin_)
-		{
-			VinS tempVin;
+Block::Block() {
 
-			auto LilBlockId_ = vin_["blockid"].get<string>();
-			tempVin.LilblockID = LilBlockId_;
-			auto outputIndex_ = vin_["outputIndex"].get<int>();
-			tempVin.outputIndex = outputIndex_;
-			auto signature_ = vin_["signature"].get<string>();
-			tempVin.signature = signature_;
-			auto txid_ = vin_["txid"].get<string>();
-			tempVin.txID = txid_;
-
-			tempTx.vIn.push_back(tempVin);
-		}
-		auto Vout_ = tx_["vout"];
-		for (auto& vout_ : Vout_)
-		{
-			VoutS tempVout;
-
-			auto amount_ = vout_["amount"].get<unsigned int>();
-			tempVout.amount = amount_;
-			auto publicID_ = vout_["publicid"].get<string>();
-			tempVout.publicID = publicID_;
-
-			tempTx.vOut.push_back(tempVout);
-		}
-
-		TxVector.push_back(tempTx);
-	}
 }
+
+
+
+//Block::Block(const json & j)
+//{
+//	/*Cargo los datos del bloque*/
+//	height = j["height"].get<unsigned int>();
+//	BigBlockID = j["blockid"].get<string>();
+//	prevBlockID = j["previousblockid"].get<string>();
+//	ntx = j["nTx"].get<unsigned int>();
+//	nonce = j["nonce"].get<unsigned int>();
+//
+//	//Cargo el arreglo de transacciones
+//	auto TxInfo= j["tx"];
+//	for (auto& tx_ : TxInfo)
+//	{
+//		Transaction tempTx;
+//		auto nTxin_ = tx_["nTxin"].get<unsigned int>();
+//		tempTx.nTxin = nTxin_;
+//		auto nTxout_ = tx_["nTxout"].get<unsigned int>();
+//		tempTx.nTxout = nTxout_;
+//		auto txID_ = tx_["txid"].get<string>();
+//		tempTx.txID = txID_;
+//		auto Vin_ = tx_["vin"];
+//		for (auto& vin_ : Vin_)
+//		{
+//			VinS tempVin;
+//
+//			auto LilBlockId_ = vin_["blockid"].get<string>();
+//			tempVin.LilblockID = LilBlockId_;
+//			auto outputIndex_ = vin_["outputIndex"].get<int>();
+//			tempVin.outputIndex = outputIndex_;
+//			auto signature_ = vin_["signature"].get<string>();
+//			tempVin.signature = signature_;
+//			auto txid_ = vin_["txid"].get<string>();
+//			tempVin.txID = txid_;
+//
+//			tempTx.vIn.push_back(tempVin);
+//		}
+//		auto Vout_ = tx_["vout"];
+//		for (auto& vout_ : Vout_)
+//		{
+//			VoutS tempVout;
+//
+//			auto amount_ = vout_["amount"].get<unsigned int>();
+//			tempVout.amount = amount_;
+//			auto publicID_ = vout_["publicid"].get<string>();
+//			tempVout.publicID = publicID_;
+//
+//			tempTx.vOut.push_back(tempVout);
+//		}
+//
+//		TxVector.push_back(tempTx);
+//	}
+//}
 
 string Block::getBlockID(void)
 {
@@ -133,41 +140,49 @@ bool Block::validateMerkleRoot(string MerkleRoot_)
 }
 
 
+void Block::setPush_Back(Transaction tx_)
+{
+	TxVector.push_back(tx_);
+}
+
 void Block::createMerkleLeaves(void)
 {
+
 	string concatenate = "";
 	string newID="";
 	uint ID=0;
 	uint numOfLeaves = pow(2, ceil(log((long double)ntx) / log(2))); 
 	
+
+
 	for (int i = 0; i < ntx; i++)
-	{
+	{	
+		concatenate = "";
 		string txID="";
 		for (int j = 0; j < TxVector[i].nTxin; j++)
 		{
 			concatenate += TxVector[i].vIn[j].txID;
+			cout << TxVector[i].vIn[j].txID << endl;
 		}
-		/*ID = generateID((unsigned char*)concatenate.c_str());
-		txID = to_string(ID);*/
-		/*while (txID.size() < IDSIZE) {
-			txID = "0" + txID;
-		}*/
+		ID = generateID((unsigned char*)concatenate.c_str());
+
 
 		//sprintf copia el número ID pasado a Hexa y que ocupe 8 lugares y lo guarda en tohex
-		char tohex[9];
-		sprintf_s(tohex, sizeof(tohex), "%08X", ID);
+		char tohex[50];
+		int n = sprintf_s(tohex, sizeof(tohex), "%08X", ID);
 		string newIDstr(tohex);
+		cout << newIDstr << endl;
+		Tree.Tree.push_back(newIDstr);
 		
-		Tree.Tree.push_back(tohex);
-		
-		if ((i = ntx - 1) && ntx % 2 != 0) {
+		if ((i == ntx - 1) && ntx % 2 != 0) {
 
-			Tree.Tree.push_back(tohex);
+			Tree.Tree.push_back(newIDstr);
 
 		}
 	}
+
 	stringMerkleRoot = Tree.Tree;
-	
+
 }
 
 
@@ -178,25 +193,27 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 {
 
 	vector<string> temp;
-	auto sz = temp.size();
 	temp.clear();
+	auto sz = stringMerkleRoot.size();
 
-
-	for (int i = 0;i < sz;i++) {
+	for (int i = 0;i < sz ;i+=2) {
 
 		string line;
-		line = stringMerkleRoot[i] + stringMerkleRoot[i];
+		line = stringMerkleRoot[i] + stringMerkleRoot[i+1];
+
+		cout << stringMerkleRoot[0] << endl;
+		cout << stringMerkleRoot[1] << endl;
+		cout << line << endl;
 
 		unsigned int ID = generateID((unsigned char*)(line.c_str()));
-		line = to_string(ID);
-		while (line.size() < IDSIZE) { //No sería <= ?
-			line = "0" + line;
-		}
 
-		temp.push_back(line);
+		char tohex[50];
+		int n= sprintf_s(tohex,sizeof(tohex), "%08X", ID);
+		string newIDstr(tohex);
+
+		temp.push_back(newIDstr);
 
 	}
-
 	stringMerkleRoot = temp;
 
 	if (stringMerkleRoot.size() == 1) {
@@ -216,8 +233,12 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 bool Block::createMerkleTree(void){
 
 	createMerkleLeaves();
-	generateMerkleRoot(stringMerkleRoot); //Completa los nodos internos del MerkleTree?
+	generateMerkleRoot(stringMerkleRoot);
+
 	Tree.merkleRoot = stringMerkleRoot[0];
+
+	cout << "tine q ser iguakl " << stringMerkleRoot[0] << endl;
+	cout << "tine q ser iguakl " << getMerkleRoot() << endl;
 	if (getMerkleRoot() == Tree.merkleRoot) {
 		return true;
 	}
