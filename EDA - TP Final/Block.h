@@ -121,7 +121,9 @@ public:
 
 	void createMerkleLeaves(void);
 	
+	void generateMarkleRoot(vector<string>& myVec);
 
+	bool createMerkleTree();
 
 private:
 
@@ -132,6 +134,7 @@ private:
 	uint nonce;			//??
 	string prevBlockID;
 	MerkleTree Tree;
+	vector<string> stringMerkleRoot;
 	vector<Transaction> TxVector; //No necesitamos un vector de transacciones
 	Transaction tx; 
 

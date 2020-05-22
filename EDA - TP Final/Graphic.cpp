@@ -1,7 +1,7 @@
 #include "Graphic.h"
 
 
-Graphic::Graphic()
+Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 {
 	if (AllegroInit() && ImguiInit())
 	{
@@ -205,7 +205,7 @@ void Graphic::saveBlockInfo(std::string path)
 	if (chain)
 	{
 		Jdata = json::parse(chain);
-		parsingBlockchain(Jdata);
+		pBchain.parsingBlockchain(Jdata);
 	}
 
 	//CREO Q EN FASE DE VERIFICACION PODEMOS USAR EL CALLBACK DE JSON TALVEZ
@@ -217,105 +217,6 @@ void Graphic::saveBlockInfo(std::string path)
 
 }
 
-void Graphic::parsingBlockchain(json chain_JData)
-{
-	/* GETTING BLOCKS */
-	for (const auto& data : chain_JData)
-	{
-		Block tempBlock;
-
-		string BBID = data["blockid"];
-		tempBlock.setBlockID(BBID);
-
-		string MKLR = data["merkleroot"];
-		tempBlock.setMerkleRoot(MKLR);
-
-		uint NTX = data["nTx"];
-		tempBlock.setNtx(NTX);
-
-		int NCE = data["nonce"];
-		tempBlock.setNonce(NCE);
-
-		string PBID = data["previousblockid"];
-		tempBlock.setPrevBlockID(PBID);
-
-		json transObj = data["tx"];
-
-		/* TRANSACCIONES */
-		for (const auto& TXX : transObj)			//Voy dividiendo en pequenos jsons
-		{
-			Transaction tempTx;
-
-			auto TXD = TXX["nTxin"];
-			tempTx.nTxin = TXD;
-			cout << tempTx.nTxin << endl;
-
-			auto TXO = TXX["nTxout"];
-			tempTx.nTxout = TXO;
-			cout << tempTx.nTxout << endl;
-
-			auto TXID = TXX["txid"];
-			tempTx.txID = TXID.get<string>();
-
-			cout << tempTx.txID << endl;
-
-			/* VINS */
-			json VinObj = TXX["vin"];
-
-			for (const auto& VINdata : VinObj)
-			{
-				VinS tempVin;
-
-				auto LBID = VINdata["blockid"];
-				tempVin.LilblockID = LBID.get<string>();
-
-				cout << LBID << endl;
-
-				auto OUIX = VINdata["outputIndex"];
-				tempVin.outputIndex = OUIX;
-
-				cout << OUIX << endl;
-
-				auto SGT = VINdata["signature"];
-				tempVin.signature = SGT.get<string>();
-
-				cout << SGT << endl;
-
-				auto TXID = VINdata["txid"];
-				tempVin.signature = TXID.get<string>();;
-
-				cout << TXID << endl;
-
-				/* Vin temporario listo para agregar al vector de vins de transaccion temporal*/
-				tempTx.vIn.push_back(tempVin);
-			}
-
-			///* VOUTS */
-			//json VoutObj = TXX["vout"];
-
-			//for (const auto& VOUTdata : VoutObj)
-			//{
-			//	VoutS tempVout;
-			//	auto AMNT = VOUTdata["amount"];
-			//	tempVout.amount = AMNT;
-			//	cout << AMNT << endl;
-
-
-			//	auto PBID = VOUTdata["publicid"];
-			//	tempVout.publicID = PBID.get<string>();
-			//	cout << PBID << endl;
-
-			//	/* Vout temporario listo para agregar al vector de vouts de transaccion temporal*/
-			//	tempTx.vOut.push_back(tempVout);
-			//}
-
-			/* Transacciones listas para agregar a bloque temmportal*/
-			tempBlock.setTX(tempTx);
-		}
-		/* Block temporal listo para agregar a nuestro vector de bloques */
-		BlocksArr.push_back(tempBlock);
-	}
-}
 
 bool Graphic::print_SelectBlocks()
 {
@@ -334,20 +235,23 @@ bool Graphic::print_SelectBlocks()
 	//Checkbox con imgui
 	static bool checks[MAX_BLOCKS] = { false };
 
-	for (i = 0; i < BlocksArr.size(); i++)
+	cout << (pBchain.getBlocksArr()).size() << endl;
+
+	for (i = 0; i < (pBchain.getBlocksArr()).size(); i++)
 	{
-		ImGui::Checkbox(BlocksArr[i].getBlockID().c_str(), &checks[i]);
+		ImGui::Checkbox((pBchain.getBlocksArr())[i].getBlockID().c_str(), &checks[i]);
+
 	}
 
 	if (ImGui::Button("Buscar Info"))
 	{
-		/*		for (i = 0; i < BlocksArr.size(); i++) {
-					if (checks[i] == true)
-					{
-						selectedBlock = BlocksArr[i];
-					}
-				}
-		*/
+		for (i = 0; i < (pBchain.getBlocksArr()).size(); i++) {
+			if (checks[i] == true)
+			{
+				selectedBlocks.push_back((pBchain.getBlocksArr())[i]);
+			}
+		}
+		
 		EstadoActual = Estado::Loading;
 		EventoActual = Evento::StartExtraction;
 		blocksEvento = true;
@@ -452,14 +356,15 @@ bool Graphic::print_Done(void)
 
 
 	ImGui::Begin("BlockInfo:");
-	if (sizeof(selectedBlock) != 0)
-	{
 
+	if (sizeof(selectedBlocks) != 0)
+	{
+		draw_tree();
 
 	}
 	else
 	{
-		ImGui::Text("Ninguna Bloque se ha seleccionado");
+		ImGui::Text("Ningun Bloque se ha seleccionado");
 	}
 	if (ImGui::Button(" Quit "))
 	{
@@ -479,13 +384,6 @@ bool Graphic::print_Done(void)
 	ImGui::Render();
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-
-	//Allegro:
-	if (sizeof(selectedBlock) != 0)
-	{
-		//PRINT MERKLE TREE
-	}
-
 
 	al_flip_display();
 
@@ -522,7 +420,6 @@ bool Graphic::AllegroInit()
 				{
 					if (al_init_primitives_addon())
 					{
-						//Backgrounds[0] = al_load_bitmap("twitterbac.png");
 						return true;
 					}
 					else
@@ -584,4 +481,16 @@ void Graphic::success() // Le comunica a la gui que se realizó la operación exit
 	InputState = false;
 
 	EstadoActual = Estado::InfoReady;
+}
+
+
+json Graphic::returnJson() 
+{
+	return Jdata;
+}
+
+
+
+void Graphic::draw_tree(void){
+
 }

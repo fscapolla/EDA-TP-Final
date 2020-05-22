@@ -115,9 +115,68 @@ void Block::createMerkleLeaves(void)
 		
 		
 	}
-
+	stringMerkleRoot = Tree.Tree;
 	
 }
+
+
+
+//recurs
+
+void Block::generateMarkleRoot(vector<string>& stringMerkleRoot)
+{
+
+	vector<string> temp;
+	auto sz = temp.size();
+	temp.clear();
+
+
+	for (int i = 0;i < sz;i++) {
+
+		string line;
+		line = stringMerkleRoot[i] + stringMerkleRoot[i];
+
+		unsigned int ID = generateID((unsigned char*)(line.c_str()));
+		line = to_string(ID);
+		while (line.size() < IDSIZE) {
+			line = "0" + line;
+		}
+
+		temp.push_back(line);
+
+	}
+
+	stringMerkleRoot = temp;
+
+	if (stringMerkleRoot.size() == 1) {
+
+		return;
+
+	}
+	else {
+		generateMarkleRoot(stringMerkleRoot);
+	}
+
+
+}
+
+
+
+bool Block::createMerkleTree(void){
+
+	createMerkleLeaves();
+	generateMarkleRoot(stringMerkleRoot);
+	Tree.merkleRoot = stringMerkleRoot[0];
+	if (getMerkleRoot() == Tree.merkleRoot) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+
 
 static unsigned int generateID(unsigned char *str)
 {

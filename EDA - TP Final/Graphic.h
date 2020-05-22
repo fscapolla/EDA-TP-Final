@@ -29,6 +29,7 @@
 
 /* BLOCKS */
 #include "Block.h"
+#include "Blockchain.h"
 #include "json.hpp"
 
 /* DEFINES */
@@ -47,7 +48,7 @@ using json = nlohmann::json;
 class Graphic
 {
 public:
-	Graphic();
+	Graphic(Blockchain& pBchain);
 	~Graphic();
 	bool GetError();
 	bool RunningOne();
@@ -55,6 +56,7 @@ public:
 	void success(); // Le comunica a la gui que se realizó la operación exitosamente
 	void processingRequest();
 	void error();
+	json returnJson();
 
 private:
 	/* FUNCIONES DE GRAPHICS */
@@ -73,6 +75,7 @@ private:
 	void print_Loading();
 	bool print_Done(); //Imprime los resultados de la compression/decompression
 	bool print_Error();
+	void print_tree();
 
 	/* VARIABLES DE ALLEGRO */
 	ALLEGRO_EVENT_QUEUE* queue;
@@ -97,13 +100,18 @@ private:
 	/* VARIABLES DE INPUT */
 	std::string path;
 	std::string directoryName;
-	std::vector<std::string> BlockIDs;
-	Block selectedBlock;
-	std::vector<Block> BlocksArr;
+	//std::vector<std::string> BlockIDs;
+	vector<Block> selectedBlocks;
 	std::string readString;
 
 	/* JSON */
 	json Jdata;
-	void parsingBlockchain(json);
+
+
+	/*Puntero a BlockChain*/
+
+	Blockchain& pBchain;
+
+
 };
 
