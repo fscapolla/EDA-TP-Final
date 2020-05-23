@@ -14,8 +14,6 @@ int main(void)
     uint myCounter = 0;
     Graphic UserInterface(bchain);
 
-
-
     if (!UserInterface.GetError())
     {
         while (UserInterface.RunningOne())
@@ -26,7 +24,6 @@ int main(void)
                 UserInterface.processingRequest();  // 
 
                 bool allOk = false;
-                ++myCounter;
 
 
                 //--------//

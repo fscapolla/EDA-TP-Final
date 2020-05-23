@@ -47,7 +47,7 @@ bool Graphic::GetError()
 
 bool Graphic::RunningOne()
 {
-	if (hayEvento())
+	if(hayEvento() || (Result == true))
 	{
 		Dispatch();
 	}
@@ -65,35 +65,93 @@ bool Graphic::hayEvento(void)
 
 	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 	{
-		EventoActual = Evento::Close;
+		EventQueue.push(Evento::Close);
 		ret = true;
 	}
 
-	if (print_current_state(EstadoActual))				//Devuelve true si hubo un evento (Usuario presiono un boton)
-	{
+	if (print_current_state(EstadoActual))  //Devuelve true si hubo un evento (Usuario presiono un boton)
+	{											//Todas las funciones de impresion BUSCAN eventos y las guardan en EventQueue				
 		ret = true;
 	}
 
 	return ret;
 }
 
-void Graphic::Dispatch(void)
+void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 {
-	switch (EventoActual)
+	if (!EventQueue.empty())
 	{
-	case Evento::Close:
-		close = true;
-		break;
+		switch (EventQueue.front())
+		{
+		case Evento::Close:
+			close = true;			//No hay switch case se cierra el display de una
+			EventQueue.pop();
+			break;
 
-	case Evento::gotoMainMenu:
-		flushVariables();
-		break;
+		case Evento::gotoMainMenu:
+			switch (EstadoActual)
+			{
+			case Estado::SelectingBlocks:
+			case Estado::ShowingError:
+			case Estado::InfoReady:
+				EstadoActual = Estado::MainMenu;
+				flushVariables();
+				EventQueue.pop();
+				break;
+			default:
+				break;
+			}
+			break;
 
-	case Evento::GetInfo:
-		InputState = true;
+		case Evento::GetInfo:
+			if (EstadoActual == Estado::SelectingBlocks)		//No hago switch pq solo en un estado puede pasar el evento get info
+			{
+				EstadoActual = Estado::Loading;
+				InputState = true;
+				EventQueue.pop();
+			}
+			break;
 
-	default:
-		break;
+		case Evento::DirectorioInput:
+			if (EstadoActual == Estado::MainMenu)
+			{
+				EstadoActual = Estado::SelectingBlocks;
+				EventQueue.pop();
+			}
+			break;
+
+		case Evento::Error:
+			switch (EstadoActual)
+			{
+			case Estado::MainMenu:
+			case Estado::Loading:
+				EstadoActual = Estado::ShowingError;
+				EventQueue.pop();
+				break;
+			default:
+				break;
+			}
+			break;
+
+		case Evento::Success:
+			if (EstadoActual == Estado::Loading)
+			{
+				EstadoActual = Estado::InfoReady;
+				EventQueue.pop();
+			}
+			break;
+
+		case Evento::ShowResult:
+			if (EstadoActual == Estado::InfoReady)
+			{
+				EstadoActual = Estado::RequestedInfo;
+				EventQueue.pop();
+			}
+			break;
+
+		default:
+			break;
+		}
 	}
 }
 
@@ -116,7 +174,7 @@ bool Graphic::print_current_state(Estado CurrentState)
 		}
 		break;
 
-	case Estado::Error:
+	case Estado::ShowingError:
 		if (print_Error())
 		{
 			userEvento = true;			
@@ -133,12 +191,14 @@ bool Graphic::print_current_state(Estado CurrentState)
 			userEvento = true;
 		}
 		break;
+
 	case Estado::RequestedInfo:
 		if (print_info())
 		{
 			userEvento = true;
 		}
 		break;
+
 	default:
 		break;
 	}
@@ -148,11 +208,9 @@ bool Graphic::print_current_state(Estado CurrentState)
 
 bool Graphic::print_MainMenu()
 {
+	bool menuEvento = false;
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
-
-	bool eventoMenu = false;
-
 
 	ImGui::SetNextWindowPos(ImVec2(200, 10));
 	ImGui::SetNextWindowSize(ImVec2(600, 150));
@@ -163,11 +221,11 @@ bool Graphic::print_MainMenu()
 	ImGui::InputText("Directorio", paths, sizeof(char) * MAX_PATH);
 	if (ImGui::Button("Iniciar"))
 	{
-		EstadoActual = Estado::SelectingBlocks;
+		EventQueue.push(Evento::DirectorioInput);		//Tenemos el directorio listo 
 		path.assign(paths);
 		directoryName.assign(paths);
 		look4BlocksPath();
-		eventoMenu = true;
+		menuEvento = true;
 	}
 
 	ImGui::End();
@@ -179,12 +237,8 @@ bool Graphic::print_MainMenu()
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
-
-	return eventoMenu;
+	return menuEvento;
 }
-
-
-
 
 void Graphic::look4BlocksPath()
 {
@@ -199,20 +253,16 @@ void Graphic::look4BlocksPath()
 				if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
 				}
 				else {
-					EstadoActual = Estado::Error;
-				}
-				
+					EventQueue.push(Evento::Error);
+				}				
 			}
 		}
 	}
 	else
 	{
-		EstadoActual = Estado::Error;
+		EventQueue.push(Evento::Error);
 	}
 }
-
-
-
 
 bool Graphic::print_SelectBlocks()
 {
@@ -222,7 +272,6 @@ bool Graphic::print_SelectBlocks()
 	bool blocksEvento = false;
 	int i;
 
-
 	ImGui::SetNextWindowPos(ImVec2(200, 10));
 	ImGui::SetNextWindowSize(ImVec2(600, 650));
 
@@ -230,13 +279,9 @@ bool Graphic::print_SelectBlocks()
 
 	//Checkbox con imgui
 	static bool checks[MAX_BLOCKS] = { false };
-
-	
-
 	for (i = 0; i < (pBchain.getBlocksArr()).size(); i++)
 	{
 		ImGui::Checkbox((pBchain.getBlocksArr())[i].getBlockID().c_str(), &checks[i]);
-
 	}
 
 	if (ImGui::Button("Buscar Info"))
@@ -246,17 +291,14 @@ bool Graphic::print_SelectBlocks()
 			{
 				selectedBlocks.push_back((pBchain.getBlocksArr())[i]);
 			}
-		}
-		
-		EstadoActual = Estado::Loading;
-		EventoActual = Evento::GetInfo;
+		}	
+		EventQueue.push(Evento::GetInfo);
 		blocksEvento = true;
 	}
 
 	if (ImGui::Button("Volver al menu prinicpal"))
 	{
-		EstadoActual = Estado::MainMenu;
-		EventoActual = Evento::gotoMainMenu;
+		EventQueue.push(Evento::gotoMainMenu);
 		blocksEvento = true;
 	}
 
@@ -287,15 +329,16 @@ bool Graphic::print_Error(void)
 
 	if (ImGui::Button("Quit"))
 	{
-		EventoActual = Evento::Close;
+		EventQueue.push(Evento::Close);
+		//EventoActual = Evento::Close;
 		eventoError = true;
 	}
 
 	ImGui::SameLine();
 	if (ImGui::Button("Volver al menu prinicpal"))
 	{
-		EstadoActual = Estado::MainMenu;
-		EventoActual = Evento::gotoMainMenu;
+		EventQueue.push(Evento::gotoMainMenu);
+		//EventoActual = Evento::gotoMainMenu;
 		eventoError = true;
 	}
 
@@ -318,7 +361,8 @@ void Graphic::flushVariables() {
 	path = "";
 	directoryName = "";
 	pBchain.getBlocksArr().clear();
-	
+	while (!EventQueue.empty())
+		EventQueue.pop();	
 }
 
 void Graphic::print_Loading(void)
@@ -352,43 +396,38 @@ bool Graphic::print_Done(void)
 	ImGui::SetNextWindowSize(ImVec2(350, 300));
 	bool eventoDone = false;
 
-
 	ImGui::Begin("BlockInfo:");
 
 	if (sizeof(selectedBlocks) != 0)
 	{
-
-		
-
-
 		if (ImGui::Button(" Show Information "))
 		{
-			EstadoActual=Estado::RequestedInfo;
+			EventQueue.push(Evento::ShowResult);
+			//EstadoActual = Estado::RequestedInfo;
 			eventoDone = true;
 		}
 		if (ImGui::Button("Calculate Merkle root "))
 		{
-
 			if (pBchain.getBlocksArr()[0].createMerkleTree()) {
 				cout << "es igual" << endl;
 				eventoDone = true;
 			};
-			EstadoActual = Estado::RequestedInfo;
+			EventQueue.push(Evento::ShowResult);
+			//EstadoActual = Estado::RequestedInfo;
 			eventoDone = true;
 		}
 		if (ImGui::Button("Validate Merkle root "))
 		{
-			EstadoActual = Estado::RequestedInfo;
+			EventQueue.push(Evento::ShowResult);
+			//EstadoActual = Estado::RequestedInfo;
 			eventoDone = true;
 		}
 		if (ImGui::Button("Show Merkle tree"))
 		{
-			EstadoActual = Estado::RequestedInfo;
+			EventQueue.push(Evento::ShowResult);
+			//EstadoActual = Estado::RequestedInfo;
 			eventoDone = true;
-		}
-
-		
-		
+		}		
 	}
 	else
 	{
@@ -396,14 +435,16 @@ bool Graphic::print_Done(void)
 	}
 	if (ImGui::Button(" Quit "))
 	{
-		EventoActual = Evento::Close;
+		EventQueue.push(Evento::Close);
+		//EventoActual = Evento::Close;
 		eventoDone = true;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Volver al menu prinicpal"))
 	{
-		EstadoActual = Estado::MainMenu;
-		EventoActual = Evento::gotoMainMenu;
+		EventQueue.push(Evento::gotoMainMenu);
+		//EstadoActual = Estado::MainMenu;
+		//EventoActual = Evento::gotoMainMenu;
 		eventoDone = true;
 	}
 
@@ -433,7 +474,7 @@ void Graphic::error() // Le comunica a la gui que se realizó la operación exitos
 {
 	Result = false;
 	WorkInProgress = false;
-	EstadoActual = Estado::Error;
+	EventQueue.push(Evento::Error);
 }
 
 bool Graphic::AllegroInit()
@@ -519,12 +560,8 @@ void Graphic::success() // Le comunica a la gui que se realizó la operación exit
 	Result = true;
 	WorkInProgress = false;
 	InputState = false;
-
-	EstadoActual = Estado::InfoReady;
+	EventQueue.push(Evento::Success);
 }
-
-
-
 
 bool Graphic::print_info(void){
 	std::cout << "arranco";

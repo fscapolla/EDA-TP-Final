@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iostream>
 #include <fstream>
+#include <queue>
 
 /* ALLEGRO */
 #include <allegro5/allegro.h>
@@ -38,8 +39,9 @@
 #define SIZE_SCREEN_X 1000
 #define SIZE_SCREEN_Y 700
 
-enum class Evento {  Close=1, Loading, gotoMainMenu,Back,GetInfo };
-enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, Error, RequestedInfo};
+/* EVENT QUEUE */
+enum class Evento {  Close=1, gotoMainMenu, DirectorioInput , Error, GetInfo, ShowResult, Success};
+enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, ShowingError, RequestedInfo};
 
 /* Filesystems namespace */
 namespace fs = boost::filesystem;
@@ -87,6 +89,7 @@ private:
 	ImGuiWindowFlags window_flags;
 
 	/* VARIABLES DE mini-FSM*/
+	std::queue<Evento> EventQueue;
 	Evento EventoActual;
 	Estado EstadoActual;
 	bool Error;
