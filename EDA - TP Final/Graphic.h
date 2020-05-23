@@ -38,7 +38,7 @@
 #define SIZE_SCREEN_X 1000
 #define SIZE_SCREEN_Y 700
 
-enum class Evento {Close, Loading, gotoMainMenu,Back,GetInfo };
+enum class Evento {  Close=1, Loading, gotoMainMenu,Back,GetInfo };
 enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, Error, RequestedInfo};
 
 /* Filesystems namespace */
@@ -76,7 +76,7 @@ private:
 	bool print_Done(); //Imprime los resultados de la compression/decompression
 	bool print_Error();
 	bool print_info();
-	bool Graphic::print_chooseFile();
+	//bool Graphic::print_chooseFile();
 
 	/* VARIABLES DE ALLEGRO */
 	ALLEGRO_EVENT_QUEUE* queue;

@@ -5,7 +5,6 @@ Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 {
 	if (AllegroInit() && ImguiInit())
 	{
-		this->queue = al_create_event_queue();
 		al_register_event_source(this->queue, al_get_display_event_source(display));
 		al_register_event_source(this->queue, al_get_mouse_event_source());
 		al_register_event_source(this->queue, al_get_keyboard_event_source());
@@ -16,6 +15,7 @@ Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 		close = false;
 		readString = "";
 		EstadoActual = Estado::MainMenu;
+		
 	}
 	else
 	{
@@ -183,42 +183,7 @@ bool Graphic::print_MainMenu()
 	return eventoMenu;
 }
 
-bool Graphic::print_chooseFile()
-{
-	ImGui_ImplAllegro5_NewFrame();
-	ImGui::NewFrame();
 
-	bool eventoMenu = false;
-
-
-	ImGui::SetNextWindowPos(ImVec2(200, 10));
-	ImGui::SetNextWindowSize(ImVec2(600, 150));
-
-	ImGui::Begin("Elija la BlockChain", 0, window_flags);
-	static char paths[MAX_PATH];
-
-	ImGui::InputText("Directorio", paths, sizeof(char) * MAX_PATH);
-	if (ImGui::Button("Iniciar"))
-	{
-		EstadoActual = Estado::SelectingBlocks;
-		path.assign(paths);
-		directoryName.assign(paths);
-		look4BlocksPath();
-		eventoMenu = true;
-	}
-
-	ImGui::End();
-
-	//Rendering
-	ImGui::Render();
-
-	al_clear_to_color(al_map_rgb(211, 211, 211));
-
-	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-	al_flip_display();
-
-	return eventoMenu;
-}
 
 
 void Graphic::look4BlocksPath()
@@ -483,7 +448,19 @@ bool Graphic::AllegroInit()
 				{
 					if (al_init_primitives_addon())
 					{
-						return true;
+						if (this->queue = al_create_event_queue()) {
+
+							return true;
+						}
+						else {
+
+							printf("ERROR al_init_primitives_addon");
+							al_uninstall_keyboard();
+							al_shutdown_image_addon();
+							al_uninstall_mouse();
+							al_destroy_event_queue(this->queue);
+						}
+						
 					}
 					else
 					{
