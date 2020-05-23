@@ -100,14 +100,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="blockChain.json">
-      <Filter>json</Filter>
-    </None>
     <None Include="Imgui_files\imgui.ini">
       <Filter>Source Files\Imgui_cpp</Filter>
     </None>
     <None Include="packages.config" />
-    <None Include="blockChain (1).json">
+    <None Include="blockChain.json">
       <Filter>json</Filter>
     </None>
   </ItemGroup>

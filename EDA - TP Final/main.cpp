@@ -23,7 +23,7 @@ int main(void)
             if (UserInterface.inputReady()) { //Si hay nuevo input lo analizamos
                 
 
-                UserInterface.processingRequest();  // Avisar a la gui que vamos a arrancar a procesar las imgs
+                UserInterface.processingRequest();  // 
 
                 bool allOk = false;
                 ++myCounter;

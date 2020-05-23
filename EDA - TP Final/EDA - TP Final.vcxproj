@@ -164,7 +164,6 @@
     <ClInclude Include="Spv.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="blockChain (1).json" />
     <None Include="blockChain.json" />
     <None Include="Imgui_files\imgui.ini" />
     <None Include="packages.config" />

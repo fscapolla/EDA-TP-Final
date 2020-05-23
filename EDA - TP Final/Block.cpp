@@ -174,7 +174,7 @@ void Block::createMerkleLeaves(void)
 		cout << newIDstr << endl;
 		Tree.Tree.push_back(newIDstr);
 		
-		if ((i == ntx - 1) && ntx % 2 != 0) {
+		if ((i == ntx - 1) && ((ntx % 2) != 0)) {
 
 			Tree.Tree.push_back(newIDstr);
 
@@ -182,7 +182,7 @@ void Block::createMerkleLeaves(void)
 	}
 
 	stringMerkleRoot = Tree.Tree;
-
+	Tree.Tree.clear();					//Limpio el Tree luego de guardarlo en MerkleRoot//deberiamos organizar un poco las variables
 }
 
 
@@ -196,32 +196,38 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 	temp.clear();
 	auto sz = stringMerkleRoot.size();
 
-	for (int i = 0;i < sz ;i+=2) {
 
-		string line;
-		line = stringMerkleRoot[i] + stringMerkleRoot[i+1];
-
-		cout << stringMerkleRoot[0] << endl;
-		cout << stringMerkleRoot[1] << endl;
-		cout << line << endl;
-
-		unsigned int ID = generateID((unsigned char*)(line.c_str()));
-
-		char tohex[50];
-		int n= sprintf_s(tohex,sizeof(tohex), "%08X", ID);
-		string newIDstr(tohex);
-
-		temp.push_back(newIDstr);
-
-	}
-	stringMerkleRoot = temp;
-
-	if (stringMerkleRoot.size() == 1) {
+	if (sz == 1) {
 
 		return;
 
 	}
 	else {
+
+		for (int i = 0; i < sz; i += 2) {
+
+			string line;
+			if ((i == sz - 1) && ((sz % 2) != 0)) {
+
+				line = stringMerkleRoot[i] + stringMerkleRoot[i ];
+
+			}
+			else {
+
+				line = stringMerkleRoot[i] + stringMerkleRoot[i + 1];
+			}
+
+			unsigned int ID = generateID((unsigned char*)(line.c_str()));
+
+			char tohex[9];
+			int n = sprintf_s(tohex, sizeof(tohex), "%08X", ID);
+			string newIDstr(tohex);
+
+			temp.push_back(newIDstr);
+			
+
+		}
+		stringMerkleRoot = temp;
 		generateMerkleRoot(stringMerkleRoot);
 	}
 
@@ -239,6 +245,7 @@ bool Block::createMerkleTree(void){
 
 	cout << "tine q ser iguakl " << stringMerkleRoot[0] << endl;
 	cout << "tine q ser iguakl " << getMerkleRoot() << endl;
+	stringMerkleRoot.clear();
 	if (getMerkleRoot() == Tree.merkleRoot) {
 		return true;
 	}

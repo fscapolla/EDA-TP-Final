@@ -69,7 +69,7 @@ bool Graphic::hayEvento(void)
 		ret = true;
 	}
 
-	if (print_current_state(EstadoActual))				//Devuelve true si huvo un evento (Usuario presiono un boton)
+	if (print_current_state(EstadoActual))				//Devuelve true si hubo un evento (Usuario presiono un boton)
 	{
 		ret = true;
 	}
@@ -89,7 +89,7 @@ void Graphic::Dispatch(void)
 		flushVariables();
 		break;
 
-	case Evento::StartExtraction:
+	case Evento::GetInfo:
 		InputState = true;
 
 	default:
@@ -183,6 +183,44 @@ bool Graphic::print_MainMenu()
 	return eventoMenu;
 }
 
+bool Graphic::print_chooseFile()
+{
+	ImGui_ImplAllegro5_NewFrame();
+	ImGui::NewFrame();
+
+	bool eventoMenu = false;
+
+
+	ImGui::SetNextWindowPos(ImVec2(200, 10));
+	ImGui::SetNextWindowSize(ImVec2(600, 150));
+
+	ImGui::Begin("Elija la BlockChain", 0, window_flags);
+	static char paths[MAX_PATH];
+
+	ImGui::InputText("Directorio", paths, sizeof(char) * MAX_PATH);
+	if (ImGui::Button("Iniciar"))
+	{
+		EstadoActual = Estado::SelectingBlocks;
+		path.assign(paths);
+		directoryName.assign(paths);
+		look4BlocksPath();
+		eventoMenu = true;
+	}
+
+	ImGui::End();
+
+	//Rendering
+	ImGui::Render();
+
+	al_clear_to_color(al_map_rgb(211, 211, 211));
+
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+	al_flip_display();
+
+	return eventoMenu;
+}
+
+
 void Graphic::look4BlocksPath()
 {
 	fs::path bPath(directoryName);
@@ -246,7 +284,7 @@ bool Graphic::print_SelectBlocks()
 		}
 		
 		EstadoActual = Estado::Loading;
-		EventoActual = Evento::StartExtraction;
+		EventoActual = Evento::GetInfo;
 		blocksEvento = true;
 	}
 
@@ -355,32 +393,34 @@ bool Graphic::print_Done(void)
 	if (sizeof(selectedBlocks) != 0)
 	{
 
-
-		if (pBchain.getBlocksArr()[0].createMerkleTree()) {
-			cout << "es igual" << endl;
-		};
+		
 
 
-		//if (ImGui::Button(" Show Information "))
-		//{
-		//	EstadoActual=Estado::RequestedInfo;
-		//	eventoDone = true;
-		//}
-		//if (ImGui::Button("Calculate Merkle root "))
-		//{
-		//	EstadoActual = Estado::RequestedInfo;
-		//	eventoDone = true;
-		//}
-		//if (ImGui::Button("Validate Merkle root "))
-		//{
-		//	EstadoActual = Estado::RequestedInfo;
-		//	eventoDone = true;
-		//}
-		//if (ImGui::Button("Show Merkle tree"))
-		//{
-		//	EstadoActual = Estado::RequestedInfo;
-		//	eventoDone = true;
-		//}
+		if (ImGui::Button(" Show Information "))
+		{
+			EstadoActual=Estado::RequestedInfo;
+			eventoDone = true;
+		}
+		if (ImGui::Button("Calculate Merkle root "))
+		{
+
+			if (pBchain.getBlocksArr()[0].createMerkleTree()) {
+				cout << "es igual" << endl;
+				eventoDone = true;
+			};
+			EstadoActual = Estado::RequestedInfo;
+			eventoDone = true;
+		}
+		if (ImGui::Button("Validate Merkle root "))
+		{
+			EstadoActual = Estado::RequestedInfo;
+			eventoDone = true;
+		}
+		if (ImGui::Button("Show Merkle tree"))
+		{
+			EstadoActual = Estado::RequestedInfo;
+			eventoDone = true;
+		}
 
 		
 		
