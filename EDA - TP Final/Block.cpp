@@ -236,12 +236,7 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 
 string Block::getCalculatedMerkleRoot(void)
 {
-	if (stringMerkleRoot.size() != 0)
-	{
-		return Tree.merkleRoot;
-	}
-	else
-		return "no merkle root";
+	return Tree.merkleRoot;
 }
 
 bool Block::createMerkleTree(void){
