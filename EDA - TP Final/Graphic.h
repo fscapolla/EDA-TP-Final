@@ -71,13 +71,13 @@ private:
 	
 
 	/* FUNCIONES DE IMPRESION */
-	bool print_current_state(Estado);	//Dependiendo del estado del programa imprime la interfaz deseada
-	bool print_MainMenu();//Imprime el menu principal al comienzo del programa
-	bool print_SelectBlocks();
+	void print_current_state(Estado);	//Dependiendo del estado del programa imprime la interfaz deseada
+	void print_MainMenu();//Imprime el menu principal al comienzo del programa
+	void print_SelectBlocks();
 	void print_Loading();
-	bool print_Done(); //Imprime los resultados de la compression/decompression
-	bool print_Error();
-	bool print_info();
+	void print_Done(); //Imprime los resultados de la compression/decompression
+	void print_Error();
+	void print_info();
 	//bool Graphic::print_chooseFile();
 
 	/* VARIABLES DE ALLEGRO */

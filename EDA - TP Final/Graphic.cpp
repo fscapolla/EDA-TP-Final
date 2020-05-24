@@ -47,7 +47,7 @@ bool Graphic::GetError()
 
 bool Graphic::RunningOne()
 {
-	if(hayEvento() || (Result == true))
+	if (hayEvento())
 	{
 		Dispatch();
 	}
@@ -56,8 +56,6 @@ bool Graphic::RunningOne()
 
 bool Graphic::hayEvento(void)
 {
-	bool ret = false;
-
 	while (al_get_next_event(queue, &ev))
 	{
 		ImGui_ImplAllegro5_ProcessEvent(&ev);
@@ -66,15 +64,12 @@ bool Graphic::hayEvento(void)
 	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 	{
 		EventQueue.push(Evento::Close);
-		ret = true;
 	}
 
-	if (print_current_state(EstadoActual))  //Devuelve true si hubo un evento (Usuario presiono un boton)
-	{											//Todas las funciones de impresion BUSCAN eventos y las guardan en EventQueue				
-		ret = true;
-	}
+	print_current_state(EstadoActual);  //Devuelve true si hubo un evento (Usuario presiono un boton)
+												//Todas las funciones de impresion BUSCAN eventos y las guardan en EventQueue				
 
-	return ret;
+	return !EventQueue.empty();		//Si hay evento devuelve true
 }
 
 void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
@@ -155,30 +150,20 @@ void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 	}
 }
 
-bool Graphic::print_current_state(Estado CurrentState)
+void Graphic::print_current_state(Estado CurrentState)
 {
-	bool userEvento = false;
 	switch (CurrentState)
 	{
 	case Estado::MainMenu:					
-		if (print_MainMenu() && EventoActual != Evento::gotoMainMenu)
-		{
-			userEvento = true;
-		}
+		print_MainMenu();
 		break;
 
 	case Estado::SelectingBlocks:
-		if (print_SelectBlocks())
-		{
-			userEvento = true;			
-		}
+		print_SelectBlocks();
 		break;
 
 	case Estado::ShowingError:
-		if (print_Error())
-		{
-			userEvento = true;			
-		}
+		print_Error();
 		break;
 
 	case Estado::Loading:
@@ -186,29 +171,20 @@ bool Graphic::print_current_state(Estado CurrentState)
 		break;
 
 	case Estado::InfoReady:
-		if (print_Done())
-		{
-			userEvento = true;
-		}
+		print_Done();
 		break;
 
 	case Estado::RequestedInfo:
-		if (print_info())
-		{
-			userEvento = true;
-		}
+		print_info();
 		break;
 
 	default:
 		break;
 	}
-
-	return userEvento;
 }
 
-bool Graphic::print_MainMenu()
+void Graphic::print_MainMenu()
 {
-	bool menuEvento = false;
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
@@ -225,7 +201,6 @@ bool Graphic::print_MainMenu()
 		path.assign(paths);
 		directoryName.assign(paths);
 		look4BlocksPath();
-		menuEvento = true;
 	}
 
 	ImGui::End();
@@ -237,7 +212,6 @@ bool Graphic::print_MainMenu()
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
-	return menuEvento;
 }
 
 void Graphic::look4BlocksPath()
@@ -264,12 +238,11 @@ void Graphic::look4BlocksPath()
 	}
 }
 
-bool Graphic::print_SelectBlocks()
+void Graphic::print_SelectBlocks()
 {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
-	bool blocksEvento = false;
 	int i;
 
 	ImGui::SetNextWindowPos(ImVec2(200, 10));
@@ -293,13 +266,11 @@ bool Graphic::print_SelectBlocks()
 			}
 		}	
 		EventQueue.push(Evento::GetInfo);
-		blocksEvento = true;
 	}
 
 	if (ImGui::Button("Volver al menu prinicpal"))
 	{
 		EventQueue.push(Evento::gotoMainMenu);
-		blocksEvento = true;
 	}
 
 	ImGui::End();
@@ -312,15 +283,12 @@ bool Graphic::print_SelectBlocks()
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
 	al_flip_display();
-	return blocksEvento;
 }
 
-bool Graphic::print_Error(void)
+void Graphic::print_Error(void)
 {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
-
-	bool eventoError = false;
 
 	ImGui::SetNextWindowPos(ImVec2(400, 270));
 	ImGui::SetNextWindowSize(ImVec2(300, 70));
@@ -331,7 +299,6 @@ bool Graphic::print_Error(void)
 	{
 		EventQueue.push(Evento::Close);
 		//EventoActual = Evento::Close;
-		eventoError = true;
 	}
 
 	ImGui::SameLine();
@@ -339,7 +306,6 @@ bool Graphic::print_Error(void)
 	{
 		EventQueue.push(Evento::gotoMainMenu);
 		//EventoActual = Evento::gotoMainMenu;
-		eventoError = true;
 	}
 
 	ImGui::End();
@@ -350,8 +316,6 @@ bool Graphic::print_Error(void)
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
-
-	return eventoError;
 }
 
 void Graphic::flushVariables() {
@@ -387,14 +351,13 @@ void Graphic::print_Loading(void)
 
 }
 
-bool Graphic::print_Done(void)
+void Graphic::print_Done(void)
 {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
 	ImGui::SetNextWindowPos(ImVec2(250, 100));
 	ImGui::SetNextWindowSize(ImVec2(350, 300));
-	bool eventoDone = false;
 
 	ImGui::Begin("BlockInfo:");
 
@@ -404,29 +367,24 @@ bool Graphic::print_Done(void)
 		{
 			EventQueue.push(Evento::ShowResult);
 			//EstadoActual = Estado::RequestedInfo;
-			eventoDone = true;
 		}
 		if (ImGui::Button("Calculate Merkle root "))
 		{
 			if (pBchain.getBlocksArr()[0].createMerkleTree()) {
 				cout << "es igual" << endl;
-				eventoDone = true;
 			};
 			EventQueue.push(Evento::ShowResult);
 			//EstadoActual = Estado::RequestedInfo;
-			eventoDone = true;
 		}
 		if (ImGui::Button("Validate Merkle root "))
 		{
 			EventQueue.push(Evento::ShowResult);
 			//EstadoActual = Estado::RequestedInfo;
-			eventoDone = true;
 		}
 		if (ImGui::Button("Show Merkle tree"))
 		{
 			EventQueue.push(Evento::ShowResult);
 			//EstadoActual = Estado::RequestedInfo;
-			eventoDone = true;
 		}		
 	}
 	else
@@ -437,7 +395,6 @@ bool Graphic::print_Done(void)
 	{
 		EventQueue.push(Evento::Close);
 		//EventoActual = Evento::Close;
-		eventoDone = true;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Volver al menu prinicpal"))
@@ -445,7 +402,6 @@ bool Graphic::print_Done(void)
 		EventQueue.push(Evento::gotoMainMenu);
 		//EstadoActual = Estado::MainMenu;
 		//EventoActual = Evento::gotoMainMenu;
-		eventoDone = true;
 	}
 
 	ImGui::End();
@@ -455,8 +411,6 @@ bool Graphic::print_Done(void)
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
 	al_flip_display();
-
-	return eventoDone;
 }
 
 /* FUNCIONES PARA USER */
@@ -563,12 +517,11 @@ void Graphic::success() // Le comunica a la gui que se realizó la operación exit
 	EventQueue.push(Evento::Success);
 }
 
-bool Graphic::print_info(void){
+void Graphic::print_info(void){
 	std::cout << "arranco";
 	if (!pBchain.getBlocksArr()[0].createMerkleTree()) {
 
 		std::cout << "hola man";
 	};
 	std::cout << "hola man";
-	return true;
 }
