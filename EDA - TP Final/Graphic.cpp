@@ -207,7 +207,7 @@ void Graphic::print_MainMenu()
 	//Rendering
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(211, 211, 211));
+	al_clear_to_color(al_map_rgb(179, 255, 255));
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
@@ -270,7 +270,7 @@ void Graphic::print_SelectBlocks()
 		if(AlgunoSelected)
 			EventQueue.push(Evento::GetInfo);
 	}
-
+	
 	if (ImGui::Button("Volver al menu prinicpal"))
 	{
 		EventQueue.push(Evento::gotoMainMenu);
@@ -281,7 +281,7 @@ void Graphic::print_SelectBlocks()
 	//Rendering
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(211, 211, 211));
+	al_clear_to_color(al_map_rgb(179, 255, 255));
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
@@ -315,7 +315,7 @@ void Graphic::print_Error(void)
 
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(211, 211, 211));
+	al_clear_to_color(al_map_rgb(179, 255, 255));
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
@@ -348,7 +348,7 @@ void Graphic::print_Loading(void)
 
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(211, 211, 211));
+	al_clear_to_color(al_map_rgb(179, 255, 255));
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
@@ -416,7 +416,7 @@ void Graphic::print_Done(void)
 
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(211, 211, 211));
+	al_clear_to_color(al_map_rgb(179,255,255));
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
@@ -482,8 +482,8 @@ void Graphic::print_info(void) {
 
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(211, 211, 211));
- 
+	al_clear_to_color(al_map_rgb(179, 255, 255));
+
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
 	al_flip_display();

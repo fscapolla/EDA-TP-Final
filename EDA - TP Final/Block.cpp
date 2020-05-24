@@ -260,7 +260,7 @@ bool Block::createMerkleTree(void){
 void Block::printBlockInfo(void)
 {
 	cout << BigBlockID << endl;
-	cout << height << endl;
+	cout << "HEIGHT " << height << endl;
 	cout << merkleRoot << endl;
 	cout << ntx << endl;
 	cout << nonce << endl;

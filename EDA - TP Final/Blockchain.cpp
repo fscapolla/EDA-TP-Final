@@ -21,6 +21,9 @@ void Blockchain::parsingBlockchain(json chain_JData)
 		int NCE = data["nonce"];
 		tempBlock.setNonce(NCE);
 
+		uint HGT = data["height"];
+		tempBlock.setHeight(HGT);
+
 		string PBID = data["previousblockid"];
 		tempBlock.setPrevBlockID(PBID);
 
