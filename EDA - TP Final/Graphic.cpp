@@ -91,7 +91,6 @@ void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 			case Estado::InfoReady:
 				EstadoActual = Estado::MainMenu;
 				flushVariables();
-				EventQueue.pop();
 				break;
 			default:
 				break;
