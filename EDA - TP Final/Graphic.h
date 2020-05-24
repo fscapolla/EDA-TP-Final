@@ -40,7 +40,7 @@
 #define SIZE_SCREEN_Y 700
 
 /* EVENT QUEUE */
-enum class Evento { Close = 1, gotoMainMenu, DirectorioInput, Error, GetInfo, ShowResult, Success, ShowInfo, CalculateMerkleRoot, ValidateMerkleRoot, ShowMerkleTree };
+enum class Evento { Close = 1, gotoMainMenu, DirectorioInput, Error, GetInfo, ShowResult, Success };
 enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, ShowingError, RequestedInfo, ShowingBlockInfo};
 enum {SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE};
 /* Filesystems namespace */
@@ -106,12 +106,10 @@ private:
 	std::string directoryName;
 	//std::vector<std::string> BlockIDs;
 	vector<Block> selectedBlock;
-	std::string calculatedMerkle;
 
 	std::string readString;
 	bool ValidationMerkleRoot; 
-	static bool Actions[5];		//5 acciones posibles
-
+	bool ActionsArray[4];
 
 
 	/*Puntero a BlockChain*/

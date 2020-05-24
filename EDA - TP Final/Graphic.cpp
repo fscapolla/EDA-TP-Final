@@ -144,14 +144,6 @@ void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 			}
 			break;
 
-		case Evento::ShowInfo:
-			if (EstadoActual == Estado::RequestedInfo)
-			{
-				EstadoActual = Estado::ShowingBlockInfo;
-				EventQueue.pop();
-			}
-		
-
 		default:
 			break;
 		}
@@ -340,6 +332,7 @@ void Graphic::flushVariables() {
 
 void Graphic::print_Loading(void)
 {
+	
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
@@ -357,7 +350,7 @@ void Graphic::print_Loading(void)
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
-
+	
 }
 
 void Graphic::print_Done(void)
@@ -371,6 +364,7 @@ void Graphic::print_Done(void)
 
 	if (sizeof(selectedBlock) != 0)
 	{
+		static bool Actions[4];		//4 acciones posibles
 
 		ImGui::Checkbox("Show block information: " , &Actions[SHOWINFO]);
 
@@ -382,14 +376,17 @@ void Graphic::print_Done(void)
 
 		if (ImGui::Button(" START: "))
 		{
-			EventQueue.push(Evento::ShowInfo);
+			EventQueue.push(Evento::ShowResult);
 			
 			if (Actions[CALCULATEMERKLE])
 			{
-				//selectedBlock[0].generateMerkleRoot(selectedBlock[0].getMerkleRoot);
-				//ACA CALCULAR MERKLE ROOT
-				calculatedMerkle = selectedBlock[0].getCalculatedMerkleRoot();
+				//Calculamos merkle root y guardamos en variable para impresion
+				//selectedBlock[0].createMerkleRoot();
+
 			}
+			int i;
+			for (i = 0; i < 4; i++)
+				ActionsArray[i] = Actions[i];
 		}
 	}
 	else
@@ -411,6 +408,8 @@ void Graphic::print_Done(void)
 
 	ImGui::Render();
 
+	al_clear_to_color(al_map_rgb(211, 211, 211));
+
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
 	al_flip_display();
@@ -420,9 +419,9 @@ void Graphic::print_info(void) {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
-	if (Actions[SHOWINFO])
+	if (ActionsArray[SHOWINFO])
 	{
-		ImGui::SetNextWindowPos(ImVec2(250, 100));
+		ImGui::SetNextWindowPos(ImVec2(100, 10));
 		ImGui::SetNextWindowSize(ImVec2(350, 300));
 		ImGui::Begin(" INFORMACION DEL BLOQUE ");
 
@@ -434,71 +433,53 @@ void Graphic::print_info(void) {
 
 		ImGui::Text("Numero de bloque: %u",selectedBlock[0].getHeight());
 
-		ImGui::Text("Nounce: %s", selectedBlock[0].getNonce());
+		//ImGui::Text("Nounce: %s", selectedBlock[0].getNonce());
 
 		ImGui::End(); 
 
 	}
 
-	if (Actions[CALCULATEMERKLE])
+	if (ActionsArray[CALCULATEMERKLE])
 	{
-		ImGui::SetNextWindowPos(ImVec2(400, 100));
-		ImGui::SetNextWindowSize(ImVec2(100, 200));
+		ImGui::SetNextWindowPos(ImVec2(500, 10));
+		ImGui::SetNextWindowSize(ImVec2(200, 70));
 		ImGui::Begin(" CALCULO DE MERKLE ROOT");
 
-		ImGui::Text("Calculated Merkel Root:%s",calculatedMerkle);		//Se calcula merkleRoot al presionar boton start
+		ImGui::Text("Merkel Root: %s",selectedBlock[0].getCalculatedMerkleRoot());		//Se calculó merkleRoot al presionar boton start
 		ImGui::End();
-
 	}
 
-	if (Actions[VALIDATEMERKLE])
+	if (ActionsArray[VALIDATEMERKLE])
+	{
+		ImGui::SetNextWindowPos(ImVec2(700, 10));
+		ImGui::SetNextWindowSize(ImVec2(200, 70));
+		ImGui::Begin(" VALIDACION DE MERKLE ROOT");
+
+		if (selectedBlock[0].createMerkleTree()) 
+		{
+			ImGui::Text(" MERKLE ROOT IS VALID ");
+		}
+		else
+		{
+			ImGui::Text(" MERKLE ROOT IS NOT VALID ");
+		}
+		ImGui::End();
+	}
+
+
+	if (ActionsArray[SHOWMERKLE])
 	{
 
 	}
 
+	ImGui::Render();
 
-	if (Actions[SHOWMERKLE])
-	{
+	al_clear_to_color(al_map_rgb(211, 211, 211));
+ 
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
-	}
+	al_flip_display();
 
-/*	std::cout << "arranco";
-	if (!pBchain.getBlocksArr()[0].createMerkleTree()) {
-
-		std::cout << "hola man";
-	};
-	std::cout << "hola man";
-
-	if (ImGui::Button("Calculate Merkle root "))
-	{
-		selectedBlock[0].generateMerkleRoot(selectedBlock[0].getMerkleRoot);
-
-	}
-
-	if (ImGui::Button("Validate Merkle root "))
-	{
-		if (selectedBlock[0].createMerkleTree()) {
-			//Son Iguales 
-			ValidationMerkleRoot = true;
-		};
-	}
-
-	if (ValidationMerkleRoot == true)
-	{
-		ImGui::SameLine();
-		ImGui::Text(" MERKLE ROOT IS VALID ");
-	}
-	else if (ValidationMerkleRoot == false)
-	{
-		ImGui::SameLine();
-		ImGui::Text(" MERKLE ROOT IS NOG VALID ");
-	}
-
-	if (ImGui::Button("Show Merkle tree"))
-	{
-		EventQueue.push(Evento::ShowMerkleTree);
-	}
-	*/
 
 }
 

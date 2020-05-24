@@ -238,10 +238,10 @@ string Block::getCalculatedMerkleRoot(void)
 {
 	if (stringMerkleRoot.size() != 0)
 	{
-		return "nose q devolver";
+		return Tree.merkleRoot;
 	}
 	else
-		return "nose q devolver";
+		return "no merkle root";
 }
 
 bool Block::createMerkleTree(void){
