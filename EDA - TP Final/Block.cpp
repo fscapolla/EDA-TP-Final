@@ -234,7 +234,15 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 
 }
 
-
+string Block::getCalculatedMerkleRoot(void)
+{
+	if (stringMerkleRoot.size() != 0)
+	{
+		return "nose q devolver";
+	}
+	else
+		return "nose q devolver";
+}
 
 bool Block::createMerkleTree(void){
 

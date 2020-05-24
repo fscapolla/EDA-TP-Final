@@ -144,6 +144,14 @@ void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 			}
 			break;
 
+		case Evento::ShowInfo:
+			if (EstadoActual == Estado::RequestedInfo)
+			{
+				EstadoActual = Estado::ShowingBlockInfo;
+				EventQueue.pop();
+			}
+		
+
 		default:
 			break;
 		}
@@ -248,7 +256,7 @@ void Graphic::print_SelectBlocks()
 	ImGui::SetNextWindowPos(ImVec2(200, 10));
 	ImGui::SetNextWindowSize(ImVec2(600, 650));
 
-	ImGui::Begin("Seleccione bloques", 0, window_flags);
+	ImGui::Begin("Seleccione 1 bloque", 0, window_flags);
 
 	//Checkbox con imgui
 	static bool checks[MAX_BLOCKS] = { false };
@@ -262,7 +270,8 @@ void Graphic::print_SelectBlocks()
 		for (i = 0; i < (pBchain.getBlocksArr()).size(); i++) {
 			if (checks[i] == true)
 			{
-				selectedBlocks.push_back((pBchain.getBlocksArr())[i]);
+				selectedBlock.push_back((pBchain.getBlocksArr())[i]);
+				i = pBchain.getBlocksArr().size();		//Solo selecciono uno
 			}
 		}	
 		EventQueue.push(Evento::GetInfo);
@@ -358,50 +367,44 @@ void Graphic::print_Done(void)
 
 	ImGui::SetNextWindowPos(ImVec2(250, 100));
 	ImGui::SetNextWindowSize(ImVec2(350, 300));
+	ImGui::Begin("Elija acciones sobre Block:");
 
-	ImGui::Begin("BlockInfo:");
-
-	if (sizeof(selectedBlocks) != 0)
+	if (sizeof(selectedBlock) != 0)
 	{
-		if (ImGui::Button(" Show Information "))
+
+		ImGui::Checkbox("Show block information: " , &Actions[SHOWINFO]);
+
+		ImGui::Checkbox("Calculate Merkle Root:", &Actions[CALCULATEMERKLE]);
+
+		ImGui::Checkbox("Validate Merkle Root:", &Actions[VALIDATEMERKLE]);
+
+		ImGui::Checkbox("Show Merkle Tree:", &Actions[SHOWMERKLE]);
+
+		if (ImGui::Button(" START: "))
 		{
-			EventQueue.push(Evento::ShowResult);
-			//EstadoActual = Estado::RequestedInfo;
+			EventQueue.push(Evento::ShowInfo);
+			
+			if (Actions[CALCULATEMERKLE])
+			{
+				//selectedBlock[0].generateMerkleRoot(selectedBlock[0].getMerkleRoot);
+				//ACA CALCULAR MERKLE ROOT
+				calculatedMerkle = selectedBlock[0].getCalculatedMerkleRoot();
+			}
 		}
-		if (ImGui::Button("Calculate Merkle root "))
-		{
-			if (pBchain.getBlocksArr()[0].createMerkleTree()) {
-				cout << "es igual" << endl;
-			};
-			EventQueue.push(Evento::ShowResult);
-			//EstadoActual = Estado::RequestedInfo;
-		}
-		if (ImGui::Button("Validate Merkle root "))
-		{
-			EventQueue.push(Evento::ShowResult);
-			//EstadoActual = Estado::RequestedInfo;
-		}
-		if (ImGui::Button("Show Merkle tree"))
-		{
-			EventQueue.push(Evento::ShowResult);
-			//EstadoActual = Estado::RequestedInfo;
-		}		
 	}
 	else
 	{
 		ImGui::Text("Ningun Bloque se ha seleccionado");
 	}
+
 	if (ImGui::Button(" Quit "))
 	{
 		EventQueue.push(Evento::Close);
-		//EventoActual = Evento::Close;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Volver al menu prinicpal"))
 	{
 		EventQueue.push(Evento::gotoMainMenu);
-		//EstadoActual = Estado::MainMenu;
-		//EventoActual = Evento::gotoMainMenu;
 	}
 
 	ImGui::End();
@@ -411,6 +414,92 @@ void Graphic::print_Done(void)
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
 	al_flip_display();
+}
+
+void Graphic::print_info(void) {
+	ImGui_ImplAllegro5_NewFrame();
+	ImGui::NewFrame();
+
+	if (Actions[SHOWINFO])
+	{
+		ImGui::SetNextWindowPos(ImVec2(250, 100));
+		ImGui::SetNextWindowSize(ImVec2(350, 300));
+		ImGui::Begin(" INFORMACION DEL BLOQUE ");
+
+		ImGui::Text("Block ID: %s", selectedBlock[0].getBlockID());
+
+		ImGui::Text("Previous Block ID: %s", selectedBlock[0].getPrevBlovkID());
+
+		ImGui::Text("Cantidad de transacciones: %u", selectedBlock[0].getNtx());
+
+		ImGui::Text("Numero de bloque: %u",selectedBlock[0].getHeight());
+
+		ImGui::Text("Nounce: %s", selectedBlock[0].getNonce());
+
+		ImGui::End(); 
+
+	}
+
+	if (Actions[CALCULATEMERKLE])
+	{
+		ImGui::SetNextWindowPos(ImVec2(400, 100));
+		ImGui::SetNextWindowSize(ImVec2(100, 200));
+		ImGui::Begin(" CALCULO DE MERKLE ROOT");
+
+		ImGui::Text("Calculated Merkel Root:%s",calculatedMerkle);		//Se calcula merkleRoot al presionar boton start
+		ImGui::End();
+
+	}
+
+	if (Actions[VALIDATEMERKLE])
+	{
+
+	}
+
+
+	if (Actions[SHOWMERKLE])
+	{
+
+	}
+
+/*	std::cout << "arranco";
+	if (!pBchain.getBlocksArr()[0].createMerkleTree()) {
+
+		std::cout << "hola man";
+	};
+	std::cout << "hola man";
+
+	if (ImGui::Button("Calculate Merkle root "))
+	{
+		selectedBlock[0].generateMerkleRoot(selectedBlock[0].getMerkleRoot);
+
+	}
+
+	if (ImGui::Button("Validate Merkle root "))
+	{
+		if (selectedBlock[0].createMerkleTree()) {
+			//Son Iguales 
+			ValidationMerkleRoot = true;
+		};
+	}
+
+	if (ValidationMerkleRoot == true)
+	{
+		ImGui::SameLine();
+		ImGui::Text(" MERKLE ROOT IS VALID ");
+	}
+	else if (ValidationMerkleRoot == false)
+	{
+		ImGui::SameLine();
+		ImGui::Text(" MERKLE ROOT IS NOG VALID ");
+	}
+
+	if (ImGui::Button("Show Merkle tree"))
+	{
+		EventQueue.push(Evento::ShowMerkleTree);
+	}
+	*/
+
 }
 
 /* FUNCIONES PARA USER */
@@ -515,13 +604,4 @@ void Graphic::success() // Le comunica a la gui que se realizó la operación exit
 	WorkInProgress = false;
 	InputState = false;
 	EventQueue.push(Evento::Success);
-}
-
-void Graphic::print_info(void){
-	std::cout << "arranco";
-	if (!pBchain.getBlocksArr()[0].createMerkleTree()) {
-
-		std::cout << "hola man";
-	};
-	std::cout << "hola man";
 }

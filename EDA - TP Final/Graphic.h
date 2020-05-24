@@ -40,9 +40,9 @@
 #define SIZE_SCREEN_Y 700
 
 /* EVENT QUEUE */
-enum class Evento {  Close=1, gotoMainMenu, DirectorioInput , Error, GetInfo, ShowResult, Success};
-enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, ShowingError, RequestedInfo};
-
+enum class Evento { Close = 1, gotoMainMenu, DirectorioInput, Error, GetInfo, ShowResult, Success, ShowInfo, CalculateMerkleRoot, ValidateMerkleRoot, ShowMerkleTree };
+enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, ShowingError, RequestedInfo, ShowingBlockInfo};
+enum {SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE};
 /* Filesystems namespace */
 namespace fs = boost::filesystem;
 using json = nlohmann::json;
@@ -105,8 +105,12 @@ private:
 	std::string path;
 	std::string directoryName;
 	//std::vector<std::string> BlockIDs;
-	vector<Block> selectedBlocks;
+	vector<Block> selectedBlock;
+	std::string calculatedMerkle;
+
 	std::string readString;
+	bool ValidationMerkleRoot; 
+	static bool Actions[5];		//5 acciones posibles
 
 
 

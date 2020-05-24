@@ -85,6 +85,7 @@ public:
 	uint getNtx(void);
 	uint getNonce(void);
 	string getPrevBlovkID(void);
+	string getCalculatedMerkleRoot(void);
 	vector<Transaction>& getTxVector();
 
 	void setBlockID(string blockID_);
