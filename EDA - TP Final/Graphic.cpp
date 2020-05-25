@@ -476,7 +476,7 @@ void Graphic::print_Done(void)
 		{
 			EventQueue.push(Evento::ShowResult);
 			
-			if (Actions[CALCULATEMERKLE])
+			if (Actions[CALCULATEMERKLE] || Actions[SHOWMERKLE])
 			{
 				//Calculamos merkle tree y guardamos si es valido o no
 				ValidationMerkleRoot = selectedBlock[0].createMerkleTree();
@@ -566,7 +566,14 @@ void Graphic::print_info(void) {
 
 	if (ActionsArray[SHOWMERKLE])
 	{
-
+		MerkleTree tempMerkle = selectedBlock[0].getMerkleTree();
+		
+		//printLevel(uint altura, MerkleTree tree) Imprimos recursivamente
+		//Empezamos imprimiendo todas las hojas de la base
+		
+		cout << tempMerkle.EntireTree[0] << endl;
+		printLevel(0, tempMerkle.numberOfLeaves, tempMerkle.height, tempMerkle.EntireTree);
+	
 	}
 
 	
@@ -590,8 +597,32 @@ void Graphic::print_info(void) {
 
 	al_flip_display();
 	
+}
+
+
+void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vector<string>Nodos)
+{
+	int i;
+	int increase_X = 0;
+	if (altura != TreeHeight)		//Cuando lleguemos a altura 5 dejamos de imprimir. Altura empieza en 0
+	{
+		for (i = 0; i < NodosAImprimir; i++)		//Imprimimos una fila de hojas (empezamos por nivel de abajo y vamos subiendo)
+		{
+			ImGui::SetNextWindowPos(ImVec2(INITIAL_X + (increase_X), INITIAL_Y*(altura+LEVEL_INCREASE_Y)));
+			ImGui::Begin("  ");
+			//cout << Nodos[i].c_str() << endl;
+			//ImGui::Text("%s",Nodos[i].c_str());	
+			ImGui::Text("%u", i);
+			ImGui::End();
+			increase_X += LEVEL_INCREASE_X;
+		}
+//	vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
+		
+//	printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
+	}
 
 }
+
 
 /* FUNCIONES PARA USER */
 void Graphic::processingRequest() // Le comunica a la gui que se llamo al algoritmo

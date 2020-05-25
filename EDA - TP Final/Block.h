@@ -45,7 +45,10 @@ struct Transaction {
 struct MerkleTree {
 	uint height;
 	string merkleRoot;
+	vector<string> EntireTree;
 	vector<string> Tree;
+
+
 	uint numberOfLeaves;
 
 	MerkleTree() {
@@ -72,6 +75,7 @@ public:
 	string getPrevBlovkID(void);
 	string getCalculatedMerkleRoot(void);
 	vector<Transaction>& getTxVector();
+	MerkleTree getMerkleTree(void);
 
 	void setBlockID(string blockID_);
 	void setHeight(uint height_);
@@ -99,11 +103,11 @@ private:
 	uint height;
 	string merkleRoot;
 	uint ntx;
-	uint nonce;			//??
+	uint nonce;			
 	string prevBlockID;
 	MerkleTree Tree;
 	vector<string> stringMerkleRoot; //String usado para llenar el árbol?
-	vector<Transaction> TxVector; //No necesitamos un vector de transacciones
+	vector<Transaction> TxVector; 
 	Transaction tx; 
 
 };

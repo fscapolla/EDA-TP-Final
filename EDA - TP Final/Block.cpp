@@ -97,9 +97,8 @@ void Block::createMerkleLeaves(void)
 	string concatenate = "";
 	string newID="";
 	uint ID=0;
-	uint numOfLeaves = pow(2, ceil(log((long double)ntx) / log(2))); 
-	
-
+	Tree.numberOfLeaves = pow(2, ceil(log((long double)ntx) / log(2))); 
+	Tree.height = (uint)log2(Tree.numberOfLeaves);
 
 	for (int i = 0; i < ntx; i++)
 	{	
@@ -108,7 +107,7 @@ void Block::createMerkleLeaves(void)
 		for (int j = 0; j < TxVector[i].nTxin; j++)
 		{
 			concatenate += TxVector[i].vIn[j].txID;
-			cout << TxVector[i].vIn[j].txID << endl;
+			//cout << TxVector[i].vIn[j].txID << endl;
 		}
 		ID = generateID((unsigned char*)concatenate.c_str());
 
@@ -119,12 +118,16 @@ void Block::createMerkleLeaves(void)
 		string newIDstr(tohex);
 		
 		Tree.Tree.push_back(newIDstr);
-		
+		Tree.EntireTree.push_back(newIDstr);			//Guardo hojas en real
+
 		if ((i == ntx - 1) && ((ntx % 2) != 0)) {
 
 			Tree.Tree.push_back(newIDstr);
-
+			Tree.EntireTree.push_back(newIDstr);			//Guardo hojas en real
+			//std::cout << newIDstr << endl;
 		}
+
+		//std::cout << newIDstr << endl;
 	}
 
 	stringMerkleRoot = Tree.Tree;
@@ -170,13 +173,12 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 			string newIDstr(tohex);
 
 			temp.push_back(newIDstr);
-			
-
+			Tree.EntireTree.push_back(newIDstr);
+//			cout << newIDstr << endl;
 		}
 		stringMerkleRoot = temp;
 		generateMerkleRoot(stringMerkleRoot);
 	}
-
 
 }
 
@@ -201,6 +203,10 @@ bool Block::createMerkleTree(void){
 	}
 }
 
+MerkleTree Block::getMerkleTree(void)
+{
+	return Tree;
+}
 
 
 static unsigned int generateID(unsigned char *str)

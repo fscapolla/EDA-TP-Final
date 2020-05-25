@@ -38,6 +38,10 @@
 #define MAX_BLOCKS 50
 #define SIZE_SCREEN_X 1000
 #define SIZE_SCREEN_Y 700
+#define LEVEL_INCREASE_Y 50
+#define LEVEL_INCREASE_X 20
+#define INITIAL_X 30
+#define INITIAL_Y 30
 
 /* EVENT QUEUE */
 enum class Evento { Close , gotoMainMenu, DirectorioInput, Error, GetInfo, ShowResult, Success };
@@ -69,7 +73,7 @@ private:
 	bool look4BlocksPath(string ChosenFile);
 	void loadFiles();
 	void flushVariables();
-	
+	void printLevel(uint altura, uint Hojas, uint height, std::vector<string> nodos);
 
 	/* FUNCIONES DE IMPRESION */
 	void print_current_state(Estado);	//Dependiendo del estado del programa imprime la interfaz deseada
