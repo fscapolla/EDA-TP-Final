@@ -11,13 +11,16 @@ Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 		al_register_event_source(this->queue, al_get_mouse_event_source());
 		al_register_event_source(this->queue, al_get_keyboard_event_source());
 
-		window_flags |= ImGuiWindowFlags_NoResize;
+		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+		window_flags |= ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoScrollbar;
 		InputState = false;
 		Error = false;
 		ValidationMerkleRoot = false;
 		close = false;
 		readString = "";
 		EstadoActual = Estado::MainMenu;
+
 	}
 	else
 	{
@@ -604,9 +607,8 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 			for (i = 0; i < NodosAImprimir; i++)		//Imprimimos una fila de hojas (empezamos por nivel de abajo y vamos subiendo)
 			{
 				string nodolabel = level + to_string(i + 1);
-				ImGui::SetNextWindowSize(ImVec2(75, 45));
 				ImGui::SetNextWindowPos(ImVec2(INITIAL_X + increase_X, INITIAL_Y - increase_Y));
-				ImGui::Begin(nodolabel.c_str());
+				ImGui::Begin(nodolabel.c_str(),0,window_flags);
 				ImGui::Text("%s", Nodos[i].c_str());
 				ImGui::End();
 				increase_X += LEVEL_INCREASE_X;
