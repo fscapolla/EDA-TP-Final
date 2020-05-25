@@ -603,7 +603,7 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 {
 	int i;
 	int increase_X = 0;
-	if (altura != TreeHeight)		//Cuando lleguemos a altura 5 dejamos de imprimir. Altura empieza en 0
+	if (altura != TreeHeight+1)		//Cuando lleguemos a altura 5 dejamos de imprimir. Altura empieza en 0
 	{
 		for (i = 0; i < NodosAImprimir; i++)		//Imprimimos una fila de hojas (empezamos por nivel de abajo y vamos subiendo)
 		{
@@ -618,6 +618,10 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 	vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
 		
 	printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
+	}
+	else
+	{
+		cout << "FIN RECURSION" << endl;
 	}
 
 }
