@@ -563,20 +563,15 @@ void Graphic::print_info(void) {
 		ImGui::End();
 	}
 
-
 	if (ActionsArray[SHOWMERKLE])
 	{
-//		MerkleTree tempMerkle = selectedBlock[0].getMerkleTree();
-		
 		//printLevel(uint altura, MerkleTree tree) Imprimos recursivamente
-		//Empezamos imprimiendo todas las hojas de la base
-		
-		printLevel(0, selectedBlock[0].getNumLeaves(), selectedBlock[0].getMerkleHeight(), selectedBlock[0].getNodos());
-	
+		//Empezamos imprimiendo todas las hojas de la base	
+		printLevel(0,selectedBlock[0].getNumLeaves(), selectedBlock[0].getMerkleHeight(), selectedBlock[0].getNodos());	
 	}
 
-	
 
+	ImGui::SetNextWindowPos(ImVec2(50, 600));
 	if (ImGui::Button(" Quit "))
 	{
 		EventQueue.push(Evento::Close);
@@ -586,7 +581,6 @@ void Graphic::print_info(void) {
 	{
 		EventQueue.push(Evento::gotoMainMenu);
 	}
-
 
 	ImGui::Render();
 
@@ -598,33 +592,35 @@ void Graphic::print_info(void) {
 	
 }
 
-
 void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vector<string>Nodos)
 {
-	int i;
-	int increase_X = 0;
-	if (altura != TreeHeight+1)		//Cuando lleguemos a altura 5 dejamos de imprimir. Altura empieza en 0
-	{
-		for (i = 0; i < NodosAImprimir; i++)		//Imprimimos una fila de hojas (empezamos por nivel de abajo y vamos subiendo)
-		{
-			string nodotext = "TX" + to_string(i);
-			ImGui::SetNextWindowPos(ImVec2(INITIAL_X + (increase_X), INITIAL_Y*(altura+LEVEL_INCREASE_Y)));
-			ImGui::Begin(nodotext.c_str());
-			cout << Nodos[i].c_str() << endl;
-			ImGui::Text("%s",Nodos[i].c_str());	
-			ImGui::End();
-			increase_X += LEVEL_INCREASE_X;
-		}
-	vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
-		
-	printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
-	}
-	else
-	{
-		cout << "FIN RECURSION" << endl;
-	}
+	uint i;
+	int increase_X = 0, increase_Y = LEVEL_INCREASE_Y*altura;
+	uint NodosAImprimir2 = NodosAImprimir;
+	char level = 'A' + altura; 
 
+	if (altura != TreeHeight+1)		//Cuando lleguemos a altura 5 dejamos de imprimir. Altura empieza en 0
+		{
+			for (i = 0; i < NodosAImprimir; i++)		//Imprimimos una fila de hojas (empezamos por nivel de abajo y vamos subiendo)
+			{
+				string nodolabel = level + to_string(i + 1);
+				ImGui::SetNextWindowSize(ImVec2(75, 45));
+				ImGui::SetNextWindowPos(ImVec2(INITIAL_X + increase_X, INITIAL_Y - increase_Y));
+				ImGui::Begin(nodolabel.c_str());
+				ImGui::Text("%s", Nodos[i].c_str());
+				ImGui::End();
+				increase_X += LEVEL_INCREASE_X;
+			}
+
+		vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
+		printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
+		}
+		else
+		{
+			//TERMINO RECURSION
+		}
 }
+
 
 
 /* FUNCIONES PARA USER */
@@ -711,7 +707,7 @@ bool Graphic::ImguiInit(void)
 	display = al_create_display(SIZE_SCREEN_X, SIZE_SCREEN_Y);
 	if (display)
 	{
-		al_set_window_position(display, 500, 100); //posicion del menu
+		al_set_window_position(display, 0, 100); //posicion del menu
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();

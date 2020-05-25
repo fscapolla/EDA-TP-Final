@@ -36,12 +36,12 @@
 /* DEFINES */
 #define MAX_PATH 500
 #define MAX_BLOCKS 50
-#define SIZE_SCREEN_X 1000
+#define SIZE_SCREEN_X 2350
 #define SIZE_SCREEN_Y 700
 #define LEVEL_INCREASE_Y 50
-#define LEVEL_INCREASE_X 20
-#define INITIAL_X 30
-#define INITIAL_Y 30
+#define LEVEL_INCREASE_X 75
+#define INITIAL_X 0
+#define INITIAL_Y 500
 
 /* EVENT QUEUE */
 enum class Evento { Close , gotoMainMenu, DirectorioInput, Error, GetInfo, ShowResult, Success };
