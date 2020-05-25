@@ -9,9 +9,10 @@ using json = nlohmann::json;
 class Blockchain
 {
 public:
-	//list<Block>& getBchain(void) { return Bchain; }
+	
 	void parsingBlockchain(json chain_JData);
 	vector<Block>& getBlocksArr(void) { return BlocksArr; }
+	unsigned int getBlocksSize() { return BlocksArr.size(); }
 	int saveBlockInfo(std::string);
 
 

@@ -1,4 +1,6 @@
 #include "Graphic.h"
+unsigned char clickedBlock(bool* checks, size_t size);
+unsigned char numSelectedBlocks(bool* checks, size_t size);
 
 
 Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
@@ -84,18 +86,19 @@ void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 			break;
 
 		case Evento::gotoMainMenu:
-			switch (EstadoActual)
+			/*switch (EstadoActual)
 			{
+			case Estado::RequestedInfo:
 			case Estado::SelectingBlocks:
 			case Estado::ShowingError:
-			case Estado::InfoReady:
+			case Estado::InfoReady:*/
 				EstadoActual = Estado::MainMenu;
 				flushVariables();
-				break;
+			/*	break;
 			default:
 				break;
 			}
-			break;
+			break;*/
 
 		case Evento::GetInfo:
 			if (EstadoActual == Estado::SelectingBlocks)		//No hago switch pq solo en un estado puede pasar el evento get info
@@ -107,7 +110,7 @@ void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 			break;
 
 		case Evento::DirectorioInput:
-			if (EstadoActual == Estado::MainMenu)
+			if (EstadoActual == Estado::JFiles)
 			{
 				EstadoActual = Estado::SelectingBlocks;
 				EventQueue.pop();
@@ -176,6 +179,9 @@ void Graphic::print_current_state(Estado CurrentState)
 	case Estado::RequestedInfo:
 		print_info();
 		break;
+	case Estado::JFiles:
+		print_jsons();
+		break;
 
 	default:
 		break;
@@ -196,10 +202,11 @@ void Graphic::print_MainMenu()
 	ImGui::InputText("Directorio", paths, sizeof(char) * MAX_PATH);
 	if (ImGui::Button("Iniciar"))
 	{
-		EventQueue.push(Evento::DirectorioInput);		//Tenemos el directorio listo 
+				//Tenemos el directorio listo 
 		path.assign(paths);
 		directoryName.assign(paths);
-		look4BlocksPath();
+		EstadoActual = Estado::JFiles;
+		loadFiles();
 	}
 
 	ImGui::End();
@@ -213,28 +220,46 @@ void Graphic::print_MainMenu()
 	al_flip_display();
 }
 
-void Graphic::look4BlocksPath()
+bool Graphic::look4BlocksPath(string ChosenFile)
 {
 	fs::path bPath(directoryName);
 	if (exists(bPath) && is_directory(bPath))
 	{
 		for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)
 		{
-			if (iterator->path().filename().string() == "blockChain.json")
+			if (iterator->path().filename().string() == ChosenFile.c_str())
 			{
 				std::cout << iterator->path().string() << std::endl;
 				if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
+					return true;
 				}
 				else {
 					EventQueue.push(Evento::Error);
+					return false;
 				}				
 			}
 		}
 	}
 	else
 	{
+
 		EventQueue.push(Evento::Error);
+		return false;
 	}
+}
+
+void Graphic::loadFiles() {
+
+	fs::path bPath(directoryName);
+	for (boost::filesystem::directory_iterator itr(bPath); itr != boost::filesystem::directory_iterator(); itr++) {
+
+		if (!itr->path().extension().string().find(".json"))
+		{
+   
+			Files.push_back(itr->path().filename().string());
+		}
+	}
+
 }
 
 void Graphic::print_SelectBlocks()
@@ -251,9 +276,15 @@ void Graphic::print_SelectBlocks()
 
 	//Checkbox con imgui
 	static bool checks[MAX_BLOCKS] = { false };
-	for (i = 0; i < (pBchain.getBlocksArr()).size(); i++)
+	unsigned char box = clickedBlock(checks, (pBchain.getBlocksArr()).size());
+	for (i = 0; i < pBchain.getBlocksSize(); i++)
 	{
+		
 		ImGui::Checkbox((pBchain.getBlocksArr())[i].getBlockID().c_str(), &checks[i]);
+		if (numSelectedBlocks(checks, (pBchain.getBlocksArr()).size()) > 1)
+			checks[box] = false;
+
+		
 	}
 
 	if (ImGui::Button("Buscar Info"))
@@ -328,8 +359,66 @@ void Graphic::flushVariables() {
 	path = "";
 	directoryName = "";
 	pBchain.getBlocksArr().clear();
+	selectedBlock.clear();
+	Files.clear();
 	while (!EventQueue.empty())
 		EventQueue.pop();	
+}
+
+void Graphic::print_jsons(void) {
+
+	ImGui_ImplAllegro5_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::SetNextWindowPos(ImVec2(200, 10));
+	ImGui::SetNextWindowSize(ImVec2(600, 650));
+	int i;
+
+	ImGui::Begin("Seleccione archivo JSON", 0, window_flags);
+
+	static bool checks[MAX_BLOCKS] = { false };
+	unsigned char box = clickedBlock(checks, Files.size());
+	for (i = 0; i < Files.size(); i++)
+	{
+		std::size_t pos = Files[i].find(".");
+		ImGui::Checkbox(Files[i].substr(0,pos).c_str(), &checks[i]);
+		if (numSelectedBlocks(checks, Files.size()) > 1)
+			checks[box] = false;
+
+
+	}
+	if (ImGui::Button("Search Blocks"))
+	{
+		
+		if (numSelectedBlocks(checks, Files.size())) {
+
+			if (look4BlocksPath(Files[clickedBlock(checks, Files.size())]))
+				EventQueue.push(Evento::DirectorioInput);
+			else
+				EventQueue.push(Evento::gotoMainMenu);
+		}
+	}
+
+	if (ImGui::Button("Volver al menu prinicpal"))
+	{
+		EventQueue.push(Evento::gotoMainMenu);
+	}
+
+	ImGui::End();
+
+	//Rendering
+	ImGui::Render();
+
+	al_clear_to_color(al_map_rgb(179, 255, 255));
+
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+
+	al_flip_display();
+
+
+
+
+
 }
 
 void Graphic::print_Loading(void)
@@ -480,6 +569,19 @@ void Graphic::print_info(void) {
 
 	}
 
+	
+
+	if (ImGui::Button(" Quit "))
+	{
+		EventQueue.push(Evento::Close);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Volver al menu prinicpal"))
+	{
+		EventQueue.push(Evento::gotoMainMenu);
+	}
+
+
 	ImGui::Render();
 
 	al_clear_to_color(al_map_rgb(179, 255, 255));
@@ -487,7 +589,7 @@ void Graphic::print_info(void) {
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
 	al_flip_display();
-
+	
 
 }
 
@@ -593,4 +695,26 @@ void Graphic::success() // Le comunica a la gui que se realizó la operación exit
 	WorkInProgress = false;
 	InputState = false;
 	EventQueue.push(Evento::Success);
+}
+
+unsigned char clickedBlock(bool* checks, size_t size) {
+
+	int i;
+	unsigned char count = 0;
+	for (i = 0; i < size; i++) {
+		if (*(checks+i))
+			return count;
+		count++;
+	}
+	return count;
+}
+unsigned char numSelectedBlocks(bool* checks, size_t size) {
+
+	int i;
+	unsigned char count = 0;
+	for (i = 0; i < size; i++) {
+		if (*(checks + i))
+			count++;
+	}
+	return count;
 }

@@ -60,6 +60,9 @@
     <ClCompile Include="Spv.cpp">
       <Filter>Source Files\Block/BlockChain</Filter>
     </ClCompile>
+    <ClCompile Include="borradores.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="json.hpp">
@@ -104,7 +107,10 @@
       <Filter>Source Files\Imgui_cpp</Filter>
     </None>
     <None Include="packages.config" />
-    <None Include="blockChain.json">
+    <None Include="blockChain4.json">
+      <Filter>json</Filter>
+    </None>
+    <None Include="blockChain32.json">
       <Filter>json</Filter>
     </None>
   </ItemGroup>

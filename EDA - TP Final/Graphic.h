@@ -40,8 +40,8 @@
 #define SIZE_SCREEN_Y 700
 
 /* EVENT QUEUE */
-enum class Evento { Close = 1, gotoMainMenu, DirectorioInput, Error, GetInfo, ShowResult, Success };
-enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, ShowingError, RequestedInfo, ShowingBlockInfo};
+enum class Evento { Close , gotoMainMenu, DirectorioInput, Error, GetInfo, ShowResult, Success };
+enum class Estado { MainMenu, InfoReady, Loading, SelectingBlocks, ShowingError, RequestedInfo, ShowingBlockInfo, JFiles};
 enum {SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE};
 /* Filesystems namespace */
 namespace fs = boost::filesystem;
@@ -66,7 +66,8 @@ private:
 	bool ImguiInit();
 	bool hayEvento(); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
 	void Dispatch(); //Se llama despues de hayEvento y acciona
-	void look4BlocksPath();
+	bool look4BlocksPath(string ChosenFile);
+	void loadFiles();
 	void flushVariables();
 	
 
@@ -78,6 +79,7 @@ private:
 	void print_Done(); //Imprime los resultados de la compression/decompression
 	void print_Error();
 	void print_info();
+	void print_jsons();
 	//bool Graphic::print_chooseFile();
 
 	/* VARIABLES DE ALLEGRO */
@@ -104,7 +106,7 @@ private:
 	/* VARIABLES DE INPUT */
 	std::string path;
 	std::string directoryName;
-	//std::vector<std::string> BlockIDs;
+	std::vector<std::string> Files;
 	vector<Block> selectedBlock;
 
 	std::string readString;

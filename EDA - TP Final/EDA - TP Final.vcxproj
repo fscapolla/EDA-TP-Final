@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Blockchain.cpp" />
+    <ClCompile Include="borradores.cpp" />
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="Imgui_files\imgui.cpp" />
     <ClCompile Include="Imgui_files\imgui_demo.cpp" />
@@ -164,7 +165,8 @@
     <ClInclude Include="Spv.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="blockChain.json" />
+    <None Include="blockChain32.json" />
+    <None Include="blockChain4.json" />
     <None Include="Imgui_files\imgui.ini" />
     <None Include="packages.config" />
   </ItemGroup>

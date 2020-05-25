@@ -11,7 +11,6 @@
 #define IDSIZE 8
 #define MAX_TX 12
 typedef unsigned long int uint;
-//typedef string newIDstr;
 using namespace std;
 
 using json = nlohmann::json;
@@ -40,21 +39,7 @@ struct Transaction {
 	vector<VinS> vIn;
 	vector<VoutS> vOut;
 
-	/*
-	Transaction() {
-		nTxin = 0;
-		nTxout = 0;
-		txID = "";
-	}
-
-	Transaction(uint nTxin_, uint nTxout_, string txID_, VinS& VinS_, VoutS& VoutS_) {
-		nTxin = nTxin_;
-		nTxout = nTxout_;
-		txID = txID_;
-		VinS (VinS_);
-		VoutS (VoutS_);
-	}
-	*/
+	
 };
 
 struct MerkleTree {
@@ -106,7 +91,7 @@ public:
 
 	bool createMerkleTree();
 
-	void printBlockInfo(void);
+	
 
 private:
 
