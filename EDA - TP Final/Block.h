@@ -76,6 +76,9 @@ public:
 	string getCalculatedMerkleRoot(void);
 	vector<Transaction>& getTxVector();
 	MerkleTree getMerkleTree(void);
+	vector<string> getNodos(void);
+	uint getMerkleHeight(void);
+	uint getNumLeaves(void);
 
 	void setBlockID(string blockID_);
 	void setHeight(uint height_);

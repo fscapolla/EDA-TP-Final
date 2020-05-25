@@ -566,13 +566,12 @@ void Graphic::print_info(void) {
 
 	if (ActionsArray[SHOWMERKLE])
 	{
-		MerkleTree tempMerkle = selectedBlock[0].getMerkleTree();
+//		MerkleTree tempMerkle = selectedBlock[0].getMerkleTree();
 		
 		//printLevel(uint altura, MerkleTree tree) Imprimos recursivamente
 		//Empezamos imprimiendo todas las hojas de la base
 		
-		cout << tempMerkle.EntireTree[0] << endl;
-		printLevel(0, tempMerkle.numberOfLeaves, tempMerkle.height, tempMerkle.EntireTree);
+		printLevel(0, selectedBlock[0].getNumLeaves(), selectedBlock[0].getMerkleHeight(), selectedBlock[0].getNodos());
 	
 	}
 
@@ -610,15 +609,15 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 		{
 			ImGui::SetNextWindowPos(ImVec2(INITIAL_X + (increase_X), INITIAL_Y*(altura+LEVEL_INCREASE_Y)));
 			ImGui::Begin("  ");
-			//cout << Nodos[i].c_str() << endl;
-			//ImGui::Text("%s",Nodos[i].c_str());	
-			ImGui::Text("%u", i);
+			cout << Nodos[i].c_str() << endl;
+			ImGui::Text("%s",Nodos[i].c_str());	
+			//ImGui::Text("%u", i);
 			ImGui::End();
 			increase_X += LEVEL_INCREASE_X;
 		}
-//	vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
+	vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
 		
-//	printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
+	printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
 	}
 
 }

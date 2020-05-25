@@ -208,6 +208,20 @@ MerkleTree Block::getMerkleTree(void)
 	return Tree;
 }
 
+vector<string> Block::getNodos(void)
+{
+	return Tree.EntireTree;
+}
+
+uint Block::getMerkleHeight(void)
+{
+	return Tree.height;
+}
+
+uint Block::getNumLeaves(void)
+{
+	return Tree.numberOfLeaves;
+}
 
 static unsigned int generateID(unsigned char *str)
 {
