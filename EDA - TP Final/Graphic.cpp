@@ -607,11 +607,11 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 	{
 		for (i = 0; i < NodosAImprimir; i++)		//Imprimimos una fila de hojas (empezamos por nivel de abajo y vamos subiendo)
 		{
+			string nodotext = "TX" + to_string(i);
 			ImGui::SetNextWindowPos(ImVec2(INITIAL_X + (increase_X), INITIAL_Y*(altura+LEVEL_INCREASE_Y)));
-			ImGui::Begin("  ");
+			ImGui::Begin(nodotext.c_str());
 			cout << Nodos[i].c_str() << endl;
 			ImGui::Text("%s",Nodos[i].c_str());	
-			//ImGui::Text("%u", i);
 			ImGui::End();
 			increase_X += LEVEL_INCREASE_X;
 		}
