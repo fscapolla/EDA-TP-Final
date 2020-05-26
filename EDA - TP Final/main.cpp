@@ -21,22 +21,14 @@ int main(void)
             if (UserInterface.inputReady()) { //Si hay nuevo input lo analizamos
                 
 
-                UserInterface.processingRequest();  // 
-
-                bool allOk = false;
-
+                UserInterface.processingRequest();  
 
                 //--------//
-                //   HAY Q CONECTAR BCHAIN CON RETURN JDATA
+                // EN PROXIMAS ACA ETAPAS HAREMOS ALGO 
+                // UNA VEZ QUE SE TEMRINA DE HACER SE LLAMA A LA FUNCION success()
                 //--------//
 
                 UserInterface.success();
-                /*
-                if (CONDICION)
-                {
-                    UserInterface.success();
-                }
-                */
             }
         }
     }

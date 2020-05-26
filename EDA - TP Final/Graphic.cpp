@@ -1,7 +1,5 @@
+
 #include "Graphic.h"
-
-
-
 
 Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 {
@@ -89,20 +87,8 @@ void Graphic::Dispatch(void)			//Dispatch lee los eventos y cambia estados
 			break;
 
 		case Evento::gotoMainMenu:
-			/*switch (EstadoActual)
-			{
-			case Estado::RequestedInfo:
-			case Estado::SelectingBlocks:
-			case Estado::ShowingError:
-			case Estado::InfoReady:*/
 				EstadoActual = Estado::MainMenu;
 				flushVariables();
-			/*	break;
-			default:
-				break;
-			}
-			break;*/
-
 		case Evento::GetInfo:
 			if (EstadoActual == Estado::SelectingBlocks)		//No hago switch pq solo en un estado puede pasar el evento get info
 			{
@@ -196,7 +182,6 @@ void Graphic::print_MainMenu()
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
-	//ImGui::SetNextWindowPos(ImVec2(200, 10));
 	ImGui::SetNextWindowSize(ImVec2(600, 150));
 
 	ImGui::Begin("Inserte el camino al directorio con los bloques", 0, window_flags);
@@ -571,7 +556,6 @@ void Graphic::print_info(void) {
 		//printLevel(uint altura, MerkleTree tree) Imprimos recursivamente
 		//Empezamos imprimiendo todas las hojas de la base	
 		printLevel(0,selectedBlock[0].getNumLeaves(), selectedBlock[0].getMerkleHeight(), selectedBlock[0].getNodos());	
-		al_flip_display(); //NO SE DONDE MTERELO Y SIEMPRE ANDA MAL
 	}
 
 
@@ -589,6 +573,22 @@ void Graphic::print_info(void) {
 	ImGui::Render();
 
 	al_clear_to_color(al_map_rgb(179, 255, 255));
+
+	if (ActionsArray[SHOWMERKLE])		//Imprimios las conexiones entre nodos del Merkle Tree con allegro
+	{
+		int i, j;
+		uint Nodos = selectedBlock[0].getNumLeaves();
+
+		for (i = 0; i <= (selectedBlock[0].getHeight()+1); i++)
+		{
+			for (j = 0; j <= Nodos+1; j++)		//Empiezo imprimiendo las hojas
+			{
+				drawConections(i, Nodos);
+			}
+			Nodos = Nodos / 2;
+		}
+
+	}
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
@@ -615,11 +615,6 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 				ImGui::Text("%s", Nodos[i].c_str());
 				ImGui::End();
 				increase_X +=levelIncrease;
-			}
-			if (NodosAImprimir != 1) {
-
-				drawConections(altura, NodosAImprimir);
-				
 			}
 			
 		vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
@@ -652,8 +647,6 @@ void Graphic::drawConections(int altura,uint Nodos) {
 		}
 
 	}
-	
-	
 
 }
 
