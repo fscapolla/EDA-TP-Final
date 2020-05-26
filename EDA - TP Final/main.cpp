@@ -16,7 +16,7 @@ int main(void)
 
     if (!UserInterface.GetError())
     {
-        while (UserInterface.RunningOne())
+        while (UserInterface.Running())
         {
             if (UserInterface.inputReady()) { //Si hay nuevo input lo analizamos
                 

@@ -48,7 +48,7 @@ bool Graphic::GetError()
 	return Error;
 }
 
-bool Graphic::RunningOne()
+bool Graphic::Running()
 {
 	if (hayEvento())
 	{
@@ -520,6 +520,8 @@ void Graphic::print_info(void) {
 
 		ImGui::Text("Nounce: %u", selectedBlock[0].getNonce());
 
+		ImGui::Text("Merkle Root: %s", selectedBlock[0].getMerkleRoot().c_str());
+
 		ImGui::End(); 
 
 	}
@@ -578,12 +580,15 @@ void Graphic::print_info(void) {
 	{
 		int i, j;
 		uint Nodos = selectedBlock[0].getNumLeaves();
-
-		for (i = 0; i <= (selectedBlock[0].getHeight()+1); i++)
+		
+		for (i = 0; i <= (selectedBlock[0].getMerkleHeight()); i++)
 		{
-			for (j = 0; j <= Nodos+1; j++)		//Empiezo imprimiendo las hojas
+			for (j = 0; j <=Nodos ; j++)		//Empiezo imprimiendo las hojas
 			{
-				drawConections(i, Nodos);
+				if (Nodos != 1)
+				{
+					drawConections(i, Nodos);
+				}
 			}
 			Nodos = Nodos / 2;
 		}
@@ -620,10 +625,6 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 		vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
 		printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
 		}
-		else
-		{
-			//TERMINO RECURSION
-		}
 }
 
 void Graphic::drawConections(int altura,uint Nodos) {
@@ -649,7 +650,6 @@ void Graphic::drawConections(int altura,uint Nodos) {
 	}
 
 }
-
 
 /* FUNCIONES PARA USER */
 void Graphic::processingRequest() // Le comunica a la gui que se llamo al algoritmo

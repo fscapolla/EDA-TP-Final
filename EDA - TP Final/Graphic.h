@@ -36,7 +36,7 @@
 /* DEFINES */
 #define MAX_PATH 500
 #define MAX_BLOCKS 50
-#define SIZE_SCREEN_X 2400
+#define SIZE_SCREEN_X 2000
 #define SIZE_SCREEN_Y 700
 #define LEVEL_INCREASE_Y 50
 #define LEVEL_INCREASE_X 40
@@ -65,7 +65,7 @@ public:
 	Graphic(Blockchain& pBchain);
 	~Graphic();
 	bool GetError();
-	bool RunningOne();
+	bool Running();
 	bool inputReady();
 	void success(); // Le comunica a la gui que se realizó la operación exitosamente
 	void processingRequest();

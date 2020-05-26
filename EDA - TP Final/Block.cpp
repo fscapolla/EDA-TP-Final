@@ -107,7 +107,6 @@ void Block::createMerkleLeaves(void)
 		for (int j = 0; j < TxVector[i].nTxin; j++)
 		{
 			concatenate += TxVector[i].vIn[j].txID;
-			//cout << TxVector[i].vIn[j].txID << endl;
 		}
 		ID = generateID((unsigned char*)concatenate.c_str());
 
@@ -124,14 +123,11 @@ void Block::createMerkleLeaves(void)
 
 			Tree.Tree.push_back(newIDstr);
 			Tree.EntireTree.push_back(newIDstr);			//Guardo hojas en real
-			//std::cout << newIDstr << endl;
 		}
-
-		//std::cout << newIDstr << endl;
 	}
 
 	stringMerkleRoot = Tree.Tree;
-	Tree.Tree.clear();					//Limpio el Tree luego de guardarlo en MerkleRoot//deberiamos organizar un poco las variables
+	Tree.Tree.clear();					//Limpio el Tree luego de guardarlo en MerkleRoot
 }
 
 
@@ -174,7 +170,6 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 
 			temp.push_back(newIDstr);
 			Tree.EntireTree.push_back(newIDstr);
-//			cout << newIDstr << endl;
 		}
 		stringMerkleRoot = temp;
 		generateMerkleRoot(stringMerkleRoot);
