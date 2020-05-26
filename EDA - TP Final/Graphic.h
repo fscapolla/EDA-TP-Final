@@ -36,7 +36,7 @@
 /* DEFINES */
 #define MAX_PATH 500
 #define MAX_BLOCKS 50
-#define SIZE_SCREEN_X 2350
+#define SIZE_SCREEN_X 2400
 #define SIZE_SCREEN_Y 700
 #define LEVEL_INCREASE_Y 50
 #define LEVEL_INCREASE_X 75
@@ -84,6 +84,7 @@ private:
 	void print_Error();
 	void print_info();
 	void print_jsons();
+	void drawConections(int altura,uint nodos);
 	//bool Graphic::print_chooseFile();
 
 	/* VARIABLES DE ALLEGRO */

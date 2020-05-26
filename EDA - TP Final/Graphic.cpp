@@ -1,7 +1,7 @@
 #include "Graphic.h"
 unsigned char clickedBlock(bool* checks, size_t size);
-unsigned char numSelectedBlocks(bool* checks, size_t size);
-
+unsigned char numSelectedBlocks(bool* checks, size_t size); 
+int starterValue(uint altura, const char* var);
 
 Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 {
@@ -13,7 +13,7 @@ Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 		window_flags |= ImGuiWindowFlags_NoMove;
-		window_flags |= ImGuiWindowFlags_NoScrollbar;
+		
 		InputState = false;
 		Error = false;
 		ValidationMerkleRoot = false;
@@ -196,7 +196,7 @@ void Graphic::print_MainMenu()
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::SetNextWindowPos(ImVec2(200, 10));
+	//ImGui::SetNextWindowPos(ImVec2(200, 10));
 	ImGui::SetNextWindowSize(ImVec2(600, 150));
 
 	ImGui::Begin("Inserte el camino al directorio con los bloques", 0, window_flags);
@@ -571,6 +571,7 @@ void Graphic::print_info(void) {
 		//printLevel(uint altura, MerkleTree tree) Imprimos recursivamente
 		//Empezamos imprimiendo todas las hojas de la base	
 		printLevel(0,selectedBlock[0].getNumLeaves(), selectedBlock[0].getMerkleHeight(), selectedBlock[0].getNodos());	
+		al_flip_display(); //NO SE DONDE MTERELO Y SIEMPRE ANDA MAL
 	}
 
 
@@ -598,8 +599,10 @@ void Graphic::print_info(void) {
 void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vector<string>Nodos)
 {
 	uint i;
-	int increase_X = 0, increase_Y = LEVEL_INCREASE_Y*altura;
-	uint NodosAImprimir2 = NodosAImprimir;
+	int increase_X = 0,levelIncrease=0, increase_Y = LEVEL_INCREASE_Y*altura;
+	increase_X = starterValue(altura, "increaseX");
+	levelIncrease = starterValue(altura, "levelInc");
+	
 	char level = 'A' + altura; 
 
 	if (altura != TreeHeight+1)		//Cuando lleguemos a altura 5 dejamos de imprimir. Altura empieza en 0
@@ -611,9 +614,14 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 				ImGui::Begin(nodolabel.c_str(),0,window_flags);
 				ImGui::Text("%s", Nodos[i].c_str());
 				ImGui::End();
-				increase_X += LEVEL_INCREASE_X;
+				increase_X +=levelIncrease;
 			}
+			if (NodosAImprimir != 1) {
 
+				drawConections(altura, NodosAImprimir);
+				
+			}
+			
 		vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
 		printLevel(++altura, NodosAImprimir/2, TreeHeight, NodosSiguienteNivel);
 		}
@@ -623,6 +631,31 @@ void Graphic::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vect
 		}
 }
 
+void Graphic::drawConections(int altura,uint Nodos) {
+
+	al_set_target_backbuffer(display);
+	int i;														//falta corregir los pubtos de conexion,creo que sumar medio bloque alcanza
+	int lowerNodeX=INITIAL_X+starterValue(altura,"increaseX")
+		, lowerNodeY=INITIAL_Y-LEVEL_INCREASE_Y*altura
+		, upperNodeX= INITIAL_X + starterValue(altura+1, "increaseX")
+		, upperNodeY= INITIAL_Y - LEVEL_INCREASE_Y* (altura+1);
+
+	int lnodeIncrease = starterValue(altura, "levelIncrease"),
+		unodeIncrease = starterValue(altura+1, "levelIncrease");
+	
+	for (i = 0; i < Nodos ; i++) {
+
+		al_draw_line(lowerNodeX,lowerNodeY,upperNodeX,upperNodeY,al_color_name("black"),1.0);
+		lowerNodeX += lnodeIncrease;
+		if (i % 2) {
+			upperNodeX += unodeIncrease;
+		}
+
+	}
+	
+	
+
+}
 
 
 /* FUNCIONES PARA USER */
@@ -710,7 +743,7 @@ bool Graphic::ImguiInit(void)
 	if (display)
 	{
 		al_set_window_position(display, 0, 100); //posicion del menu
-
+		al_acknowledge_resize(display);
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 		ImGui_ImplAllegro5_Init(display);
@@ -749,4 +782,41 @@ unsigned char numSelectedBlocks(bool* checks, size_t size) {
 			count++;
 	}
 	return count;
+}
+
+int starterValue(uint altura, const char* var) {
+
+	int increase_x = 0, levelIncrease = 0;
+	switch (altura) {
+	case 0:
+		increase_x = 0;
+		levelIncrease = LEVEL_INCREASE_X;
+		break;
+	case 1:
+		increase_x = LEVEL_INCREASE_X/2;
+		levelIncrease = LEVEL_INCREASE_X*2;
+		break;
+	case 2:
+		increase_x = LEVEL_INCREASE_X*3/2;
+		levelIncrease = LEVEL_INCREASE_X*4;
+		break;
+	case 3:
+		increase_x = LEVEL_INCREASE_X*7/2;
+		levelIncrease = LEVEL_INCREASE_X*8;
+		break;
+	case 4:
+		increase_x = LEVEL_INCREASE_X*15/2;
+		levelIncrease = LEVEL_INCREASE_X*16;
+		break;
+	case 5:
+		increase_x = LEVEL_INCREASE_X*31/2;
+		levelIncrease = LEVEL_INCREASE_X*32;
+		break;
+	}
+
+	if (var == "increaseX") 
+		return increase_x;
+	else
+		return levelIncrease;
+
 }
