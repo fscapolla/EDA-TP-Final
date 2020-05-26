@@ -1,7 +1,7 @@
 #include "Graphic.h"
-unsigned char clickedBlock(bool* checks, size_t size);
-unsigned char numSelectedBlocks(bool* checks, size_t size); 
-int starterValue(uint altura, const char* var);
+
+
+
 
 Graphic::Graphic(Blockchain& pBchain_): pBchain(pBchain_)
 {

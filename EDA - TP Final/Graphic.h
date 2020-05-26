@@ -39,7 +39,7 @@
 #define SIZE_SCREEN_X 2400
 #define SIZE_SCREEN_Y 700
 #define LEVEL_INCREASE_Y 50
-#define LEVEL_INCREASE_X 75
+#define LEVEL_INCREASE_X 40
 #define INITIAL_X 0
 #define INITIAL_Y 500
 
@@ -50,6 +50,14 @@ enum {SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE};
 /* Filesystems namespace */
 namespace fs = boost::filesystem;
 using json = nlohmann::json;
+
+
+
+unsigned char clickedBlock(bool* checks, size_t size);
+unsigned char numSelectedBlocks(bool* checks, size_t size);
+int starterValue(uint altura, const char* var);
+
+
 
 class Graphic
 {
