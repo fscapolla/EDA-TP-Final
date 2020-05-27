@@ -28,6 +28,18 @@
     <Filter Include="Header Files\Block/BlockChain">
       <UniqueIdentifier>{3211a397-385e-4bcd-8ab2-e1356fb1f72e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Nodes">
+      <UniqueIdentifier>{f16f97f8-e41f-40a5-a9a5-62a0e803dc0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Client /Server">
+      <UniqueIdentifier>{b35af2a3-bba5-4858-9757-2c21776c9c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Nodes">
+      <UniqueIdentifier>{322fc5e9-be86-4442-a532-623b487efe35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Client /Server">
+      <UniqueIdentifier>{8407478b-f435-40f3-b5cc-2f0cc43e540d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,11 +69,23 @@
     <ClCompile Include="Blockchain.cpp">
       <Filter>Source Files\Block/BlockChain</Filter>
     </ClCompile>
-    <ClCompile Include="Spv.cpp">
-      <Filter>Source Files\Block/BlockChain</Filter>
-    </ClCompile>
     <ClCompile Include="borradores.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeClient.cpp">
+      <Filter>Source Files\Client /Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeServer.cpp">
+      <Filter>Source Files\Client /Server</Filter>
+    </ClCompile>
+    <ClCompile Include="FullNode.cpp">
+      <Filter>Source Files\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="SPVNode.cpp">
+      <Filter>Source Files\Nodes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,8 +122,20 @@
     <ClInclude Include="Blockchain.h">
       <Filter>Header Files\Block/BlockChain</Filter>
     </ClInclude>
-    <ClInclude Include="Spv.h">
-      <Filter>Header Files\Block/BlockChain</Filter>
+    <ClInclude Include="NodeClient.h">
+      <Filter>Header Files\Client /Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeServer.h">
+      <Filter>Header Files\Client /Server</Filter>
+    </ClInclude>
+    <ClInclude Include="FullNode.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="SPVNode.h">
+      <Filter>Header Files\Nodes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

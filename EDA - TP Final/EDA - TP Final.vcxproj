@@ -21,13 +21,12 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{15809F7B-4AEF-4891-BA3A-7368FA8B3E79}</ProjectGuid>
     <RootNamespace>EDATPFinal</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -141,6 +140,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Blockchain.cpp" />
     <ClCompile Include="borradores.cpp" />
+    <ClCompile Include="FullNode.cpp" />
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="Imgui_files\imgui.cpp" />
     <ClCompile Include="Imgui_files\imgui_demo.cpp" />
@@ -148,11 +148,15 @@
     <ClCompile Include="Imgui_files\imgui_impl_allegro5.cpp" />
     <ClCompile Include="Imgui_files\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Spv.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NodeClient.cpp" />
+    <ClCompile Include="NodeServer.cpp" />
+    <ClCompile Include="SPVNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Blockchain.h" />
+    <ClInclude Include="FullNode.h" />
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="Imgui_files\imconfig.h" />
     <ClInclude Include="Imgui_files\imgui.h" />
@@ -162,7 +166,10 @@
     <ClInclude Include="Imgui_files\imstb_textedit.h" />
     <ClInclude Include="Imgui_files\imstb_truetype.h" />
     <ClInclude Include="json.hpp" />
-    <ClInclude Include="Spv.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeClient.h" />
+    <ClInclude Include="NodeServer.h" />
+    <ClInclude Include="SPVNode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="blockChain32.json" />
