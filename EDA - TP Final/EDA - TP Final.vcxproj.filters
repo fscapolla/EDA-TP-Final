@@ -40,12 +40,15 @@
     <Filter Include="Header Files\Client /Server">
       <UniqueIdentifier>{8407478b-f435-40f3-b5cc-2f0cc43e540d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FSM Framework">
+      <UniqueIdentifier>{7fa46d55-86ac-4b57-8574-8528b7aa8893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FSM Framework">
+      <UniqueIdentifier>{29e1f560-16a9-425a-b160-7877f07c2b60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Imgui_files\imgui.cpp">
@@ -87,12 +90,30 @@
     <ClCompile Include="SPVNode.cpp">
       <Filter>Source Files\Nodes</Filter>
     </ClCompile>
+    <ClCompile Include="GUIEventGenerator.cpp">
+      <Filter>Source Files\FSM Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="ALLEventsGenerator.cpp">
+      <Filter>Source Files\FSM Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandling.cpp">
+      <Filter>Source Files\FSM Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericFSM.cpp">
+      <Filter>Source Files\FSM Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="FSM.cpp">
+      <Filter>Source Files\FSM Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicF2.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicF2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="json.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Imgui_files\imconfig.h">
@@ -136,6 +157,21 @@
     </ClInclude>
     <ClInclude Include="SPVNode.h">
       <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIEventGenerator.h">
+      <Filter>Header Files\FSM Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="ALLEventGenerator.h">
+      <Filter>Header Files\FSM Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandling.h">
+      <Filter>Header Files\FSM Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.h">
+      <Filter>Header Files\FSM Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericFSM.h">
+      <Filter>Header Files\FSM Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

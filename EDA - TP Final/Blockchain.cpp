@@ -101,7 +101,7 @@ int Blockchain::saveBlockInfo(std::string path)
 	//https://nlohmann.github.io/json/classnlohmann_1_1basic__json_a265a473e939184aa42655c9ccdf34e58.html#a265a473e939184aa42655c9ccdf34e58
 	else
 	{
-		result = ERROR;
+		result = BCHAINERROR;
 	}
 	
 	return result;

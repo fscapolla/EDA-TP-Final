@@ -2,7 +2,9 @@
 #include <iostream>
 #include <string>
 #include "json.hpp"
-#include "C:\VCPKG\vcpkg\installed\x64-windows\include\curl\curl.h"
+//#include "C:\VCPKG\vcpkg\installed\x64-windows\include\curl\curl.h"
+#include <curl/curl.h>
+
 typedef enum {GET, POST} method_n;
 typedef enum {ERROR_FREE, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA} errorCode_n;
 size_t myCallback(void *contents, size_t size, size_t nmemb, void *userp);

@@ -1,8 +1,12 @@
 #include <iostream>
 #include "json.hpp"
 #include "Block.h"
-#include "Graphic.h"
 #include "Blockchain.h"
+#include "GenericFSM.h"
+#include "EventHandling.h"
+#include "GUIEventGenerator.h"
+
+
 #include <ios>
 
 int main(void)
@@ -11,29 +15,80 @@ int main(void)
     Blockchain bchain;
 
     uint myCounter = 0;
-    Graphic UserInterface(bchain);
+ 
+	FSM fsm;
+	GUIEventGenerator evTipoGUI;	//generador de UN tipo de eventos 
 
-    if (!UserInterface.GetError())
-    {
-        while (UserInterface.Running())
-        {
-            if (UserInterface.inputReady()) { //Si hay nuevo input lo analizamos
-                
+	if (evTipoGUI.getGraphicInstallationError())
+	{
+		mainEventGenerator eventGen;	//generador de eventos de TODO el programa
 
-                UserInterface.processingRequest();  
+		//guiEventGenerator guiEvGen;
+		//netwEventGenerator netwEvGen;
 
-                //--------//
-                // EN PROXIMAS ACA ETAPAS HAREMOS ALGO 
-                // UNA VEZ QUE SE TEMRINA DE HACER SE LLAMA A LA FUNCION success()
-                //--------//
+		eventGen.attach(&evTipoGUI);	//registro fuente de eventos
 
-                UserInterface.success();
-            }
-        }
-    }
-    else {
-        cout << "Error, couldn't initialize Gui object!" << endl;
-    }
+		bool quit = false;
+		do
+		{
+			genericEvent* ev;
+			ev = eventGen.getNextEvent(fsm.state);
+			if (ev != nullptr)
+			{
+				if (ev->getType() == Quit)
+				{
+					quit = true;
+				}
+				else
+					fsm.cycle(ev);
+				delete ev;
+			}
+		} while (!quit);
 
+		system("pause");
+		return 0;
+	}
+	else
+	{
+		cout << "ERROR INSTALANDO PARTE GRAFICA" << endl;
+	}
     return 0;
 }
+
+
+
+
+
+
+/*************************************************************************************/
+/*                                 MAIN DE FASE 1                                    */
+/**************************************************************************************
+
+Blockchain bchain;
+
+uint myCounter = 0;
+Graphic UserInterface(bchain);
+
+if (!UserInterface.GetError())
+{
+    while (UserInterface.Running())
+    {
+        if (UserInterface.inputReady()) { //Si hay nuevo input lo analizamos
+
+
+            UserInterface.processingRequest();
+
+            //--------//
+            // EN PROXIMAS ACA ETAPAS HAREMOS ALGO 
+            // UNA VEZ QUE SE TEMRINA DE HACER SE LLAMA A LA FUNCION success()
+            //--------//
+
+            UserInterface.success();
+        }
+    }
+}
+else {
+    cout << "Error, couldn't initialize Gui object!" << endl;
+}
+***************************************************************************************
+***************************************************************************************/

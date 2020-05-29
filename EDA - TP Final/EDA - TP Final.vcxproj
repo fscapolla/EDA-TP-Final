@@ -101,6 +101,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -109,6 +112,9 @@
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -137,11 +143,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ALLEventsGenerator.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Blockchain.cpp" />
     <ClCompile Include="borradores.cpp" />
+    <ClCompile Include="EventHandling.cpp" />
+    <ClCompile Include="FSM.cpp" />
     <ClCompile Include="FullNode.cpp" />
-    <ClCompile Include="Graphic.cpp" />
+    <ClCompile Include="GraphicF2.cpp" />
+    <ClCompile Include="GraphicF2.h" />
+    <ClCompile Include="GUIEventGenerator.cpp" />
     <ClCompile Include="Imgui_files\imgui.cpp" />
     <ClCompile Include="Imgui_files\imgui_demo.cpp" />
     <ClCompile Include="Imgui_files\imgui_draw.cpp" />
@@ -151,13 +162,18 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeClient.cpp" />
     <ClCompile Include="NodeServer.cpp" />
+    <ClCompile Include="GenericFSM.cpp" />
     <ClCompile Include="SPVNode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ALLEventGenerator.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Blockchain.h" />
+    <ClInclude Include="EventHandling.h" />
+    <ClInclude Include="FSM.h" />
     <ClInclude Include="FullNode.h" />
-    <ClInclude Include="Graphic.h" />
+    <ClInclude Include="GenericFSM.h" />
+    <ClInclude Include="GUIEventGenerator.h" />
     <ClInclude Include="Imgui_files\imconfig.h" />
     <ClInclude Include="Imgui_files\imgui.h" />
     <ClInclude Include="Imgui_files\imgui_impl_allegro5.h" />

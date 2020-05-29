@@ -3,7 +3,7 @@
 #include "json.hpp"
 #include <list>
 #include <fstream>
-#define ERROR 4
+#define BCHAINERROR 4
 using json = nlohmann::json;
 
 class Blockchain
@@ -12,7 +12,7 @@ public:
 	
 	void parsingBlockchain(json chain_JData);
 	vector<Block>& getBlocksArr(void) { return BlocksArr; }
-	unsigned int getBlocksSize() { return BlocksArr.size(); }
+	size_t getBlocksSize() { return BlocksArr.size(); }
 	int saveBlockInfo(std::string);
 
 
