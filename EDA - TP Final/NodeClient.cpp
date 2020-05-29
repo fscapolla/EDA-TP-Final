@@ -79,7 +79,7 @@ void NodeClient::useGETmethod(std::string path_, const json& data)
 
 	/*Prosigo a configurar CURL para usar con el método GET*/
 	/*Posiblemente haya que setear más configuraciones, pero éstas van seguro*/
-	if (errorCode = ERROR_FREE)
+	if (errorCode = ERROR_FREE2)
 	{
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());
@@ -107,7 +107,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 	/*Prosigo a configurar CURL para usar con el método POST*/
 	/*Posiblemente haya que setear más configuraciones, pero éstas van seguro*/
 	/*Una vez que tengamos todas las configuraciones podemos agrupar las comunes a los dos métodos en una función aparte.*/
-	if (errorCode = ERROR_FREE)
+	if (errorCode = ERROR_FREE2)
 	{
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());

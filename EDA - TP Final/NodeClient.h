@@ -6,7 +6,7 @@
 #include <curl/curl.h>
 
 typedef enum {GET, POST} method_n;
-typedef enum {ERROR_FREE, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA} errorCode_n;
+typedef enum {ERROR_FREE2, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA} errorCode_n;
 size_t myCallback(void *contents, size_t size, size_t nmemb, void *userp);
 using json = nlohmann::json;
 

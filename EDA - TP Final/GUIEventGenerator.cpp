@@ -8,10 +8,15 @@ getEvent(unsigned int estado)
 	genericEvent* ret = nullptr;
 	switch (getGUIevent((implStates)estado))
 	{
-	case CrearNodo:
-		ret = new evCrearNodo;
+	case CrearNodoSPV:
+		ret = new evCrearNodoSPV;
 		break;
-	
+
+	case CrearNodoFULL:
+		ret = new evCrearNodoFULL;
+		break;
+
+
 	case CrearConexion:
 		ret = new evCrearConexion;
 		break;
@@ -43,7 +48,8 @@ implEvent GUIEventGenerator::getGUIevent(implStates estadoActual)
 {
 	if (GUI.hayEvento(estadoActual))
 	{
-		return GUI.getEvent();
+		GUIEvent sendingEv = GUI.getEvent();
+		return TranslateGUIEvent(sendingEv);
 	}
 	else
 		return NoEvent;
@@ -54,4 +60,29 @@ implEvent GUIEventGenerator::getGUIevent(implStates estadoActual)
 bool GUIEventGenerator::getGraphicInstallationError()
 {
 	return GUI.GetError();
+}
+
+implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
+{
+	switch(ev)
+	{
+		case GUIEvent::CrearNodoSPV:
+			return implEvent::CrearNodoSPV;
+		case GUIEvent::CrearNodoFULL:
+			return implEvent::CrearNodoFULL;
+		case GUIEvent::CrearConexion:
+			return implEvent::CrearConexion;
+		case GUIEvent::MostrarNodos:
+			return implEvent::MostrarNodos;
+		case GUIEvent::EnviarMsj:
+			return implEvent::EnviarMsj;
+		case GUIEvent::MostrarMsj:
+			return implEvent::MostrarMsj;
+		case GUIEvent::AccionDone:
+			return implEvent::AccionDone;
+		case GUIEvent::Quit:
+			return implEvent::Quit;
+		default: 
+			return implEvent::NoEvent;
+	}
 }

@@ -43,9 +43,12 @@
 /* DEFINES */
 #define SIZE_SCREEN_X 2000
 #define SIZE_SCREEN_Y 700
+#define MAX_IP 15
+#define MAX_PUERTO 10
+
 
 /* EVENTOS FASE 2 */
-enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, EnviarMsj, MostrarMsj, AccionDone, NoEvent, Quit };
+enum class GUIEvent { CrearNodoSPV, CrearNodoFULL, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, MostrarMsj, AccionDone, NoEvent, Quit };
 
 
 /* Filesystems namespace */
@@ -57,11 +60,10 @@ class GraphicF2
 public:
 	GraphicF2();
 	~GraphicF2();
-	void error();
 	bool GetError();
 	bool hayEvento(implStates estadoActualdeFSM); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
-	implEvent getEvent(); 
-
+	GUIEvent getEvent(); 
+	  
 private:
 	/* FUNCIONES DE GraphicF2 */
 	bool AllegroInit();
@@ -71,9 +73,9 @@ private:
 	void print_current_state(implStates CurrentState);
 	void print_MainMenu();//Imprime el menu principal al comienzo del programa
 	void print_Error();
-	
+	bool verify(bool*, bool*, string, string);
 	/* COLA DE EVENTOS QUE LEVANTA EL GUI EVENT GENERATOR */
-	std::queue<implEvent> EventQueue;
+	std::queue<GUIEvent> EventQueue;
 
 
 	/* VARIABLES DE ALLEGRO */

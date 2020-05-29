@@ -19,7 +19,7 @@ int main(void)
 	FSM fsm;
 	GUIEventGenerator evTipoGUI;	//generador de UN tipo de eventos 
 
-	if (evTipoGUI.getGraphicInstallationError())
+	if (!evTipoGUI.getGraphicInstallationError())
 	{
 		mainEventGenerator eventGen;	//generador de eventos de TODO el programa
 
