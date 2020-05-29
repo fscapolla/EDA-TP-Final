@@ -1,7 +1,6 @@
 #include <iostream>
 #include "json.hpp"
 #include "Block.h"
-#include "Spv.h"
 #include "Graphic.h"
 #include "Blockchain.h"
 #include <ios>

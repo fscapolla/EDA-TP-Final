@@ -34,16 +34,48 @@ NodeClient::~NodeClient()
 	curl_multi_remove_handle(multiHandle, easyHandler);
 }
 
-void NodeClient::sendRequest(void)
+bool NodeClient::performRequest(void)
 {
-	curl_multi_perform(multiHandle, &stillRunning);
+	if (IP.length() && port)
+	{
+		/*static bool isFinished = false;*/
+
+		bool res = true;
+		if (stillRunning)
+		{
+			multiError=curl_multi_perform(multiHandle, &stillRunning);
+			if (multiError!=CURLE_OK)
+			{
+				errorCode = CURLPERFORM_ERROR;
+				errorMsg = "Could not perform curl.";
+			}
+
+		}
+		else
+		{
+			//Se limpia curl
+			curl_easy_cleanup(easyHandler);
+			curl_multi_cleanup(multiHandle);
+			stillRunning = 1;
+			parsedReply = json::parse(reply);
+			res = false;
+		}
+		
+		return res;
+	}
+	else
+	{
+		errorCode = INVALID_DATA;
+		errorMsg = "Invalid data.";
+		return false;
+	}
 }
 
-void NodeClient::useGETmethod(std::string path_, std::string& data)
+void NodeClient::useGETmethod(std::string path_, const json& data)
 {
 	method = GET;
+	host = IP + ":" + std::to_string(port);
 	url = "http://" + host + path_;
-
 
 	/*Prosigo a configurar CURL para usar con el método GET*/
 	/*Posiblemente haya que setear más configuraciones, pero éstas van seguro*/
@@ -58,15 +90,19 @@ void NodeClient::useGETmethod(std::string path_, std::string& data)
 		curl_easy_setopt(easyHandler, CURLOPT_WRITEDATA, &reply);
 		//Configuramos para recibir info de error, útil para debuguear
 		curl_easy_setopt(easyHandler, CURLOPT_VERBOSE, 1L);
-
-		//Falta setear header, creo que había que usar curlList o algo así. Después lo miro.
+		//Configuro para que curl pueda seguir redireccionamiento de ser necesario
+		curl_easy_setopt(easyHandler, CURLOPT_FOLLOWLOCATION, 1L);
+		//Set handler y multiHandle
+		curl_multi_add_handle(multiHandle, easyHandler);
 	}
 }
 
-void NodeClient::usePOSTmethod(std::string path_, std::string& data)
+void NodeClient::usePOSTmethod(std::string path_, const json& data)
 {
 	method = POST;
+	host = IP + ":" + std::to_string(port);
 	url = "http://" + host + path_;
+	struct curl_slist* list = nullptr;
 
 	/*Prosigo a configurar CURL para usar con el método POST*/
 	/*Posiblemente haya que setear más configuraciones, pero éstas van seguro*/
@@ -82,6 +118,13 @@ void NodeClient::usePOSTmethod(std::string path_, std::string& data)
 		curl_easy_setopt(easyHandler, CURLOPT_WRITEDATA, &reply);
 		//Configuramos para recibir info de error, útil para debuguear
 		curl_easy_setopt(easyHandler, CURLOPT_VERBOSE, 1L);
+		//Configuro para que curl pueda seguir redireccionamiento de ser necesario
+		curl_easy_setopt(easyHandler, CURLOPT_FOLLOWLOCATION, 1L);
+		//Set handler y multiHandle
+		curl_multi_add_handle(multiHandle, easyHandler);
+		//Configuro el header
+		list = curl_slist_append(list, data.dump().c_str());
+		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
 
 	}
 
@@ -92,7 +135,7 @@ void NodeClient::setIP(std::string IP_)
 	IP = IP_;
 }
 
-void NodeClient::setPort(int port_)
+void NodeClient::setPort(unsigned int port_)
 {
 	port = port_;
 }
@@ -100,6 +143,11 @@ void NodeClient::setPort(int port_)
 void NodeClient::setURL(std::string URL_)
 {
 	url = URL_;
+}
+
+void NodeClient::setHost(std::string host_)
+{
+	host = host_;
 }
 
 void NodeClient::setMethod(method_n method_)
@@ -127,7 +175,7 @@ std::string NodeClient::getIP(void)
 	return IP;
 }
 
-int NodeClient::getPort(void)
+unsigned int NodeClient::getPort(void)
 {
 	return port;
 }
@@ -135,6 +183,11 @@ int NodeClient::getPort(void)
 std::string NodeClient::getURL(void)
 {
 	return url;
+}
+
+std::string NodeClient::getHost(void)
+{
+	return host;
 }
 
 method_n NodeClient::getMethod(void)

@@ -1,11 +1,12 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <curl/curl.h>
-
+#include "json.hpp"
+#include "C:\VCPKG\vcpkg\installed\x64-windows\include\curl\curl.h"
 typedef enum {GET, POST} method_n;
-typedef enum {ERROR_FREE, CURLINIT_ERROR} errorCode_n;
+typedef enum {ERROR_FREE, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA} errorCode_n;
 size_t myCallback(void *contents, size_t size, size_t nmemb, void *userp);
+using json = nlohmann::json;
 
 class NodeClient
 {
@@ -15,20 +16,22 @@ public:
 	~NodeClient();
 
 	
-	void sendRequest(void);
-	void useGETmethod(std::string path_, std::string& data);
-	void usePOSTmethod(std::string path_, std::string& data);
+	bool performRequest(void);
+	void useGETmethod(std::string path_, const json& data);
+	void usePOSTmethod(std::string path_, const json& data);
 
 	void setIP(std::string IP_);
-	void setPort(int port_);
+	void setPort(unsigned int port_);
 	void setURL(std::string URL_);
+	void setHost(std::string host_);
 	void setMethod(method_n method_);
 	void setRunningStatus(int RunningStatus);
 	void setErrorCode(errorCode_n errorCode_);
 	void setErrorMsg(std::string errorMsg_);
 	std::string getIP(void);
-	int getPort(void);
+	unsigned int getPort(void);
 	std::string getURL(void);
+	std::string getHost(void);
 	method_n getMethod(void);
 	int getRunningStatus(void);
 	errorCode_n getErrorCode(void);
@@ -41,11 +44,12 @@ private:
 	method_n method;
 	std::string reply, host, url;
 	std::string IP;
-	int port;
+	unsigned int port;
 	int stillRunning;
 	errorCode_n errorCode;
 	std::string errorMsg;
-
+	json data_;
+	json parsedReply;
 
 };
 
