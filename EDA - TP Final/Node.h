@@ -27,12 +27,12 @@ struct Neighbour {
 	unsigned int port;
 };
 
-struct MerkleBlock {
-	std::string BlockId;
-	vector<Transaction> TxVector_;
-	unsigned int TxPosition;
-	vector<std::string> merklePath;
-};
+//struct MerkleBlock {
+//	std::string BlockId;
+//	vector<Transaction> TxVector_;
+//	unsigned int TxPosition;
+//	vector<std::string> merklePath;
+//};
 
 class Node
 {
@@ -46,13 +46,13 @@ public:
 	virtual bool POSTBlock(unsigned int neighbourID, const json& header)=0;
 	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_)=0;
 	virtual bool POSTMerkleBlock(unsigned int neighbourID)=0;
-	virtual bool POSTFilter(unsigned int neighbourID, const json& header)=0;
+	virtual bool POSTFilter(unsigned int neighbourID)=0;
 	virtual bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
 	virtual bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
 	virtual bool performRequest(void) = 0;
 
-	virtual bool newPOSTmessage(unsigned int neighbourID, connection_ connectionType, const json& header) = 0;
-	virtual bool newGETmessage(unsigned int neighbourID, connection_ connectionTYPE, std::string& blockId, unsigned int count) = 0;
+	//virtual bool newPOSTmessage(unsigned int neighbourID, connection_ connectionType, const json& header) = 0;
+	//virtual bool newGETmessage(unsigned int neighbourID, connection_ connectionTYPE, std::string& blockId, unsigned int count) = 0;
 
 	virtual bool performRequest(void);
 

@@ -93,6 +93,8 @@ void NodeClient::useGETmethod(std::string path_, const json& data)
 		curl_easy_setopt(easyHandler, CURLOPT_VERBOSE, 1L);
 		//Configuro para que curl pueda seguir redireccionamiento de ser necesario
 		curl_easy_setopt(easyHandler, CURLOPT_FOLLOWLOCATION, 1L);
+		//Configuro el puerto
+		curl_easy_setopt(easyHandler, CURLOPT_PORT, port);
 		//Set handler y multiHandle
 		curl_multi_add_handle(multiHandle, easyHandler);
 		//Configuro el header
@@ -129,7 +131,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 		//Configuro el header
 		list = curl_slist_append(list, data.dump().c_str());
 		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
-		////Cofiguro el header
+		//Cofiguro el header
 		//curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, (long)(data.dump().size()) + 1);
 		//curl_easy_setopt(easyHandler, CURLOPT_COPYPOSTFIELDS, data.dump().c_str());
 

@@ -34,6 +34,11 @@ bool FullNode::addNeighbour(unsigned int ID_, std::string IP_, unsigned int port
 	}
 }
 
+/************************************************************************************************
+*					                          MENSAJES											*
+*																								*
+*************************************************************************************************/
+
 //POST Block
 //Recibe ID del vecino, e ID del bloque a enviar
 //Genera un JSON con los datos del ID del bloque (falta terminar esa función) para luego adjuntarlo como header del mensaje Post
@@ -45,7 +50,7 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 	client->setIP(neighbours[neighbourID].IP);
 	client->setPort(neighbours[neighbourID].port);
 	client->usePOSTmethod("/eda_coin/send_block", block);
-	client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+	//client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 	return true;
 }
 
@@ -60,7 +65,7 @@ bool FullNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 	client->setIP(neighbours[neighbourID].IP);
 	client->setPort(neighbours[neighbourID].port);
 	client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
-	client->performRequest();
+	//client->performRequest();
 	return true;
 }
 
@@ -74,7 +79,7 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID)
 	client->setIP(neighbours[neighbourID].IP);
 	client->setPort(neighbours[neighbourID].port);
 	client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
-	client->performRequest();
+	//client->performRequest();
 	return true;
 }
 
@@ -83,6 +88,13 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 	return false;
 }
 
+
+/************************************************************************************************
+*					               GENERADORES DE JSON											*
+*																								*
+*************************************************************************************************/
+
+//Genera un JSON del bloque de la blockchain que coincida con BlockId
 json FullNode::createJSONBlock(std::string & BlockId)
 {
 	json jsonblock;
@@ -110,6 +122,7 @@ json FullNode::createJSONBlock(std::string & BlockId)
 	return jsonblock;
 }
 
+//Genera el JSON de una transacción.
 json FullNode::createJSONTx(Transaction Tx_)
 {
 	json jsonTx;
@@ -137,6 +150,7 @@ json FullNode::createJSONTx(Transaction Tx_)
 //En esta fase uso lo que dice la guía, creo que no hay que generar el merkle path
 //Cargo con datos del primer bloque del arreglo.
 //Para fases futuros hay que agregar en Block.h una función que recupere el MerklePath
+//Genera el JSON de un Merkle Block.
 json FullNode::createJSONMerkleBlock(void)
 {
 	json MerkleBlock;
