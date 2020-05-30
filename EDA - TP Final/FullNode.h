@@ -15,16 +15,17 @@ public:
 	//virtual bool newGETmessage(unsigned int neighbourID, connection_ connectionTYPE, std::string& blockId, unsigned int count);
 
 	virtual bool POSTBlock(unsigned int neighbourID, std::string& BlockID);
-	virtual bool POSTTransaction(unsigned int neighbourID, const json& header);
-	virtual bool POSTMerkleBlock(unsigned int neighbourID, const json& header);
+	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
+	virtual bool POSTMerkleBlock(unsigned int neighbourID);
 	virtual bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count);
 
-	//Funciones para la configuración de los mensajes
+	//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string& BlockId);
+	json createJSONTx(Transaction Tx_);
+	json createJSONMerkleBlock(void);
 
 
-	//Esta función ejecuta una vuelta de multiHandler
-	virtual bool performRequest(void);
+	//virtual bool performRequest(void); Implementada en Node.h
 
 private:
 	Blockchain NodeBlockchain;

@@ -11,6 +11,33 @@ Node::~Node()
 {
 }
 
+bool Node::performRequest(void)
+{
+	if (client)
+	{
+		if (state == CLIENT)
+		{
+			if (!(client->performRequest))
+			{
+				state = FREE;
+				return true;
+			}
+		}
+		else
+		{
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client.";
+			return false;
+		}
+	}
+	else
+	{
+		errorType = CLIENT_ERROR;
+		errorMessage = "client is not working properly....";
+		return false;
+	}
+}
+
 void Node::setIP(std::string IP_)
 {
 	IP = IP_;

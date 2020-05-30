@@ -44,8 +44,8 @@ public:
 	
 	//Funciones para enviar mensajes.
 	virtual bool POSTBlock(unsigned int neighbourID, const json& header)=0;
-	virtual bool POSTTransaction(unsigned int neighbourID, const json& header)=0;
-	virtual bool POSTMerkleBlock(unsigned int neighbourID, const json& header)=0;
+	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_)=0;
+	virtual bool POSTMerkleBlock(unsigned int neighbourID)=0;
 	virtual bool POSTFilter(unsigned int neighbourID, const json& header)=0;
 	virtual bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
 	virtual bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
@@ -53,6 +53,8 @@ public:
 
 	virtual bool newPOSTmessage(unsigned int neighbourID, connection_ connectionType, const json& header) = 0;
 	virtual bool newGETmessage(unsigned int neighbourID, connection_ connectionTYPE, std::string& blockId, unsigned int count) = 0;
+
+	virtual bool performRequest(void);
 
 	void setIP(std::string IP_);
 	void setPort(unsigned int port_);
