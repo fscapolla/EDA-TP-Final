@@ -21,6 +21,16 @@ void Node::setPort(unsigned int port_)
 	port = port_;
 }
 
+void Node::setID(unsigned int ID_)
+{
+	ID = ID_;
+}
+
+void Node::setState(state_n state_)
+{
+	state = state_;
+}
+
 void Node::setErrorType(errorType_n errorType_)
 {
 	errorType = errorType_;
@@ -51,7 +61,17 @@ std::string Node::getErrorMessage(void)
 	return errorMessage;
 }
 
-std::map <std::string, unsigned int> Node::getNeighbours(void)
+unsigned int Node::getID(void)
+{
+	return ID;
+}
+
+state_n Node::getState(void)
+{
+	return state;
+}
+
+std::map <unsigned int, Neighbour> Node::getNeighbours(void)
 {
 	return neighbours;
 }

@@ -76,6 +76,7 @@ void NodeClient::useGETmethod(std::string path_, const json& data)
 	method = GET;
 	host = IP + ":" + std::to_string(port);
 	url = "http://" + host + path_;
+	struct curl_slist* list = nullptr;
 
 	/*Prosigo a configurar CURL para usar con el método GET*/
 	/*Posiblemente haya que setear más configuraciones, pero éstas van seguro*/
@@ -94,6 +95,9 @@ void NodeClient::useGETmethod(std::string path_, const json& data)
 		curl_easy_setopt(easyHandler, CURLOPT_FOLLOWLOCATION, 1L);
 		//Set handler y multiHandle
 		curl_multi_add_handle(multiHandle, easyHandler);
+		//Configuro el header
+		list=curl_slist_append(list, data.dump().c_str());
+		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
 	}
 }
 
@@ -125,6 +129,9 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 		//Configuro el header
 		list = curl_slist_append(list, data.dump().c_str());
 		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
+		////Cofiguro el header
+		//curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, (long)(data.dump().size()) + 1);
+		//curl_easy_setopt(easyHandler, CURLOPT_COPYPOSTFIELDS, data.dump().c_str());
 
 	}
 
@@ -198,6 +205,11 @@ method_n NodeClient::getMethod(void)
 int NodeClient::getRunningStatus(void)
 {
 	return stillRunning;
+}
+
+std::string NodeClient::getReply(void)
+{
+	return reply;
 }
 
 errorCode_n NodeClient::getErrorCode(void)

@@ -36,6 +36,7 @@ public:
 	std::string getHost(void);
 	method_n getMethod(void);
 	int getRunningStatus(void);
+	std::string getReply(void);
 	errorCode_n getErrorCode(void);
 	std::string getErrorMsg(void);
 
