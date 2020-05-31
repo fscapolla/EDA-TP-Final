@@ -190,7 +190,7 @@ json FullNode::createJSONBlock(std::string & BlockId)
 	auto tx = json::array();
 	for (auto tx_ = 0; tx_ < block.getNtx(); tx_++)
 	{
-		tx += json::parse(createJSONTx(block.getTxVector()[tx_]));
+		tx += createJSONTx(block.getTxVector()[tx_]);
 	}
 	jsonblock["tx"] = tx;
 	return jsonblock;
@@ -230,7 +230,7 @@ json FullNode::createJSONMerkleBlock(void)
 	json MerkleBlock;
 	json path = json::array();
 	MerkleBlock["blockid"] = NodeBlockchain.getBlocksArr()[0].getBlockID();
-	MerkleBlock["tx"] = json::parse(createJSONTx(NodeBlockchain.getBlocksArr()[0].getTxVector()[0]));
+	MerkleBlock["tx"] = createJSONTx(NodeBlockchain.getBlocksArr()[0].getTxVector()[0]);
 	MerkleBlock["txPos"] = 1;
 	for (int i = 0; i < NodeBlockchain.getBlocksArr()[0].getTxVector()[0].nTxin; i++)
 	{

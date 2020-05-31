@@ -111,6 +111,7 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 			client->setPort(neighbours[neighbourID].port);
 			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
 		}
+		else return false;
 	}
 	else return false;
 }
