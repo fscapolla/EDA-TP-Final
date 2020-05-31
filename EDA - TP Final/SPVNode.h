@@ -26,11 +26,15 @@ public:
 	virtual bool POSTFilter(unsigned int neighbourID);
 	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
 	virtual bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count);
+	virtual bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
+
+	//Funciones para dar respuestas
+	virtual std::string POSTreply(std::string&receivedRequest);
+	virtual std::string GETreply(std::string&receivedRequest);
 
 	//Funciones para crear jsons.
 	json createJSONTx(Transaction Tx_);
 	json createJSONFilter(std::string Id_);
-	//json createJSONHeader(std::string BlockID_, unsigned int count);
 
 private:
 };

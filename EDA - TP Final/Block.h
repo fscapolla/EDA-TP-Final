@@ -42,6 +42,14 @@ struct Transaction {
 	
 };
 
+
+struct MerkleBlock {
+	string blockID;
+	vector<Transaction> tx;
+	unsigned int txPos;
+	vector<string> merklePath;
+};
+
 struct MerkleTree {
 	uint height;
 	string merkleRoot;
@@ -98,6 +106,8 @@ public:
 
 	bool createMerkleTree();
 
+	//Función para recuperar el Merkle Path (agregada en fase 2).
+	vector <string> getMerklePath(Transaction Tx_);
 	
 
 private:

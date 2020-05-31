@@ -198,6 +198,13 @@ bool Block::createMerkleTree(void){
 	}
 }
 
+vector<string> Block::getMerklePath(Transaction Tx_)
+{
+	vector <string> newpath;
+	newpath.clear();
+
+}
+
 MerkleTree Block::getMerkleTree(void)
 {
 	return Tree;

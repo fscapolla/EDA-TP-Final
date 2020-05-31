@@ -17,6 +17,7 @@ SPVNode::SPVNode(unsigned int ID_, std::string IP_, unsigned int port_)
 
 SPVNode::~SPVNode()
 {
+	delete client;
 }
 
 bool SPVNode::addNeighbour(unsigned int neighbourID, std::string IP_, unsigned int port_)
@@ -36,34 +37,99 @@ bool SPVNode::addNeighbour(unsigned int neighbourID, std::string IP_, unsigned i
 
 bool SPVNode::POSTFilter(unsigned int neighbourID)
 {
-	state = CLIENT;
-	json jsonFilter = createJSONFilter(to_string(ID));
-	client->setIP(neighbours[neighbourID].IP);
-	client->setPort(neighbours[neighbourID].port);
-	client->usePOSTmethod("/eda_coin/send_filter", jsonFilter);
-	return true;
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			json jsonFilter = createJSONFilter(to_string(ID));
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_filter", jsonFilter);
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 bool SPVNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 {
-	state = CLIENT;
-	json jsonTx = createJSONTx(Tx_);
-	client->setIP(neighbours[neighbourID].IP);
-	client->setPort(neighbours[neighbourID].port);
-	client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
-	//client->performRequest();
-	return true;
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			json jsonTx = createJSONTx(Tx_);
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+			//client->performRequest();
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, unsigned int count) //Falta terminar
 {
-	state = CLIENT;
-	json data;
-	client->setIP(neighbours[neighbourID].IP);
-	client->setPort(neighbours[neighbourID].port);
-	client->useGETmethod("/eda_coin/get_block_header?block_id="+blockID_+"&count="+to_string(count),data);
-	return true;
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->useGETmethod("/eda_coin/get_block_header?block_id=" + blockID_ + "&count=" + to_string(count));
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
+
+bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
+{
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			json jsonTx;
+
+			jsonTx["nTxin"] = 0;
+			jsonTx["nTxout"] = 1;
+			jsonTx["txid"] = "7E46A3BC";
+			jsonTx["vin"] = json();
+			json vout_;
+			vout_["amount"] = amount;
+			vout_["publicid"] = wallet;
+			jsonTx["vout"] = vout_;
+
+			state = CLIENT;
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+		}
+	}
+	else return false;
+}
+
+/************************************************************************************************
+*					                         Respuestas											*
+*																								*
+*************************************************************************************************/
+
+std::string SPVNode::POSTreply(std::string & receivedRequest)
+{
+	return std::string();
+}
+
+std::string SPVNode::GETreply(std::string & receivedRequest)
+{
+	return std::string();
+}
+
 
 /************************************************************************************************
 *					               GENERADORES DE JSON											*

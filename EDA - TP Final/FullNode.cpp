@@ -42,16 +42,24 @@ bool FullNode::addNeighbour(unsigned int ID_, std::string IP_, unsigned int port
 //POST Block
 //Recibe ID del vecino, e ID del bloque a enviar
 //Genera un JSON con los datos del ID del bloque (falta terminar esa función) para luego adjuntarlo como header del mensaje Post
-//Sólo configura el mensaje, la idea sería llammar perform request (del nodo no de client) una vez seteado (por ahí desde el método performRequest de cada nodo)
+//Sólo configura el mensaje, la idea sería llamar a perform request (del nodo no del cliente) una vez seteado (por ahí desde el método performRequest de cada nodo)
 bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 {
-	state = CLIENT;
-	json block = createJSONBlock(blockId);
-	client->setIP(neighbours[neighbourID].IP);
-	client->setPort(neighbours[neighbourID].port);
-	client->usePOSTmethod("/eda_coin/send_block", block);
-	//client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-	return true;
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			json block = createJSONBlock(blockId);
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_block", block);
+			//client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+			return true;
+		}
+		else return false;
+	}	
+	else return false;
 }
 
 /*POST Transaction
@@ -60,13 +68,21 @@ Convierte la transacción en un JSON para luego adjuntarla como header del mensaj
 Igual al caso anterior, para terminar de ejecutar llamar a performRequest del nodo (NO de client!!).*/
 bool FullNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 {
-	state = CLIENT;
-	json jsonTx = createJSONTx(Tx_);
-	client->setIP(neighbours[neighbourID].IP);
-	client->setPort(neighbours[neighbourID].port);
-	client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
-	//client->performRequest();
-	return true;
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			json jsonTx = createJSONTx(Tx_);
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+			//client->performRequest();
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 //POST Merkleblock
@@ -74,19 +90,77 @@ bool FullNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 //Para terminar de ejecutar usar performRequest del nodo (NO de client!!)
 bool FullNode::POSTMerkleBlock(unsigned int neighbourID)
 {
-	state = CLIENT;
-	json jsonMerkleBlock = createJSONMerkleBlock();
-	client->setIP(neighbours[neighbourID].IP);
-	client->setPort(neighbours[neighbourID].port);
-	client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
-	//client->performRequest();
-	return true;
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			json jsonMerkleBlock = createJSONMerkleBlock();
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
+			//client->performRequest();
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count)
 {
-	return false;
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->useGETmethod("/eda_coin/get_blocks?block_id=" + blockID_ + "&count=" + to_string(count));
+		}
+		else return false;
+	}
+	else return false;
 }
+
+/************************************************************************************************
+*					                         Respuestas											*
+*																								*
+*************************************************************************************************/
+
+//Respuesta a los mensajes del tipo POST.
+std::string FullNode::POSTreply(std::string &receivedRequest)
+{
+	json response;
+	response["status"] = "true";
+	response["result"] = NULL;
+
+	//Si se trata de un POSTblock guarda el block enviado
+	if (receivedRequest.find("send_block") != std::string npos)
+	{
+
+	}
+
+	//Si se trata de un POSTtransaction
+	else if (receivedRequest.find("send_tx") != std::string npos)
+	{
+	}
+
+	//Si se trata de un POSTfilter
+	else if (receivedRequest.find("send_filter") != std::string npos)
+	{
+	}
+
+	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
+		makeDaytimeString(30) + "Content-Length:" + std::to_string(result.dump().length()) +
+		"\r\nContent-Type: text/html; charset=iso-8859-1\r\n\r\n" + result.dump();*/
+}
+
+std::string FullNode::GETreply(std::string &receivedRequest)
+{
+	return std::string();
+}
+
 
 
 /************************************************************************************************

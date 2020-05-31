@@ -4,7 +4,7 @@
 NodeClient::NodeClient(std::string IP_, int port_)
 {
 	IP = IP_;
-	port = port_;
+	own_port = port_;
 	easyHandler = curl_easy_init();
 	if (!easyHandler)
 	{
@@ -71,15 +71,14 @@ bool NodeClient::performRequest(void)
 	}
 }
 
-void NodeClient::useGETmethod(std::string path_, const json& data)
+void NodeClient::useGETmethod(std::string path_)
 {
 	method = GET;
 	host = IP + ":" + std::to_string(port);
 	url = "http://" + host + path_;
-	struct curl_slist* list = nullptr;
+	//struct curl_slist* list = nullptr;
 
 	/*Prosigo a configurar CURL para usar con el método GET*/
-	/*Posiblemente haya que setear más configuraciones, pero éstas van seguro*/
 	if (errorCode = ERROR_FREE2)
 	{
 		//Se configura la URL de la página
@@ -93,13 +92,15 @@ void NodeClient::useGETmethod(std::string path_, const json& data)
 		curl_easy_setopt(easyHandler, CURLOPT_VERBOSE, 1L);
 		//Configuro para que curl pueda seguir redireccionamiento de ser necesario
 		curl_easy_setopt(easyHandler, CURLOPT_FOLLOWLOCATION, 1L);
-		//Configuro el puerto
+		//Configuro el puerto de destino
 		curl_easy_setopt(easyHandler, CURLOPT_PORT, port);
+		//Configuro el propio puerto.
+		curl_easy_setopt(easyHandler, CURLOPT_LOCALPORT, own_port);
 		//Set handler y multiHandle
 		curl_multi_add_handle(multiHandle, easyHandler);
 		//Configuro el header
-		list=curl_slist_append(list, data.dump().c_str());
-		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
+		/*list=curl_slist_append(list, data.dump().c_str());
+		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);*/
 	}
 }
 
@@ -109,14 +110,17 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 	host = IP + ":" + std::to_string(port);
 	url = "http://" + host + path_;
 	struct curl_slist* list = nullptr;
+	reply.clear();
 
 	/*Prosigo a configurar CURL para usar con el método POST*/
-	/*Posiblemente haya que setear más configuraciones, pero éstas van seguro*/
-	/*Una vez que tengamos todas las configuraciones podemos agrupar las comunes a los dos métodos en una función aparte.*/
 	if (errorCode = ERROR_FREE2)
 	{
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());
+		//Configuro el propio puerto
+		curl_easy_setopt(easyHandler, CURLOPT_LOCALPORT, own_port);
+		//Configuro el puerto dedestino
+		curl_easy_setopt(easyHandler, CURLOPT_PORT, port);
 		//Se configura para trabajar con HTTP
 		curl_easy_setopt(easyHandler, CURLOPT_PROTOCOLS, CURLPROTO_HTTP);
 		//Configuramos para que curl use myCallback al momento de escribir y a reply como userData.
@@ -134,9 +138,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 		//Cofiguro el header
 		//curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, (long)(data.dump().size()) + 1);
 		//curl_easy_setopt(easyHandler, CURLOPT_COPYPOSTFIELDS, data.dump().c_str());
-
 	}
-
 }
 
 void NodeClient::setIP(std::string IP_)
