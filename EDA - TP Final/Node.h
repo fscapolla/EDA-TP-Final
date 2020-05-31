@@ -2,25 +2,12 @@
 #include "Blockchain.h"
 #include "NodeClient.h"
 #include "NodeServer.h"
+#include <chrono>
 #include <map>
 
 typedef enum {FREE,CLIENT,SERVER} state_n;
 typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE} errorType_n;
 typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection_;
-
-//struct Neighbour {
-//	Neighbour() {}
-//	Neighbour(const std::string& IP_, unsigned int port_)
-//	{
-//		IP = IP_;
-//		port = port_;
-//	}
-//	
-//	//Neighbour& operator=(const Neighbour& neighbour) { IP = neighbour.IP; port = neighbour.port; return *this; }
-//
-//	std::string IP;
-//	unsigned int port;
-//};
 
 struct Neighbour {
 	std::string IP;
@@ -52,8 +39,10 @@ public:
 	virtual bool performRequest(void);
 
 	//Funciones para dar respuestas
-	virtual std::string POSTreply(std::string&) = 0;
-	virtual std::string GETreply(std::string&) = 0;
+	virtual std::string POSTreply(std::string&, unsigned int) = 0;
+	virtual std::string GETreply(std::string&, unsigned int) = 0;
+
+	virtual std::string makeDaytimeString(int secs);
 
 	void setIP(std::string IP_);
 	void setPort(unsigned int port_);
@@ -75,6 +64,8 @@ protected:
 	std::string IP;
 	unsigned int port;
 	unsigned int ID;
+	int sentMessage;
+	int receivedMessage;
 	state_n state;
 	NodeClient *client;
 	NodeServer *server;

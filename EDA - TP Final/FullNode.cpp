@@ -129,7 +129,7 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 *************************************************************************************************/
 
 //Respuesta a los mensajes del tipo POST.
-std::string FullNode::POSTreply(std::string &receivedRequest)
+std::string FullNode::POSTreply(std::string &receivedRequest, unsigned int clientPort_)
 {
 	json response;
 	response["status"] = "true";
@@ -152,15 +152,56 @@ std::string FullNode::POSTreply(std::string &receivedRequest)
 	}
 
 	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
-		makeDaytimeString(30) + "Content-Length:" + std::to_string(result.dump().length()) +
-		"\r\nContent-Type: text/html; charset=iso-8859-1\r\n\r\n" + result.dump();*/
+		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
+		"\r\nContent-Type: text/html; charset=iso-8859-1\r\n\r\n" + response.dump();*/
 }
 
-std::string FullNode::GETreply(std::string &receivedRequest)
+std::string FullNode::GETreply(std::string &receivedRequest, unsigned int clientPort_)
 {
-	return receivedRequest;
+	json response;
+	response["status"] = "true";
+	receivedMessage = clientPort_;
+
+	if ((receivedRequest.find("send_block") != std::string::npos) || (receivedRequest.find("send_block_header") != std::string::npos))
+	{
+		unsigned int idPositon = receivedRequest.find("block_id=");
+		unsigned int countPosition = receivedRequest.find("count=");
+
+		if (idPosition != std::string::npos && countPosition != std::string::npos)
+		{
+			//Parseo id y count;
+			std::string ID_ = receivedRequest.substr(idPosition + 9, request.find_last_of("&") - idPosition - 9);
+			std::string tempcount = receivedRequest.substr(countPosition + 6, request.find("HTTP") - countPosition - 6);
+			unsigned int count = std::stoi(tempcount)
+			
+			
+
+		}
+		else
+		{
+			//Error de formato
+			response["result"] = false;
+			response["result"] = 1;
+		}
+
+	}
+	else
+	{
+		//Error de contenido.
+		response["status"] = false;
+		response["result"] = 2;
+	}
+
+	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
+		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
+		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
 }
 
+const char* BLOCKPOST = "send_block";
+const char* TRANSPOST = "send_tx";
+const char* FILTERPOST = "send_filter";
+const char* BLOCKSGET = "get_blocks";
+const char* HEADERGET = "get_block_header";
 
 
 /************************************************************************************************

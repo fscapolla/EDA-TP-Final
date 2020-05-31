@@ -38,6 +38,16 @@ bool Node::performRequest(void)
 	}
 }
 
+std::string Node::makeDaytimeString(int secs)
+{
+	std::chrono::system_clock::time_point time = std::chrono::system_clock::now();
+
+	time += std::chrono::seconds(secs);
+
+	time_t time_ = std::chrono::system_clock::to_time_t(time);
+	return ctime(&time_);
+}
+
 void Node::setIP(std::string IP_)
 {
 	IP = IP_;
