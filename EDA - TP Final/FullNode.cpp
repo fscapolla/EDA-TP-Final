@@ -172,9 +172,7 @@ std::string FullNode::GETreply(std::string &receivedRequest, unsigned int client
 			//Parseo id y count;
 			std::string ID_ = receivedRequest.substr(idPosition + 9, request.find_last_of("&") - idPosition - 9);
 			std::string tempcount = receivedRequest.substr(countPosition + 6, request.find("HTTP") - countPosition - 6);
-			unsigned int count = std::stoi(tempcount)
-			
-			
+			unsigned int count = std::stoi(tempcount);
 
 		}
 		else
@@ -196,12 +194,6 @@ std::string FullNode::GETreply(std::string &receivedRequest, unsigned int client
 		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
 		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
 }
-
-const char* BLOCKPOST = "send_block";
-const char* TRANSPOST = "send_tx";
-const char* FILTERPOST = "send_filter";
-const char* BLOCKSGET = "get_blocks";
-const char* HEADERGET = "get_block_header";
 
 
 /************************************************************************************************
@@ -255,7 +247,7 @@ json FullNode::createJSONTx(Transaction Tx_)
 	auto vout = json::array(); //Cargo el JSON de Vout dentro del JSON de transacciones.
 	for (auto vout_ = 0; vout_ < Tx_.nTxout; vout_++)
 	{
-		vout.push_back(json::object({{ "amount",Tx_.vOut[vout_].amount },{ "publicid", Tx_.vOut[vout_].publicID}}));
+		vout.push_back(json::object({ { "amount",Tx_.vOut[vout_].amount },{ "publicid", Tx_.vOut[vout_].publicID} }));
 	}
 	jsonTx["vout"] = vout;
 
