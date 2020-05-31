@@ -17,7 +17,7 @@ bool Node::performRequest(void)
 	{
 		if (state == CLIENT)
 		{
-			if (!(client->performRequest))
+			if (!(client->performRequest()))
 			{
 				state = FREE;
 				return true;

@@ -203,6 +203,8 @@ vector<string> Block::getMerklePath(Transaction Tx_)
 	vector <string> newpath;
 	newpath.clear();
 
+
+	return newpath;
 }
 
 MerkleTree Block::getMerkleTree(void)

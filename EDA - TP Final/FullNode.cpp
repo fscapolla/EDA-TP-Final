@@ -134,20 +134,20 @@ std::string FullNode::POSTreply(std::string &receivedRequest)
 	json response;
 	response["status"] = "true";
 	response["result"] = NULL;
-
+	
 	//Si se trata de un POSTblock guarda el block enviado
-	if (receivedRequest.find("send_block") != std::string npos)
+	if (receivedRequest.find("send_block") )
 	{
 
 	}
 
 	//Si se trata de un POSTtransaction
-	else if (receivedRequest.find("send_tx") != std::string npos)
+	else if (receivedRequest.find("send_tx"))
 	{
 	}
 
 	//Si se trata de un POSTfilter
-	else if (receivedRequest.find("send_filter") != std::string npos)
+	else if (receivedRequest.find("send_filter"))
 	{
 	}
 
@@ -158,7 +158,7 @@ std::string FullNode::POSTreply(std::string &receivedRequest)
 
 std::string FullNode::GETreply(std::string &receivedRequest)
 {
-	return std::string();
+	return receivedRequest;
 }
 
 
@@ -175,7 +175,7 @@ json FullNode::createJSONBlock(std::string & BlockId)
 	Block block;
 	for (int i = 0; i < NodeBlockchain.getBlocksSize(); i++)
 	{
-		if (NodeBlockchain.getBlocksArr()[i].getBlockID == BlockId) {
+		if (NodeBlockchain.getBlocksArr()[i].getBlockID() == BlockId) {
 			block = NodeBlockchain.getBlocksArr()[i];
 			break;
 		}
