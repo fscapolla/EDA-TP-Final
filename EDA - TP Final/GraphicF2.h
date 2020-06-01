@@ -97,7 +97,7 @@ private:
 	bool verify(ParticipantesMsj_t, string);		//Verify para ENVIAR MENSAJE relllena los campos faltantes del objeto ParticipantesMsj con el mensaje (verificado) y el vecino receptor
 
 	/* COLA DE EVENTOS QUE LEVANTA EL GUI EVENT GENERATOR */
-	std::queue<GUIEvent> EventQueue;
+	std::queue<GUIEvent> GUIQueue;
 
 
 	/* VARIABLES DE ALLEGRO */

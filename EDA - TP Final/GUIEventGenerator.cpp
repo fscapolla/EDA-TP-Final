@@ -28,6 +28,11 @@ getEvent(unsigned int estado)
 		ret = new evEnviarMsj(this->GUI.getComunicacion());
 		break;
 
+	case implEvent::Error:
+		ret = new evError;
+		break;
+
+
 	case implEvent::Quit:
 		ret = new evQuit;
 		break;
@@ -38,7 +43,8 @@ getEvent(unsigned int estado)
 
 implEvent GUIEventGenerator::getGUIevent(unsigned int estadoActual)
 {
-	implEvent sendingEvent = NoEvent;
+	implEvent sendingEvent = implEvent::NoEvent;
+
 	if (GUI.hayEvento(estadoActual))
 	{
 		GUIEvent sendingEv = GUI.getEvent();
@@ -90,6 +96,7 @@ implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
 
 	case GUIEvent::Back2Dashboard:
 		returning = implEvent::Back2Dashboard;
+		break; 
 
 	case GUIEvent::Quit:
 		returning = implEvent::Quit;

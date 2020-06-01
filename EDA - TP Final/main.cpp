@@ -32,7 +32,7 @@ int main(void)
 		do
 		{
 			genericEvent* ev;
-			ev = eventGen.getNextEvent(fsm.state4Graphic);
+			ev = eventGen.getNextEvent(fsm.state4Graphic);  //ACA
 			if (ev != nullptr)
 			{
 				if (ev->getType() == Quit)
@@ -44,8 +44,6 @@ int main(void)
 				delete ev;
 			}
 		} while (!quit);
-
-		system("pause");
 		return 0;
 	}
 	else

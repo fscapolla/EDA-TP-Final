@@ -52,20 +52,19 @@ bool GraphicF2::hayEvento(unsigned int EstadoActual)
 
 	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 	{
-		EventQueue.push(GUIEvent::Quit);
+		GUIQueue.push(GUIEvent::Quit);
 	}
 
 	print_current_state(EstadoActual);  //Devuelve true si hubo un evento (Usuario presiono un boton)
 												//Todas las funciones de impresion BUSCAN eventos y las guardan en EventQueue			
 
-	return !EventQueue.empty();		//Si hay evento devuelve true
+	return !GUIQueue.empty();		//Si NO esta vacia hay evento
 }
 
 GUIEvent GraphicF2::getEvent()
 {
-	GUIEvent EventoParaEvGenerator = EventQueue.front();
-	EventQueue.pop();
-
+	GUIEvent EventoParaEvGenerator = GUIQueue.front();
+	GUIQueue.pop();
 	return EventoParaEvGenerator;
 }
 
@@ -121,8 +120,6 @@ void GraphicF2::print_Dashboard()
 			tempRegistro.IP = IP;
 			tempRegistro.TYPE = FULL;
 			tempRegistro.PUERTO = atoi(Puerto);
-
-			//(IP, stoi(Puerto, nullptr), FULL);
 			registros.push(tempRegistro);
 		}
 
@@ -132,12 +129,10 @@ void GraphicF2::print_Dashboard()
 			tempRegistro.IP = IP;
 			tempRegistro.TYPE = SPV;
 			tempRegistro.PUERTO = atoi(Puerto);
-
-			//(IP, stoi(Puerto, nullptr), FULL);
 			registros.push(tempRegistro);
 		}
 
-		EventQueue.push(GUIEvent::CrearNodo);
+		GUIQueue.push(GUIEvent::CrearNodo);
 
 	}
 
@@ -173,7 +168,6 @@ void GraphicF2::print_Dashboard()
 			RegistroNodo_t tempNodo1;
 			tempNodo1.TYPE = FULL;
 			tempNodo1.ID = atoi(NODO1);
-			//(stoi(NODO1, nullptr), FULL);
 			registros.push(tempNodo1);
 
 		}
@@ -181,8 +175,6 @@ void GraphicF2::print_Dashboard()
 			RegistroNodo_t tempNodo1;
 			tempNodo1.TYPE = SPV;
 			tempNodo1.ID = atoi(NODO1);
-
-			//(stoi(NODO1, nullptr), SPV);
 			registros.push(tempNodo1);
 		}
 
@@ -190,20 +182,16 @@ void GraphicF2::print_Dashboard()
 			RegistroNodo_t tempNodo2;
 			tempNodo2.TYPE = FULL;
 			tempNodo2.ID = atoi(NODO2);
-
-			//(stoi(NODO2, nullptr), FULL);
 			registros.push(tempNodo2);
 		}
 		else {
 			RegistroNodo_t tempNodo2;
 			tempNodo2.TYPE = SPV;
 			tempNodo2.ID = atoi(NODO2);
-
-			//(stoi(NODO2, nullptr), SPV);
 			registros.push(tempNodo2);
 		}
 
-		EventQueue.push(GUIEvent::CrearConexion);
+		GUIQueue.push(GUIEvent::CrearConexion);
 	}
 	ImGui::End();
 
@@ -225,7 +213,7 @@ void GraphicF2::print_Dashboard()
 
 	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(atoi(emisor), type[0])))
 	{
-		EventQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
+		GUIQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
 	}
 	ImGui::End();
 
@@ -298,9 +286,13 @@ void GraphicF2::print_look4Veci(void)
 	{
 		ComEnProgreso.mensaje.assign(mensaje);
 		Comunicaciones.front().selectedVecino = selected;
-		EventQueue.push(GUIEvent::EnviarMsj);
+		GUIQueue.push(GUIEvent::EnviarMsj);
 	}
 
+	if (ImGui::Button(" >>  VOLVER A DASHBOARD  << ") && verify(ComEnProgreso, mensaje))
+	{
+		GUIQueue.push(GUIEvent::Back2Dashboard);
+	}
 
 	ImGui::End();
 
@@ -326,10 +318,10 @@ ParticipantesMsj_t GraphicF2::getComunicacion(void)
 
 bool GraphicF2::verify(ParticipantesMsj_t Comuni, string mensaje)
 {
-	/* ACA IRIA ALGO ASI
-	if(MENSAJE NO ES VALIDO)
-	EventQueue.push(GUIEvent::Error);
-	*/
+	//ACA IRIA ALGO ASI
+	//if(MENSAJE NO ES VALIDO)
+	GUIQueue.push(GUIEvent::Error);
+	
 
 	return true;
 }
@@ -439,7 +431,7 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	}
 	if (ret == false)
 	{
-		EventQueue.push(GUIEvent::Error);
+		GUIQueue.push(GUIEvent::Error);
 	}
 	*/
 
@@ -469,7 +461,7 @@ void GraphicF2::print_Error(void)
 
 	if (ImGui::Button("Quit"))
 	{
-		EventQueue.push(GUIEvent::Quit);
+		GUIQueue.push(GUIEvent::Quit);
 	}
 
 	ImGui::End();
