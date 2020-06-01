@@ -12,19 +12,22 @@ class FSM : public genericFSM
 {
 
 public:
-	FSM() : genericFSM(&fsmTable[0][0], 4, 7, ShwDashboard) {}
+	FSM() : genericFSM(&fsmTable[0][0], 4, 8, ShwDashboard), state4Graphic(DASHBOARD_G) {}
+	unsigned int state4Graphic;
 
 private:
-	const fsmCell fsmTable[4][7] = {
-		//EVENTOS:		Crear Nodo							 Crear Conexion							Mostrar Nodos                      Buscar Vecinos                   Back2Dashboard                      Error								No event
-//ESTADOS 
-		/*Shw Dashboard*/		{{ShwDashboard,TX(RutaDefault)},     {ShwDashboard,TX(RutaDefault)},		{ShwDashboard,TX(RutaDefault)},		{Look4Veci,TX(RutaDefault)},     {ShwDashboard,TX(RutaDefault)},     {ShwError,TX(RutaDefault)} ,      {ShwDashboard,TX(RutaDefault) }},
+	const fsmCell fsmTable[4][8] = {
+		//enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error,Back2Dashboard,  NoEvent, Quit };
 
-		/*  Look4Veci  */		{{Look4Veci,TX(RutaDefault)},		 {Look4Veci,TX(RutaDefault)},			{Look4Veci,TX(RutaDefault)},		{Look4Veci,TX(RutaDefault)},     {ShwDashboard,TX(RutaDefault)},     {ShwError,TX(RutaDefault)},       {Look4Veci, TX(RutaDefault) }},
+				//EVENTOS:		          Crear Nodo							 Crear Conexion									Mostrar Nodos						Buscar Vecinos								EnviarMsj									Error								Back2Dashboard							No event
+		//ESTADOS 
+		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwDashboard,TX(RutaDefault)},		{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(RutaDefault)} ,		{ShwDashboard,TX(RutaDefault)} ,		{ShwDashboard,TX(RutaDefault) }},
 
-		/*  ShwNodos   */		{{ShwNodos,TX(RutaDefault)},	     {ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},		 {ShwDashboard,TX(RutaDefault)},     {ShwError,TX(RutaDefault)},		{ShwNodos, TX(RutaDefault) }},
+		/*  Look4Veci  */		{{Look4Veci,TX(RutaDefault)},			{Look4Veci,TX(RutaDefault)},					{Look4Veci,TX(RutaDefault)},		{Look4Veci,TX(RutaDefault)},				{ShwDashboard,TX(EnviarMensaje_r_acc)},     {ShwError,TX(RutaDefault)},			{ShwDashboard,TX(RutaDefault)} ,	    {Look4Veci, TX(RutaDefault) }},
 
-		/*   ShwError  */		{{ShwError,TX(RutaDefault)},		 {ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},      {ShwDashboard,TX(RutaDefault)},	 {ShwError,TX(RutaDefault)},		{ShwError,TX(RutaDefault) }}
+		/*  ShwNodos   */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(RutaDefault)},			{ShwDashboard,TX(RutaDefault)}	,		{ShwNodos, TX(RutaDefault) }},
+
+		/*   ShwError  */		{{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},						{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(RutaDefault)},			{ShwDashboard,TX(RutaDefault)} , 		{ShwError,TX(RutaDefault) }}
 
 	};
 
@@ -35,5 +38,8 @@ private:
 
 
 	void RutaDefault(genericEvent* ev);
-	void BuscamosVecinos(genericEvent* ev);
+	void BuscarVecinos_r_acc(genericEvent* ev);
+	void EnviarMensaje_r_acc(genericEvent* ev);
+	void CrearNodo_r_acc(genericEvent* ev);
+	void CrearConexion_r_acc(genericEvent* ev);
 };

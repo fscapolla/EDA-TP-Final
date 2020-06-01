@@ -43,7 +43,7 @@ bool GraphicF2::GetError()
 	return Error;
 }
 
-bool GraphicF2::hayEvento(implStates EstadoActual)
+bool GraphicF2::hayEvento(unsigned int EstadoActual)
 {
 	while (al_get_next_event(queue, &ev))
 	{
@@ -69,21 +69,24 @@ GUIEvent GraphicF2::getEvent()
 	return EventoParaEvGenerator;
 }
 
-void GraphicF2::print_current_state(implStates CurrentState)
+void GraphicF2::print_current_state(unsigned int CurrentState)
 {
 	switch (CurrentState)
 	{
-	case  ShwDashboard:
+	case  DASHBOARD_G:
 		print_Dashboard();
 		break;
 
-	case Look4Veci:
+	case LOOK4VECI_G:
 		print_look4Veci();
 		break;
 
-	case ShwError:
+	case SHWERROR_G:
 		print_Error();
 		break;
+
+	case SHWNODOS_G:
+		//print_Nodos();
 
 	default:
 		break;
@@ -117,7 +120,7 @@ void GraphicF2::print_Dashboard()
 			RegistroNodo_t tempRegistro;
 			tempRegistro.IP = IP;
 			tempRegistro.TYPE = FULL;
-			tempRegistro.PUERTO = stoi(Puerto, nullptr);
+			tempRegistro.PUERTO = atoi(Puerto);
 
 			//(IP, stoi(Puerto, nullptr), FULL);
 			registros.push(tempRegistro);
@@ -128,13 +131,14 @@ void GraphicF2::print_Dashboard()
 			RegistroNodo_t tempRegistro;
 			tempRegistro.IP = IP;
 			tempRegistro.TYPE = SPV;
-			tempRegistro.PUERTO = stoi(Puerto, nullptr);
+			tempRegistro.PUERTO = atoi(Puerto);
 
 			//(IP, stoi(Puerto, nullptr), FULL);
 			registros.push(tempRegistro);
 		}
 
 		EventQueue.push(GUIEvent::CrearNodo);
+
 	}
 
 	ImGui::End();
@@ -153,14 +157,14 @@ void GraphicF2::print_Dashboard()
 	static bool spvtype[2] = { false };
 
 	ImGui::InputText("NODO 1:", NODO1, sizeof(char) * MAX_ID);
-	ImGui::Checkbox("NODO FULL", &fulltype[0]);
+	ImGui::Checkbox("NODO FULL 1 ", &fulltype[0]);
 	ImGui::SameLine();
-	ImGui::Checkbox("NODO SPV", &spvtype[0]);
+	ImGui::Checkbox("NODO SPV 1", &spvtype[0]);
 	ImGui::Text("  ");
-	ImGui::InputText("NODO 2:", NODO1, sizeof(char) * MAX_ID);
-	ImGui::Checkbox("NODO FULL", &fulltype[1]);
+	ImGui::InputText("NODO 2:", NODO2, sizeof(char) * MAX_ID);
+	ImGui::Checkbox("NODO FULL 2", &fulltype[1]);
 	ImGui::SameLine();
-	ImGui::Checkbox("NODO SPV", &fulltype[1]);
+	ImGui::Checkbox("NODO SPV 2", &spvtype[1]);
 
 
 	if ((ImGui::Button(" >> CREAR << ")) && (verify(fulltype, spvtype, (string)NODO1, (string)NODO2)))
@@ -168,7 +172,7 @@ void GraphicF2::print_Dashboard()
 		if (fulltype[0]) {
 			RegistroNodo_t tempNodo1;
 			tempNodo1.TYPE = FULL;
-			tempNodo1.ID = stoi(NODO1, nullptr);
+			tempNodo1.ID = atoi(NODO1);
 			//(stoi(NODO1, nullptr), FULL);
 			registros.push(tempNodo1);
 
@@ -176,7 +180,7 @@ void GraphicF2::print_Dashboard()
 		else {
 			RegistroNodo_t tempNodo1;
 			tempNodo1.TYPE = SPV;
-			tempNodo1.ID = stoi(NODO1, nullptr);
+			tempNodo1.ID = atoi(NODO1);
 
 			//(stoi(NODO1, nullptr), SPV);
 			registros.push(tempNodo1);
@@ -185,7 +189,7 @@ void GraphicF2::print_Dashboard()
 		if (fulltype[1]) {
 			RegistroNodo_t tempNodo2;
 			tempNodo2.TYPE = FULL;
-			tempNodo2.ID = stoi(NODO2, nullptr);
+			tempNodo2.ID = atoi(NODO2);
 
 			//(stoi(NODO2, nullptr), FULL);
 			registros.push(tempNodo2);
@@ -193,7 +197,7 @@ void GraphicF2::print_Dashboard()
 		else {
 			RegistroNodo_t tempNodo2;
 			tempNodo2.TYPE = SPV;
-			tempNodo2.ID = stoi(NODO2, nullptr);
+			tempNodo2.ID = atoi(NODO2);
 
 			//(stoi(NODO2, nullptr), SPV);
 			registros.push(tempNodo2);
@@ -215,7 +219,7 @@ void GraphicF2::print_Dashboard()
 
 	ImGui::InputText("NODO EMISOR:", emisor, sizeof(char) * MAX_ID);
 
-	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(stoi(emisor, nullptr))))
+	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(atoi(emisor))))
 	{
 		EventQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
 	}
@@ -226,9 +230,9 @@ void GraphicF2::print_Dashboard()
 	**************************************/
 	print_Bulletin();
 
-	/*************************************
+	/*************************************************************************************************
 			FIN IMPRESION VENTANAS
-	**************************************/
+	**************************************************************************************************/
 	//Rendering
 	ImGui::Render();
 
@@ -241,8 +245,8 @@ void GraphicF2::print_Dashboard()
 void GraphicF2::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber creado un NewFrame en otra parte del programa
 {
 
-	ImGui::SetNextWindowPos(ImVec2(460, 390));
-	ImGui::SetNextWindowSize(ImVec2(380, 600));
+	ImGui::SetNextWindowPos(ImVec2(450, 10));
+	ImGui::SetNextWindowSize(ImVec2(550, 600));
 	ImGui::Begin(">>    BULLETIN BOARD   <<", 0, window_flags);
 
 	//TOY PENSANDO EN VER Q CONVIENE SI COMUNICARNOS MEDIANTE UN ARCHIVO QUE NETWORKING LE 
@@ -274,11 +278,11 @@ void GraphicF2::print_look4Veci(void)
 	static char mensaje[MAX_MSJ];
 	ImGui::InputText("Msj", mensaje, sizeof(char) * MAX_MSJ);
 
-
+	const char* vecinossss = Comunicaciones.front().vecinos.c_str();
 
 	// Simplified one-liner Combo() API, using values packed in a single constant string
-	static int item_current = 0;
-	ImGui::Combo("Seleccione un vecino", &item_current, Comunicaciones.front().vecinos.c_str());
+	static int item_current = 2;
+	ImGui::Combo("Seleccione vecino", &item_current, vecinossss);
 
 
 	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(mensaje))
@@ -322,6 +326,52 @@ bool GraphicF2::verify(string mensaje)
 bool GraphicF2::verify(uint ExisteEsteNodo)
 {
 	bool ret = false;
+
+	ParticipantesMsj_t tempParticipantes;
+
+	/*{
+		RegistroNodo_t NodoEmisor;
+		std::map<unsigned int, Neighbour2> NodosVecinos;
+		std::string mensaje;
+		std::string vecinos;	//Esto se usa para la funcion combo de ImGui
+		int selectedVecino;
+	*/
+	Neighbour2 neighbourTemp = { "0001", 80 };
+
+	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour2>(1, neighbourTemp));
+
+	Neighbour2 neighbourTemp2 = { "0002", 80 };
+
+	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour2>(1, neighbourTemp2));
+
+	Neighbour2 neighbourTemp3 = { "0003", 80 };
+
+	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour2>(1, neighbourTemp3));
+
+
+
+	tempParticipantes.NodoEmisor.ID = 2222;
+	tempParticipantes.NodoEmisor.IP = "3333";
+	tempParticipantes.NodoEmisor.PUERTO = 80;
+
+	string tempIDVecino;
+	std::map<unsigned int, Neighbour2>::iterator it = tempParticipantes.NodosVecinos.begin();
+
+	while (it != tempParticipantes.NodosVecinos.end())
+	{
+		// Accessing KEY from element pointed by it.
+		tempIDVecino.append("IP: " + it->second.IP + " - PORT: " + to_string(it->second.port) + "\0");
+		cout << tempIDVecino << endl;
+
+		// Increment the Iterator to point to next entry
+		it++;
+	}
+
+	tempIDVecino.append("\0");
+
+	this->Comunicaciones.push(tempParticipantes);
+
+
 	/*
 	for (auto itnodo : FullNodes)
 	{
@@ -415,6 +465,7 @@ void GraphicF2::print_Error(void)
 RegistroNodo_t GraphicF2::getRegistro(void)
 {
 	RegistroNodo_t returning = registros.front();
+
 	registros.pop();
 	return returning;
 }

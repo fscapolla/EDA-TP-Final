@@ -20,9 +20,12 @@ public:
 	genericEvent* getEvent(unsigned int evento);
 	void cycle(genericEvent* ev);
 
-	stateTypes state;  //Es publica para que allegro imprima los estados 
+protected:
+	stateTypes state;
 
 private:
+
+
 	genericEvent* fsmEvent = nullptr;
 
 	const unsigned int rowCount;

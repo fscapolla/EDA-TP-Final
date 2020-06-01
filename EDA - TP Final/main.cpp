@@ -32,7 +32,7 @@ int main(void)
 		do
 		{
 			genericEvent* ev;
-			ev = eventGen.getNextEvent(fsm.state);
+			ev = eventGen.getNextEvent(fsm.state4Graphic);
 			if (ev != nullptr)
 			{
 				if (ev->getType() == Quit)

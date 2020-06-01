@@ -45,7 +45,7 @@
 #include "Structs.h"
 
 /* FSM */
-#include "FSM.h"			//La incluyo para tener los implStates
+//#include "FSM.h"			//La incluyo para tener los implStates
 
 /* DEFINES */
 #define SIZE_SCREEN_X 2000
@@ -56,6 +56,9 @@
 #define MAX_MSJ 500
 #define SPV 1
 #define FULL 2
+
+enum STATES { DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWERROR_G };
+
 
 
 /* Filesystems namespace */
@@ -68,7 +71,7 @@ public:
 	GraphicF2();
 	~GraphicF2();
 	bool GetError();
-	bool hayEvento(implStates estadoActualdeFSM); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
+	bool hayEvento(unsigned int estadoActualdeFSM); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
 	GUIEvent getEvent();
 
 	/*  GETTERS  */
@@ -81,7 +84,7 @@ private:
 	bool ImguiInit();
 
 	/* FUNCIONES DE IMPRESION */
-	void print_current_state(implStates CurrentState);
+	void print_current_state(unsigned int CurrentState);
 	void print_Dashboard();//Imprime el menu principal al comienzo del programa
 	void print_Error();
 	void print_look4Veci();

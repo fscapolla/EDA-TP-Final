@@ -6,49 +6,47 @@ genericEvent* GUIEventGenerator::
 getEvent(unsigned int estado)
 {
 	genericEvent* ret = nullptr;
-	switch (getGUIevent((implStates)estado))
+	switch (getGUIevent(estado))
 	{
-	case CrearNodo:
+	case implEvent::CrearNodo:
 		ret = new evCrearNodo(this->GUI.getRegistro());
 		break;
 
-	case CrearConexion:
+	case implEvent::CrearConexion:
 		ret = new evCrearConexion(this->GUI.getRegistro(), this->GUI.getRegistro());		//Toma los registos en cola
 		break;
 
-	case MostrarNodos:
+	case implEvent::MostrarNodos:
 		ret = new evMostrarNodos;
 		break;
 
-	case BuscarVecinos:
+	case implEvent::BuscarVecinos:
 		ret = new evBuscarVecinos();
 		break;
 
-	case EnviarMsj:
+	case implEvent::EnviarMsj:
 		ret = new evEnviarMsj(this->GUI.getComunicacion());
 		break;
 
-	case AccionDone:
-		ret = new evAccionDone;
-		break;
-
-	case Quit:
+	case implEvent::Quit:
 		ret = new evQuit;
 		break;
 	}
+
 	return ret;
 }
 
-implEvent GUIEventGenerator::getGUIevent(implStates estadoActual)
+implEvent GUIEventGenerator::getGUIevent(unsigned int estadoActual)
 {
+	implEvent sendingEvent = NoEvent;
 	if (GUI.hayEvento(estadoActual))
 	{
 		GUIEvent sendingEv = GUI.getEvent();
-		return TranslateGUIEvent(sendingEv);
+		sendingEvent = TranslateGUIEvent(sendingEv);
 	}
-	else
-		return NoEvent;
 
+
+	return sendingEvent;
 }
 
 
@@ -59,30 +57,47 @@ bool GUIEventGenerator::getGraphicInstallationError()
 
 implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
 {
+	implEvent returning = NoEvent;
+	/*
+		enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error, Back2Dashboard, NoEvent, Quit };
+	*/
+
 	switch (ev)
 	{
 	case GUIEvent::CrearNodo:
-		return implEvent::CrearNodo;
+		returning = implEvent::CrearNodo;
+		break;
 
 	case GUIEvent::CrearConexion:
-		return implEvent::CrearConexion;
+		returning = implEvent::CrearConexion;
+		break;
 
 	case GUIEvent::MostrarNodos:
-		return implEvent::MostrarNodos;
+		returning = implEvent::MostrarNodos;
+		break;
+
+	case GUIEvent::BuscarVecinos:
+		returning = implEvent::BuscarVecinos;
+		break;
 
 	case GUIEvent::EnviarMsj:
-		return implEvent::EnviarMsj;
-
-	case GUIEvent::AccionDone:
-		return implEvent::AccionDone;
-
-	case GUIEvent::Quit:
-		return implEvent::Quit;
+		returning = implEvent::EnviarMsj;
+		break;
 
 	case GUIEvent::Error:
-		return implEvent::Error;
+		returning = implEvent::Error;
+		break;
+
+	case GUIEvent::Back2Dashboard:
+		returning = implEvent::Back2Dashboard;
+
+	case GUIEvent::Quit:
+		returning = implEvent::Quit;
+		break;
 
 	default:
-		return implEvent::NoEvent;
+		break;
 	}
+
+	return returning;
 }

@@ -8,23 +8,15 @@
 
 struct Neighbour2 {
 	std::string IP;
-	unsigned int port;
+	int port;
 };
 
 typedef struct
 {
-	/*	RegistroNodo_t(std::string ip_, uint puerto_, uint type_) : IP(ip_), PUERTO(puerto_), TYPE(type_) {}
-		RegistroNodo_t(uint id_, uint type_) : ID(id_), TYPE(type_) {}
-		RegistroNodo_t(uint id2_) : ID(id2_) {}
-		RegistroNodo_t() {}
-	*/
-
-	//	void setParticipante(std::string ip_, uint puerto_, uint id_) { IP = ip_; PUERTO = puerto_; ID = id_; }
-
 	std::string IP;
-	unsigned int PUERTO;
-	unsigned int ID;
-	unsigned int TYPE;
+	int PUERTO;
+	int ID;
+	int TYPE;
 
 }RegistroNodo_t;
 
@@ -40,8 +32,11 @@ typedef struct
 
 
 /* EVENTOS FASE 2 */
+//enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error, Back2Dashboard, NoEvent, Quit };
 
-enum class GUIEvent { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, MostrarMsj, AccionDone, NoEvent, Quit, Error };
+
+
+enum class GUIEvent { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error, Back2Dashboard, NoEvent, Quit };
 
 
 

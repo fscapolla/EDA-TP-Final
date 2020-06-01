@@ -11,12 +11,13 @@
 
 /* EVENTOS FASE 2 */
 
-enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, MostrarMsj, AccionDone, Quit, NoEvent, Error };
+enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error, Back2Dashboard, NoEvent, Quit };
 
 //Heredan de clase genericEvent (EventHandling.h)
 class evCrearNodo : public genericEvent
 {
 public:
+
 	evCrearNodo(RegistroNodo_t registro_)
 	{
 		PUERTO = registro_.PUERTO;
@@ -67,12 +68,6 @@ public:
 };
 
 
-class evAccionDone : public genericEvent
-{
-public:
-	eventTypes getType(void) { return AccionDone; }
-};
-
 class evQuit : public genericEvent
 {
 public:
@@ -85,18 +80,24 @@ public:
 	eventTypes getType(void) { return Error; }
 };
 
+
+
+
 //Hereda de clase eventGenerator (EventHandling.h)
 class GUIEventGenerator : public eventGenerator
 {
 public:
+
 	//	GUIEventGenerator();
+
+
 	genericEvent* getEvent(unsigned int estadoactualdeFSM);
 	bool getGraphicInstallationError();
 
 private:
 	/* PRINTING FUNCTIONS */
-	implEvent getGUIevent(implStates estado);
 	GraphicF2 GUI;
+	implEvent getGUIevent(unsigned int estado);
 	implEvent TranslateGUIEvent(GUIEvent ev);
 
 };
