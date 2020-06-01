@@ -237,7 +237,7 @@ void GraphicF2::print_Dashboard()
 void GraphicF2::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber creado un NewFrame en otra parte del programa
 {
 
-	ImGui::SetNextWindowPos(ImVec2(450, 10));
+	ImGui::SetNextWindowPos(ImVec2(600, 10));
 	ImGui::SetNextWindowSize(ImVec2(550, 600));
 	ImGui::Begin(">>    BULLETIN BOARD   <<", 0, window_flags);
 
@@ -263,7 +263,7 @@ void GraphicF2::print_look4Veci(void)
 		 VENTANA: ELEJIR VECINO + MSJ
 	***************************************/
 	ImGui::SetNextWindowPos(ImVec2(20, 10));
-	ImGui::SetNextWindowSize(ImVec2(400, 700));
+	ImGui::SetNextWindowSize(ImVec2(400, 550));
 	ImGui::Begin(">> COMUNICACION ENTRE NODOS <<", 0, window_flags);
 
 	ParticipantesMsj_t ComEnProgreso = Comunicaciones.front();
@@ -288,7 +288,8 @@ void GraphicF2::print_look4Veci(void)
 
 
 	static int selected = -1;
-
+	static char CantCoins[10000];
+	static char PKey[40];
 
 	switch (ComEnProgreso.NodoEmisor.TYPE)
 	{
@@ -377,27 +378,26 @@ void GraphicF2::print_look4Veci(void)
 		{
 			if (ImGui::TreeNode("Datos para transaccion"))
 			{
-				static char CantCoins[1000000000];
 				ImGui::InputText("CANTIDAD:", CantCoins, IM_ARRAYSIZE(CantCoins));
 
-				static char PKey[40000000];
+
 				ImGui::InputText("PUBLIC KEY:", PKey, IM_ARRAYSIZE(PKey));
 
-				sprintf(bufSPV, "Transaccion");
+				sprintf(bufSPV,"Transaccion");
 				{
-					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
-						selected = GETBLOCKS_Genv;
+					if (ImGui::Selectable(buf, selected == TRANSACTION_Genv))
+						selected = TRANSACTION_Genv;
 				}
 				ImGui::TreePop();
 			}
 
-			sprintf(bufSPV, "Get block headers");
+			sprintf(bufSPV,"Get block headers");
 			{
 				if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Genv))
 					selected = GETBLOCKHEADERS_Genv;
 			}
 
-			sprintf(bufSPV, "Filter");
+			sprintf(bufSPV,"Filter");
 			{
 				if (ImGui::Selectable(bufSPV, selected == FILTER_Genv))
 					selected = FILTER_Genv;
@@ -412,10 +412,13 @@ void GraphicF2::print_look4Veci(void)
 	ImGui::Text(" ");
 
 
-	if (ImGui::Button(" >> ENVIAR MENSAJE << "))
+	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(selected,CantCoins,PKey,selectedN))
 	{
-
+		Comunicaciones.front().MENSAJE = selected;
 		Comunicaciones.front().selectedVecino = selectedN;
+		if(selected == TRANSACTION_Genv)
+		Comunicaciones.front().COINS_G = atoi(CantCoins);
+		Comunicaciones.front().PublicKey_G = PKey;
 		GUIQueue.push(GUIEvent::EnviarMsj);
 
 	}
@@ -438,6 +441,16 @@ void GraphicF2::print_look4Veci(void)
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
 
+}
+
+bool GraphicF2::verify(unsigned int tipo, string coinss, string pkeyyyy, int alguienFueSeleccionado)
+{
+	if ( ((tipo == TRANSACTION_Genv) && (coinss.empty() || pkeyyyy.empty()))  || (alguienFueSeleccionado == -1)  )
+	{
+		return false;
+	}
+	else
+		return true;
 }
 
 ParticipantesMsj_t GraphicF2::getComunicacion(void)

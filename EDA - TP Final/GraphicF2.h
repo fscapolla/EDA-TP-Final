@@ -91,7 +91,7 @@ private:
 
 	bool verify(bool*, bool*, string, string);		//Veryfy para creacion de nodo. Si es SPV no puede conectarse a otro SPV. IP PUERTO no pueden ser campos vacios. 
 	bool verify(uint, bool esSPV);			//Verify para BUSCAR VECINOS rellena el objeto ParticipantesMsj con info de emisor y sus vecinos y lo guarda en la queue
-	bool verify(ParticipantesMsj_t, string);		//Verify para ENVIAR MENSAJE relllena los campos faltantes del objeto ParticipantesMsj con el mensaje (verificado) y el vecino receptor
+	bool verify(unsigned int, string, string, int);		//Verify para ENVIAR MENSAJE relllena los campos faltantes del objeto ParticipantesMsj con el mensaje (verificado) y el vecino receptor
 
 	/* COLA DE EVENTOS QUE LEVANTA EL GUI EVENT GENERATOR */
 	std::queue<GUIEvent> GUIQueue;

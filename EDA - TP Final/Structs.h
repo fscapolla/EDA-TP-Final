@@ -24,13 +24,6 @@ typedef struct
 }RegistroNodo_t;
 
 
-/*
-typedef struct
-{
-	uint EDACOINS_G;
-	string PublicKey_G;
-}MensajeTX;
-*/
 
 typedef struct
 {
@@ -39,8 +32,12 @@ typedef struct
 	std::string mensaje;
 	std::vector<std::string> vecinos;	//Esto se usa para la funcion combo de ImGui
 	int selectedVecino;
+
+
 	unsigned int MENSAJE;		//Tipo de mensaje 
-	//MensajeTX infoTX; 
+	unsigned int COINS_G;
+	std::string PublicKey_G;
+
 
 } ParticipantesMsj_t;
 
