@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 #include "json.hpp"
-#include "C:\VCPKG\vcpkg\installed\x64-windows\include\curl\curl.h"
-//#include <curl/curl.h>
+//#include "C:\VCPKG\vcpkg\installed\x64-windows\include\curl\curl.h"
+#include <curl/curl.h>
 
 typedef enum {GET, POST} method_n;
 typedef enum {ERROR_FREE2, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA} errorCode_n;
