@@ -6,10 +6,11 @@
 #include <stdio.h>
 #include <map>
 
-struct Neighbour2 {
+struct Neighbour {
 	std::string IP;
-	int port;
+	unsigned int port;
 };
+
 
 typedef struct
 {
@@ -23,9 +24,9 @@ typedef struct
 typedef struct
 {
 	RegistroNodo_t NodoEmisor;
-	std::map<unsigned int, Neighbour2> NodosVecinos;
+	std::map<unsigned int, Neighbour> NodosVecinos;
 	std::string mensaje;
-	std::string vecinos;	//Esto se usa para la funcion combo de ImGui
+	std::vector<std::string> vecinos;	//Esto se usa para la funcion combo de ImGui
 	int selectedVecino;
 
 } ParticipantesMsj_t;

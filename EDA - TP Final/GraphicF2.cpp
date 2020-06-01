@@ -214,12 +214,16 @@ void GraphicF2::print_Dashboard()
 	ImGui::SetNextWindowPos(ImVec2(20, 390));
 	ImGui::SetNextWindowSize(ImVec2(380, 150));
 	ImGui::Begin(">> ENVIAR MENSAJER A NODO <<", 0, window_flags);
+	ImGui::Text("Inserte ID del nodo Emisor y su tipo (FULL o SPV)");
+
 	static char emisor[MAX_ID];
 	static bool type[2] = { false };
 
 	ImGui::InputText("NODO EMISOR:", emisor, sizeof(char) * MAX_ID);
+	ImGui::Checkbox("SPV:", &type[0]);
+	ImGui::Checkbox("FULL:", &type[1]);
 
-	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(atoi(emisor))))
+	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(atoi(emisor), type[0])))
 	{
 		EventQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
 	}
@@ -278,18 +282,25 @@ void GraphicF2::print_look4Veci(void)
 	static char mensaje[MAX_MSJ];
 	ImGui::InputText("Msj", mensaje, sizeof(char) * MAX_MSJ);
 
-	const char* vecinossss = Comunicaciones.front().vecinos.c_str();
+	ParticipantesMsj_t ComEnProgreso = Comunicaciones.front();
 
-	// Simplified one-liner Combo() API, using values packed in a single constant string
-	static int item_current = 2;
-	ImGui::Combo("Seleccione vecino", &item_current, vecinossss);
-
-
-	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(mensaje))
+	//Checkbox con imgui
+	int i;
+	static int selected = -1;
+	for (i = 0; i < ComEnProgreso.vecinos.size(); i++)
 	{
-		Comunicaciones.front().selectedVecino = item_current;
+		char buf[MAX_VECINOS];
+		sprintf(buf, ComEnProgreso.vecinos[i].c_str());
+		if (ImGui::Selectable(buf, selected == i))
+			selected = i;
+	}
+	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(ComEnProgreso, mensaje))
+	{
+		ComEnProgreso.mensaje.assign(mensaje);
+		Comunicaciones.front().selectedVecino = selected;
 		EventQueue.push(GUIEvent::EnviarMsj);
 	}
+
 
 	ImGui::End();
 
@@ -313,7 +324,7 @@ ParticipantesMsj_t GraphicF2::getComunicacion(void)
 	return Comunicacion;
 }
 
-bool GraphicF2::verify(string mensaje)
+bool GraphicF2::verify(ParticipantesMsj_t Comuni, string mensaje)
 {
 	/* ACA IRIA ALGO ASI
 	if(MENSAJE NO ES VALIDO)
@@ -323,11 +334,21 @@ bool GraphicF2::verify(string mensaje)
 	return true;
 }
 
-bool GraphicF2::verify(uint ExisteEsteNodo)
+bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 {
 	bool ret = false;
 
 	ParticipantesMsj_t tempParticipantes;
+
+	if (esUnNodoSPV)		//Si es SPV esto es TRUE
+	{
+		tempParticipantes.NodoEmisor.TYPE = SPV;
+	}
+	else
+	{
+		tempParticipantes.NodoEmisor.TYPE = FULL;
+	}
+
 
 	/*{
 		RegistroNodo_t NodoEmisor;
@@ -336,17 +357,18 @@ bool GraphicF2::verify(uint ExisteEsteNodo)
 		std::string vecinos;	//Esto se usa para la funcion combo de ImGui
 		int selectedVecino;
 	*/
-	Neighbour2 neighbourTemp = { "0001", 80 };
 
-	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour2>(1, neighbourTemp));
+	Neighbour neighbourTemp = { "0001", 80 };
 
-	Neighbour2 neighbourTemp2 = { "0002", 80 };
+	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour>(1, neighbourTemp));
 
-	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour2>(1, neighbourTemp2));
+	Neighbour neighbourTemp2 = { "0002", 80 };
 
-	Neighbour2 neighbourTemp3 = { "0003", 80 };
+	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour>(2, neighbourTemp2));
 
-	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour2>(1, neighbourTemp3));
+	Neighbour neighbourTemp3 = { "0003", 80 };
+
+	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour>(3, neighbourTemp3));
 
 
 
@@ -355,17 +377,16 @@ bool GraphicF2::verify(uint ExisteEsteNodo)
 	tempParticipantes.NodoEmisor.PUERTO = 80;
 
 	string tempIDVecino;
-	std::map<unsigned int, Neighbour2>::iterator it = tempParticipantes.NodosVecinos.begin();
+	std::map<unsigned int, Neighbour>::iterator it = tempParticipantes.NodosVecinos.begin();
 
-	while (it != tempParticipantes.NodosVecinos.end())
+
+	for (it = tempParticipantes.NodosVecinos.begin(); it != tempParticipantes.NodosVecinos.end(); ++it)
 	{
-		// Accessing KEY from element pointed by it.
-		tempIDVecino.append("IP: " + it->second.IP + " - PORT: " + to_string(it->second.port) + "\0");
+		tempIDVecino = "IP: " + it->second.IP + " - PORT: " + to_string(it->second.port);
 		cout << tempIDVecino << endl;
-
-		// Increment the Iterator to point to next entry
-		it++;
+		tempParticipantes.vecinos.push_back(tempIDVecino);
 	}
+
 
 	tempIDVecino.append("\0");
 

@@ -56,6 +56,8 @@
 #define MAX_MSJ 500
 #define SPV 1
 #define FULL 2
+#define MAX_VECINOS 50
+
 
 enum STATES { DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWERROR_G };
 
@@ -90,9 +92,9 @@ private:
 	void print_look4Veci();
 	void print_Bulletin();
 
-	bool verify(bool*, bool*, string, string);
-	bool verify(uint);
-	bool verify(string);
+	bool verify(bool*, bool*, string, string);		//Veryfy para creacion de nodo. Si es SPV no puede conectarse a otro SPV. IP PUERTO no pueden ser campos vacios. 
+	bool verify(uint, bool esSPV);			//Verify para BUSCAR VECINOS rellena el objeto ParticipantesMsj con info de emisor y sus vecinos y lo guarda en la queue
+	bool verify(ParticipantesMsj_t, string);		//Verify para ENVIAR MENSAJE relllena los campos faltantes del objeto ParticipantesMsj con el mensaje (verificado) y el vecino receptor
 
 	/* COLA DE EVENTOS QUE LEVANTA EL GUI EVENT GENERATOR */
 	std::queue<GUIEvent> EventQueue;
