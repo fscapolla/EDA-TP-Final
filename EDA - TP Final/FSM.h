@@ -1,24 +1,31 @@
 #pragma once
 #include "GenericFSM.h"
+#include "GUIEventGenerator.h"
+
 #define TX(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&FSM::x)) //casteo a funcion, por visual
 
 
-enum implStates : stateTypes { MostrandoMenu, Looking4Neighbours, ShowingError, Loading, State0 , State1, State2, State3 };
+enum implStates : stateTypes { ShwDashboard, Look4Veci, ShwNodos, ShwError };
 
 using namespace std;
 class FSM : public genericFSM
 {
 
 public:
-	FSM() : genericFSM(&fsmTable[0][0], 4,7 , MostrandoMenu) {}
+	FSM() : genericFSM(&fsmTable[0][0], 4, 7, ShwDashboard) {}
 
 private:
 	const fsmCell fsmTable[4][7] = {
-//EVENTOS:     Crear Nodo                         Crear Conexion                  Mostrar Nodos                   Buscar Vecinos               Enviar Mensaje                  Mostrar Estado             Accion Done
-		{  	{State0,TX(RutaDefault)},	       	{State1,TX(RutaDefault)},		{State2,TX(RutaDefault)},		{State3,TX(RutaDefault)},     {State3,TX(RutaDefault)},    {State3,TX(RutaDefault)} , { State3,TX(RutaDefault) }},        //Mostrando Menu
-		{	{State1,TX(RutaDefault)},		    {State2,TX(RutaDefault)},		{State3,TX(RutaDefault)},		{State3,TX(RutaDefault)},     {State0,TX(RutaDefault)},    {State3,TX(RutaDefault)},  {State3, TX(RutaDefault) }},        //Buscando Vecinos
-		{	{State2,TX(RutaDefault)},		    {State3,TX(RutaDefault)},		{State0,TX(RutaDefault)},		{State3,TX(RutaDefault)},     {State1,TX(RutaDefault)},     {State3,TX(RutaDefault)},  {State3, TX(RutaDefault) }},        //ShowingError
-		{	{State3,TX(RutaDefault)},		    {State0,TX(RutaDefault)},		{State1,TX(RutaDefault)},		{State3,TX(RutaDefault)},      {State2,TX(RutaDefault)},    {State3,TX(RutaDefault)},  {State3,TX(RutaDefault) }}          //loading
+		//EVENTOS:		Crear Nodo							 Crear Conexion							Mostrar Nodos                      Buscar Vecinos                   Back2Dashboard                      Error								No event
+//ESTADOS 
+		/*Shw Dashboard*/		{{ShwDashboard,TX(RutaDefault)},     {ShwDashboard,TX(RutaDefault)},		{ShwDashboard,TX(RutaDefault)},		{Look4Veci,TX(RutaDefault)},     {ShwDashboard,TX(RutaDefault)},     {ShwError,TX(RutaDefault)} ,      {ShwDashboard,TX(RutaDefault) }},
+
+		/*  Look4Veci  */		{{Look4Veci,TX(RutaDefault)},		 {Look4Veci,TX(RutaDefault)},			{Look4Veci,TX(RutaDefault)},		{Look4Veci,TX(RutaDefault)},     {ShwDashboard,TX(RutaDefault)},     {ShwError,TX(RutaDefault)},       {Look4Veci, TX(RutaDefault) }},
+
+		/*  ShwNodos   */		{{ShwNodos,TX(RutaDefault)},	     {ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},		 {ShwDashboard,TX(RutaDefault)},     {ShwError,TX(RutaDefault)},		{ShwNodos, TX(RutaDefault) }},
+
+		/*   ShwError  */		{{ShwError,TX(RutaDefault)},		 {ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},      {ShwDashboard,TX(RutaDefault)},	 {ShwError,TX(RutaDefault)},		{ShwError,TX(RutaDefault) }}
+
 	};
 
 	//The action routines for the FSM
@@ -28,5 +35,5 @@ private:
 
 
 	void RutaDefault(genericEvent* ev);
-
+	void BuscamosVecinos(genericEvent* ev);
 };

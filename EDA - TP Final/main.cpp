@@ -2,7 +2,7 @@
 #include "json.hpp"
 #include "Block.h"
 #include "Blockchain.h"
-#include "GenericFSM.h"
+#include "FSM.h"
 #include "EventHandling.h"
 #include "GUIEventGenerator.h"
 
