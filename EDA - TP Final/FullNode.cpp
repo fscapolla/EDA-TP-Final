@@ -164,14 +164,14 @@ std::string FullNode::GETreply(std::string &receivedRequest, unsigned int client
 
 	if ((receivedRequest.find("send_block") != std::string::npos) || (receivedRequest.find("send_block_header") != std::string::npos))
 	{
-		unsigned int idPositon = receivedRequest.find("block_id=");
+		unsigned int idPosition = receivedRequest.find("block_id=");
 		unsigned int countPosition = receivedRequest.find("count=");
 
 		if (idPosition != std::string::npos && countPosition != std::string::npos)
 		{
 			//Parseo id y count;
-			std::string ID_ = receivedRequest.substr(idPosition + 9, request.find_last_of("&") - idPosition - 9);
-			std::string tempcount = receivedRequest.substr(countPosition + 6, request.find("HTTP") - countPosition - 6);
+			std::string ID_ = receivedRequest.substr(idPosition + 9, receivedRequest.find_last_of("&") - idPosition - 9);
+			std::string tempcount = receivedRequest.substr(countPosition + 6, receivedRequest.find("HTTP") - countPosition - 6);
 			unsigned int count = std::stoi(tempcount);
 
 		}

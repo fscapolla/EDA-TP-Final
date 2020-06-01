@@ -5,53 +5,56 @@
 #include "GenericFSM.h"
 #include "EventHandling.h"
 #include "GUIEventGenerator.h"
-
+#include "NodeServer.h"
 
 #include <ios>
 
 int main(void)
 {
+	boost::asio::io_context io_context;
+	NodeServer server(io_context, "25.135.150.125:400");
+	io_context.run();
 
-    Blockchain bchain;
+ //   Blockchain bchain;
 
-    uint myCounter = 0;
- 
-	FSM fsm;
-	GUIEventGenerator evTipoGUI;	//generador de UN tipo de eventos 
+ //   uint myCounter = 0;
+ //
+	//FSM fsm;
+	//GUIEventGenerator evTipoGUI;	//generador de UN tipo de eventos 
 
-	if (!evTipoGUI.getGraphicInstallationError())
-	{
-		mainEventGenerator eventGen;	//generador de eventos de TODO el programa
+	//if (!evTipoGUI.getGraphicInstallationError())
+	//{
+	//	mainEventGenerator eventGen;	//generador de eventos de TODO el programa
 
-		//guiEventGenerator guiEvGen;
-		//netwEventGenerator netwEvGen;
+	//	//guiEventGenerator guiEvGen;
+	//	//netwEventGenerator netwEvGen;
 
-		eventGen.attach(&evTipoGUI);	//registro fuente de eventos
+	//	eventGen.attach(&evTipoGUI);	//registro fuente de eventos
 
-		bool quit = false;
-		do
-		{
-			genericEvent* ev;
-			ev = eventGen.getNextEvent(fsm.state);
-			if (ev != nullptr)
-			{
-				if (ev->getType() == Quit)
-				{
-					quit = true;
-				}
-				else
-					fsm.cycle(ev);
-				delete ev;
-			}
-		} while (!quit);
+	//	bool quit = false;
+	//	do
+	//	{
+	//		genericEvent* ev;
+	//		ev = eventGen.getNextEvent(fsm.state);
+	//		if (ev != nullptr)
+	//		{
+	//			if (ev->getType() == Quit)
+	//			{
+	//				quit = true;
+	//			}
+	//			else
+	//				fsm.cycle(ev);
+	//			delete ev;
+	//		}
+	//	} while (!quit);
 
-		system("pause");
-		return 0;
-	}
-	else
-	{
-		cout << "ERROR INSTALANDO PARTE GRAFICA" << endl;
-	}
+	//	system("pause");
+	//	return 0;
+	//}
+	//else
+	//{
+	//	cout << "ERROR INSTALANDO PARTE GRAFICA" << endl;
+	//}
     return 0;
 }
 
