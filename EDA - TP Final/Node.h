@@ -32,7 +32,7 @@ public:
 	//Funciones para enviar mensajes.
 	virtual bool POSTBlock(unsigned int neighbourID, const json& header)=0;
 	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_)=0;
-	virtual bool POSTMerkleBlock(unsigned int neighbourID)=0;
+	virtual bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID)=0;
 	virtual bool POSTFilter(unsigned int neighbourID)=0;
 	virtual bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
 	virtual bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
@@ -41,6 +41,7 @@ public:
 	//Funciones para dar respuestas
 	virtual std::string POSTreply(std::string&, unsigned int) = 0;
 	virtual std::string GETreply(std::string&, unsigned int) = 0;
+	virtual std::string ERRORreply(void);
 
 	virtual std::string makeDaytimeString(int secs);
 
@@ -65,7 +66,7 @@ protected:
 	unsigned int port;
 	unsigned int ID;
 	int sentMessage;
-	int receivedMessage;
+	int receivedMessage; //Puerto del cliente que me contactó (para enviar la respuesta).
 	state_n state;
 	NodeClient *client;
 	NodeServer *server;

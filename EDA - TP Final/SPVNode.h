@@ -29,8 +29,8 @@ public:
 	virtual bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 
 	//Funciones para dar respuestas
-	virtual std::string POSTreply(std::string&receivedRequest);
-	virtual std::string GETreply(std::string&receivedRequest);
+	virtual std::string POSTreply(std::string&receivedRequest, unsigned int clientPort);
+	virtual std::string GETreply(std::string&receivedRequest, unsigned int clientPort);
 
 	//Funciones para crear jsons.
 	json createJSONTx(Transaction Tx_);

@@ -200,11 +200,31 @@ bool Block::createMerkleTree(void){
 
 vector<string> Block::getMerklePath(Transaction Tx_)
 {
-	vector <string> newpath;
-	newpath.clear();
+	vector <string> path;
+	path.clear();
+	auto tx_ = TxVector.begin();
+	for (int i = 0; i < TxVector.size(); i++)
+	{
+		if (tx_->txID == Tx_.txID)
+			break;
+		tx_++;
+	}
 
+	//Si se encontró el Id dentro de la transacción
+	if (tx_ != TxVector.end())
+	{
+		int j = 0;
+		while (j < (Tree.EntireTree.size()-1))
+		{
+			if (j % 2)
+				path.push_back(Tree.EntireTree[--j]);
+			else
+				path.push_back(Tree.EntireTree[j + 1]);
+			j = j / 2 + pow(2, log2(Tree.EntireTree.size() + 1) - 1);
+		}
+	}
 
-	return newpath;
+	return path;
 }
 
 MerkleTree Block::getMerkleTree(void)

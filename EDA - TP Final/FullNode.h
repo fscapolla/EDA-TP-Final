@@ -15,7 +15,7 @@ public:
 	//Funciones para enviar mensajes.
 	virtual bool POSTBlock(unsigned int neighbourID, std::string& BlockID);
 	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
-	virtual bool POSTMerkleBlock(unsigned int neighbourID);
+	virtual bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
 	virtual bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count);
 
 	//Funciones para dar respuestas
@@ -25,9 +25,8 @@ public:
 	//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string& BlockId);
 	json createJSONTx(Transaction Tx_);
-	json createJSONMerkleBlock(void);
-
-	//virtual bool performRequest(void); Implementada en Node.h
+	json createJSONMerkleBlock(std::string BlockID_, std::string TxID);
+	json createJSONHeader(std::string BlockID_);
 
 private:
 	Blockchain NodeBlockchain;

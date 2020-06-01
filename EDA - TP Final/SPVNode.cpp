@@ -72,7 +72,7 @@ bool SPVNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 	else return false;
 }
 
-bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, unsigned int count) //Falta terminar
+bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, unsigned int count)
 {
 	if (neighbours.find(neighbourID) != neighbours.end())
 	{
@@ -110,26 +110,61 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 			client->setIP(neighbours[neighbourID].IP);
 			client->setPort(neighbours[neighbourID].port);
 			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+			return true;
 		}
 		else return false;
 	}
 	else return false;
 }
 
+std::string SPVNode::POSTreply(std::string & receivedRequest, unsigned int clientPort) //Falta terminar
+{
+	json response;
+	response["status"] = false;
+	/*for (auto& neighbour : neighbours) 
+	{
+		if (neighbour.second.port + 1 == clientPort)
+			receivedMessage = neighbour.first;
+	}*/
+
+	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
+		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
+		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
+}
+
+std::string SPVNode::GETreply(std::string & receivedRequest, unsigned int clientPort) //Falta terminar
+{
+	/*for (auto& neighbour : neighbours)
+	{
+	if (neighbour.second.port + 1 == clientPort)
+	receivedMessage = neighbour.first;
+	}*/
+
+	json response;
+	response["status"] = true;
+	response["result"] = NULL;
+
+	//Si se recibió un request de envío de bloque
+	if (receivedRequest.find("send_merkle_block") != std::string::npos)
+	{
+
+	}
+	else
+	{
+		//Error de contenido
+		response["status"] = false;
+		response["result"] = 2;
+	}
+
+	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
+		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
+		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
+}
+
 /************************************************************************************************
 *					                         Respuestas											*
 *																								*
 *************************************************************************************************/
-
-std::string SPVNode::POSTreply(std::string & receivedRequest)
-{
-	return std::string();
-}
-
-std::string SPVNode::GETreply(std::string & receivedRequest)
-{
-	return std::string();
-}
 
 
 /************************************************************************************************
