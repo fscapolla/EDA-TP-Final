@@ -19,7 +19,7 @@ bool Node::performRequest(void)
 		{
 			if (!(client->performRequest()))
 			{
-				state = FREE;
+				state = FINISHED;
 				return true;
 			}
 		}

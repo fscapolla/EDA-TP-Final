@@ -48,9 +48,17 @@ bool SPVNode::POSTFilter(unsigned int neighbourID)
 			client->usePOSTmethod("/eda_coin/send_filter", jsonFilter);
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 bool SPVNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
@@ -67,9 +75,17 @@ bool SPVNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 			//client->performRequest();
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, unsigned int count)
@@ -84,9 +100,17 @@ bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, u
 			client->useGETmethod("/eda_coin/get_block_header?block_id=" + blockID_ + "&count=" + to_string(count));
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
@@ -99,7 +123,7 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 
 			jsonTx["nTxin"] = 0;
 			jsonTx["nTxout"] = 1;
-			jsonTx["txid"] = "7E46A3BC";
+			jsonTx["txid"] = "FAKEID78";
 			jsonTx["vin"] = json();
 			json vout_;
 			vout_["amount"] = amount;
@@ -112,43 +136,50 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
-std::string SPVNode::POSTreply(std::string & receivedRequest, unsigned int clientPort) //Falta terminar
+/************************************************************************************************
+*					                         Respuestas											*
+*																								*
+*************************************************************************************************/
+
+std::string SPVNode::POSTreply(std::string & receivedRequest, unsigned int clientID_) //Falta terminar
 {
-	json response;
-	response["status"] = false;
-	/*for (auto& neighbour : neighbours) 
-	{
-		if (neighbour.second.port + 1 == clientPort)
-			receivedMessage = neighbour.first;
-	}*/
-
-	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
-		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
-		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
-}
-
-std::string SPVNode::GETreply(std::string & receivedRequest, unsigned int clientPort) //Falta terminar
-{
-	/*for (auto& neighbour : neighbours)
-	{
-	if (neighbour.second.port + 1 == clientPort)
-	receivedMessage = neighbour.first;
-	}*/
-
 	json response;
 	response["status"] = true;
 	response["result"] = NULL;
+	clientID = clientID_;
 
 	//Si se recibió un request de envío de bloque
 	if (receivedRequest.find("send_merkle_block") != std::string::npos)
 	{
-
+		int header = receivedRequest.find("Content-Type");
+		int data = receivedRequest.find("Data=");
+		if (header != std::string::npos && data != std::string::npos)
+		{
+			//Guardo el header recibido.
+			json header=json::parse(receivedRequest.substr(data + 5, header - data - 5));
+			jsonHeaders.push_back(header);
+		}
+		else
+		{
+			//Error de formato
+			response["status"] = false;
+			response["result"] = 1;
+		}
 	}
+
 	else
 	{
 		//Error de contenido
@@ -157,15 +188,23 @@ std::string SPVNode::GETreply(std::string & receivedRequest, unsigned int client
 	}
 
 	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
-		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
-		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
+	makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
+	"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
 }
 
-/************************************************************************************************
-*					                         Respuestas											*
-*																								*
-*************************************************************************************************/
+std::string SPVNode::GETreply(std::string & receivedRequest, unsigned int clientID_) //Falta terminar
+{
+	json response;
+	response["status"] = false;
+	response["result"] = 2;
+	clientID = clientID_; //Esto lo debería recibir de boost endpoint.
 
+
+
+	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
+	makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
+	"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
+}
 
 /************************************************************************************************
 *					               GENERADORES DE JSON											*

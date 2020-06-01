@@ -4,7 +4,7 @@
 NodeClient::NodeClient(std::string IP_, int port_)
 {
 	IP = IP_;
-	own_port = port_;
+	own_port = port_+1;
 	easyHandler = curl_easy_init();
 	if (!easyHandler)
 	{

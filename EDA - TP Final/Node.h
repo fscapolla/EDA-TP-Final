@@ -5,8 +5,8 @@
 #include <chrono>
 #include <map>
 
-typedef enum {FREE,CLIENT,SERVER} state_n;
-typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE} errorType_n;
+typedef enum {FREE,CLIENT,SERVER, FINISHED} state_n;
+typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE, NOT_NEIGHBOUR} errorType_n;
 typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection_;
 
 struct Neighbour {
@@ -66,7 +66,7 @@ protected:
 	unsigned int port;
 	unsigned int ID;
 	int sentMessage;
-	int receivedMessage; //Puerto del cliente que me contactó (para enviar la respuesta).
+	int clientID; //ID del cliente que me contactó (para enviar la respuesta).
 	state_n state;
 	NodeClient *client;
 	NodeServer *server;

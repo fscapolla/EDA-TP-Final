@@ -2,6 +2,68 @@
 #include <iostream>
 
 
+Block::Block(const json & j)
+{
+	blockjson = j;
+	
+	auto BigBlockID_ = j["blockid"];
+	BigBlockID = BigBlockID_.get<string>();
+	auto height_ = j["height"];
+	height = height_;
+	auto merkleRoot_ = j["merkleroot"];
+	merkleRoot = merkleRoot_.get<string>();
+	auto ntx_ = j["nTx"];
+	ntx = ntx_;
+	auto nonce_ = j["nonce"];
+	nonce = nonce_;
+	auto prevBlockID_ = j["previousblockid"];
+	prevBlockID = prevBlockID_.get<string>();
+
+	auto Tx_ = j["tx"];
+	for (auto&tx_ : Tx_)
+	{
+		Transaction Tx;
+
+		auto nTxin_ = tx_["nTxin"];
+		Tx.nTxin = nTxin_;
+		auto nTxout_ = tx_["nTxout"];
+		Tx.nTxout = nTxout_;
+		auto txId_ = tx_["txid"];
+		Tx.txID = txId_.get<string>();
+
+		auto vin = tx_["vin"];
+		for (auto&vin_ : vin)
+		{
+			VinS vIn;
+			auto vinId_ = vin_["blockid"];
+			vIn.LilblockID = vinId_.get<string>();
+			auto outputindex_ = vin_["outputIndex"];
+			vIn.outputIndex = outputindex_;
+			auto signature_ = vin_["signature"];
+			vIn.signature = signature_.get<string>();
+			auto txID_ = vin_["txid"];
+			vIn.txID = txID_.get<string>();
+
+			Tx.vIn.push_back(vIn);
+		}
+
+		auto vout = tx_["vout"];
+		for (auto&vout_ : vout)
+		{
+			VoutS vOut;
+			auto amount_ = vout_["amount"];
+			vOut.amount = amount_;
+			auto publicID_ = vout_["publicid"];
+			vOut.publicID = publicID_.get<string>();
+
+			Tx.vOut.push_back(vOut);
+		}
+
+		TxVector.push_back(Tx);
+	}
+
+}
+
 Block::Block() {
 
 }
@@ -220,7 +282,7 @@ vector<string> Block::getMerklePath(Transaction Tx_)
 				path.push_back(Tree.EntireTree[--j]);
 			else
 				path.push_back(Tree.EntireTree[j + 1]);
-			j = j / 2 + pow(2, log2(Tree.EntireTree.size() + 1) - 1);
+			j = (unsigned int)(j / 2 + pow(2, (((int)log2(Tree.EntireTree.size() + 1)) - 1)));
 		}
 	}
 
@@ -245,6 +307,11 @@ uint Block::getMerkleHeight(void)
 uint Block::getNumLeaves(void)
 {
 	return Tree.numberOfLeaves;
+}
+
+json Block::getBlockJSON(void)
+{
+	return blockjson;
 }
 
 static unsigned int generateID(unsigned char *str)

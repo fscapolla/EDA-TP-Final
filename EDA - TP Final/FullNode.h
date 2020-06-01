@@ -17,10 +17,11 @@ public:
 	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
 	virtual bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
 	virtual bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count);
+	virtual bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 
 	//Funciones para dar respuestas
-	virtual std::string POSTreply(std::string&receivedRequest, unsigned int clientPort_);
-	virtual std::string GETreply(std::string&receivedRequest, unsigned int clientPort_);
+	virtual std::string POSTreply(std::string&receivedRequest, unsigned int clientID_);
+	virtual std::string GETreply(std::string&receivedRequest, unsigned int clientID_);
 
 	//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string& BlockId);

@@ -57,9 +57,17 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 			//client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}	
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 /*POST Transaction
@@ -80,9 +88,17 @@ bool FullNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 			//client->performRequest();
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 //POST Merkleblock
@@ -102,9 +118,17 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 			//client->performRequest();
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count)
@@ -119,9 +143,53 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 			client->useGETmethod("/eda_coin/get_blocks?block_id=" + blockID_ + "&count=" + to_string(count));
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
+}
+
+bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
+{
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			json jsonTx;
+
+			jsonTx["nTxin"] = 0;
+			jsonTx["nTxout"] = 1;
+			jsonTx["txid"] = "FAKEID78";
+			jsonTx["vin"] = json();
+			json vout_;
+			vout_["amount"] = amount;
+			vout_["publicid"] = wallet;
+			jsonTx["vout"] = vout_;
+
+			state = CLIENT;
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+			return true;
+		}
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
+	}
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 /************************************************************************************************
@@ -131,17 +199,31 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 
 //Respuesta a los mensajes del tipo POST.
 
-std::string FullNode::POSTreply(std::string &receivedRequest, unsigned int clientPort_)
+std::string FullNode::POSTreply(std::string &receivedRequest, unsigned int clientID_)
 {
 	json response;
 	response["status"] = "true";
 	response["result"] = NULL;
-	receivedMessage = clientPort_;
+	clientID = clientID_; //Se tiene que recuperar con Boost Endpoint
 	
 	//Si se trata de un POSTblock guarda el block enviado
 	if (receivedRequest.find("send_block") != std::string::npos)
 	{
-
+		int block = receivedRequest.find("Content-Type");
+		int data = receivedRequest.find("Data=");
+		if (block != std::string::npos && data != std::string::npos)
+		{
+			//Agrego el bloque a la blockchain.
+			json blockInfo = json::parse(receivedRequest.substr(data + 5, block - data - 5));
+			Block blck(blockInfo);
+			NodeBlockchain.getBlocksArr().push_back(blck);
+		}
+		else
+		{
+			//Error de contenido
+			response["status"] = false;
+			response["result"] = 2;
+		}
 
 	}
 
@@ -161,12 +243,12 @@ std::string FullNode::POSTreply(std::string &receivedRequest, unsigned int clien
 		"\r\nContent-Type: text/html; charset=iso-8859-1\r\n\r\n" + response.dump();*/
 }
 
-std::string FullNode::GETreply(std::string &receivedRequest, unsigned int clientPort_)
+std::string FullNode::GETreply(std::string &receivedRequest, unsigned int clientID_)
 {
 	json response;
 	json tempresponse;
 	response["status"] = "true";
-	receivedMessage = clientPort_; //Indica de quién recibí el mensaje.
+	clientID = clientID_;
 
 	if ((receivedRequest.find("send_block") != std::string::npos) || (receivedRequest.find("send_block_header") != std::string::npos))
 	{
