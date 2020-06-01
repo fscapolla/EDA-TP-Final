@@ -213,6 +213,7 @@ void GraphicF2::print_Dashboard()
 
 	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(atoi(emisor), type[0])))
 	{
+		//GUIQueue.push(GUIEvent::Error);
 		GUIQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
 	}
 	ImGui::End();
@@ -431,8 +432,6 @@ void GraphicF2::print_look4Veci(void)
 
 	ImGui::End();
 
-
-
 	//Rendering
 	ImGui::Render();
 
@@ -592,20 +591,25 @@ void GraphicF2::print_Error(void)
 	ImGui::NewFrame();
 
 	ImGui::SetNextWindowPos(ImVec2(400, 270));
-	ImGui::SetNextWindowSize(ImVec2(300, 70));
+	ImGui::SetNextWindowSize(ImVec2(300, 300));
 
 	ImGui::Begin("No se puede hacer esa operacion", 0, window_flags);
 
-	if (ImGui::Button("Quit"))
+	if (ImGui::Button(" >> Quit << "))
 	{
 		GUIQueue.push(GUIEvent::Quit);
+	}
+
+	if (ImGui::Button(" >>  VOLVER A DASHBOARD  << "))
+	{
+		GUIQueue.push(GUIEvent::Back2Dashboard);
 	}
 
 	ImGui::End();
 
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(179, 255, 255));
+	al_clear_to_color(al_map_rgb(179, 0, 0));
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();

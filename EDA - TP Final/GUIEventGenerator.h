@@ -67,6 +67,11 @@ public:
 	ParticipantesMsj_t Comunication;
 };
 
+class evBack2Dashboard :public genericEvent
+{
+public:
+	eventTypes getType(void) { return Back2Dashboard; }
+};
 
 class evQuit : public genericEvent
 {

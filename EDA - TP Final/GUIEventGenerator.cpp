@@ -28,6 +28,10 @@ getEvent(unsigned int estado)
 		ret = new evEnviarMsj(this->GUI.getComunicacion());
 		break;
 
+	case implEvent::Back2Dashboard:
+		ret = new evBack2Dashboard;
+		break;
+
 	case implEvent::Error:
 		ret = new evError;
 		break;

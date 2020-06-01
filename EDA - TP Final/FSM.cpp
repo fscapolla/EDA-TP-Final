@@ -85,3 +85,13 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 		*/
 	}
 }
+
+
+void FSM::ErrorEncontrado_r_acc(genericEvent* ev)
+{
+	if (static_cast<evBuscarVecinos*>(ev)->getType() == Error)
+	{
+		cout << " ERROR ENCONTRADO " << endl;
+		this->state4Graphic = SHWERROR_G;
+	}
+}
