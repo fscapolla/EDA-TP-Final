@@ -57,10 +57,6 @@
 #define SPV 1
 #define FULL 2
 
-/* EVENTOS FASE 2 */
-
-enum class GUIEvent { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, MostrarMsj, AccionDone, NoEvent, Quit, Error };
-
 
 /* Filesystems namespace */
 namespace fs = boost::filesystem;

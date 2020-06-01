@@ -39,6 +39,10 @@ typedef struct
 } ParticipantesMsj_t;
 
 
+/* EVENTOS FASE 2 */
+
+enum class GUIEvent { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, MostrarMsj, AccionDone, NoEvent, Quit, Error };
+
 
 
 
