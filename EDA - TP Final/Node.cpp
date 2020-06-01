@@ -45,9 +45,9 @@ std::string Node::ERRORreply(void)
 	response["status"] = false;
 	response["result"] = 1;
 
-	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
+	return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
 		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
-		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
+		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();
 }
 
 std::string Node::makeDaytimeString(int secs)
