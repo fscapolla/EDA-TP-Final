@@ -173,6 +173,9 @@
     <ClInclude Include="GenericFSM.h">
       <Filter>Header Files\FSM Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Imgui_files\imgui.ini">

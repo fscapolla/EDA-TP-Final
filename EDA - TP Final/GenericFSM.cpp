@@ -15,7 +15,7 @@ cycle(genericEvent* ev)
 {
 	if (ev != nullptr)
 	{
-		fsmCell temp = FSMTable[static_cast<unsigned int>(state) * rowCount + static_cast<unsigned int>(ev->getType())];
+		fsmCell temp = FSMTable[static_cast<unsigned int>(state) * columnCount + static_cast<unsigned int>(ev->getType())];
 		auto f = bind(temp.action, this, ev);
 
 		f();
