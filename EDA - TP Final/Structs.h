@@ -6,11 +6,13 @@
 #include <stdio.h>
 #include <map>
 
+enum MSJESRec { BLOCK_Grec, TRANSACTION_Grec, MERKLEBLOCK_Grec, FILTER_Grec, GETBLOCKHEADERS_Grec, GETBLOCKS_Grec };
+enum MSJESEnv { BLOCK_Genv, TRANSACTION_Genv, MERKLEBLOCK_Genv, FILTER_Genv, GETBLOCKHEADERS_Genv, GETBLOCKS_Genv };
+
 struct Neighbour {
 	std::string IP;
 	unsigned int port;
 };
-
 
 typedef struct
 {
@@ -21,6 +23,15 @@ typedef struct
 
 }RegistroNodo_t;
 
+
+/*
+typedef struct
+{
+	uint EDACOINS_G;
+	string PublicKey_G;
+}MensajeTX;
+*/
+
 typedef struct
 {
 	RegistroNodo_t NodoEmisor;
@@ -28,6 +39,8 @@ typedef struct
 	std::string mensaje;
 	std::vector<std::string> vecinos;	//Esto se usa para la funcion combo de ImGui
 	int selectedVecino;
+	unsigned int MENSAJE;		//Tipo de mensaje 
+	//MensajeTX infoTX; 
 
 } ParticipantesMsj_t;
 

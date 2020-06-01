@@ -263,35 +263,167 @@ void GraphicF2::print_look4Veci(void)
 		 VENTANA: ELEJIR VECINO + MSJ
 	***************************************/
 	ImGui::SetNextWindowPos(ImVec2(20, 10));
-	ImGui::SetNextWindowSize(ImVec2(380, 180));
+	ImGui::SetNextWindowSize(ImVec2(400, 700));
 	ImGui::Begin(">> COMUNICACION ENTRE NODOS <<", 0, window_flags);
-
-	ImGui::Text("Inserte su mensaje");
-	static char mensaje[MAX_MSJ];
-	ImGui::InputText("Msj", mensaje, sizeof(char) * MAX_MSJ);
 
 	ParticipantesMsj_t ComEnProgreso = Comunicaciones.front();
 
+
+	ImGui::Text(" ");
+
+	ImGui::Text(" >> Seleccione un vecino << ");
+
 	//Checkbox con imgui
 	int i;
-	static int selected = -1;
+	static int selectedN = -1;
 	for (i = 0; i < ComEnProgreso.vecinos.size(); i++)
 	{
 		char buf[MAX_VECINOS];
 		sprintf(buf, ComEnProgreso.vecinos[i].c_str());
-		if (ImGui::Selectable(buf, selected == i))
-			selected = i;
-	}
-	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(ComEnProgreso, mensaje))
-	{
-		ComEnProgreso.mensaje.assign(mensaje);
-		Comunicaciones.front().selectedVecino = selected;
-		GUIQueue.push(GUIEvent::EnviarMsj);
+		if (ImGui::Selectable(buf, selectedN == i))
+			selectedN = i;
 	}
 
-	if (ImGui::Button(" >>  VOLVER A DASHBOARD  << ") && verify(ComEnProgreso, mensaje))
+	ImGui::Text(" ");
+
+
+	static int selected = -1;
+
+
+	switch (ComEnProgreso.NodoEmisor.TYPE)
+	{
+	case FULL:
+		char buf[32];
+		ImGui::Text(">> RECIBIR <<");
+		if (ImGui::TreeNode("Operaciones para recibir:"))
+		{
+			sprintf(buf, "Get blocks_");
+			{
+				if (ImGui::Selectable(buf, selected == GETBLOCKS_Grec))
+					selected = GETBLOCKS_Grec;
+			}
+			sprintf(buf, "Get block headers_");
+			{
+				if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Grec))
+					selected = GETBLOCKHEADERS_Grec;
+			}
+			sprintf(buf, "Block_");
+			{
+				if (ImGui::Selectable(buf, selected == BLOCK_Grec))
+					selected = BLOCK_Grec;
+			}
+			sprintf(buf, "Filter_");
+			{
+				if (ImGui::Selectable(buf, selected == FILTER_Grec))
+					selected = FILTER_Grec;
+			}
+			ImGui::TreePop();
+		}
+
+		ImGui::Text(" ");
+		ImGui::Text(">> ENVIAR <<");
+
+		if (ImGui::TreeNode("Operaciones para enviar:"))
+		{
+			if (ImGui::TreeNode("Datos para transaccion"))
+			{
+				static char CantCoins[1000000000];
+				ImGui::InputText("CANTIDAD:", CantCoins, IM_ARRAYSIZE(CantCoins));
+
+				static char PKey[40000000];
+				ImGui::InputText("PUBLIC KEY:", PKey, IM_ARRAYSIZE(PKey));
+
+				sprintf(buf, "Transaccion_");
+				{
+					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
+						selected = GETBLOCKS_Genv;
+				}
+				ImGui::TreePop();
+			}
+
+			sprintf(buf, "Get blocks_");
+			{
+				if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
+					selected = GETBLOCKS_Genv;
+			}
+			sprintf(buf, "Block_");
+			{
+				if (ImGui::Selectable(buf, selected == BLOCK_Genv))
+					selected = BLOCK_Genv;
+			}
+			ImGui::TreePop();
+		}
+
+		break;
+
+	case SPV:
+
+		char bufSPV[32];
+		ImGui::Text(">> RECIBIR <<");
+		if (ImGui::TreeNode("Operaciones para recibir:"))
+		{
+			sprintf(bufSPV, "MerkleBlock");
+			{
+				if (ImGui::Selectable(bufSPV, selected == MERKLEBLOCK_Grec))
+					selected = MERKLEBLOCK_Grec;
+			}
+			ImGui::TreePop();
+		}
+
+		ImGui::Text(" ");
+		ImGui::Text(">> ENVIAR <<");
+
+		if (ImGui::TreeNode("Operaciones para enviar:"))
+		{
+			if (ImGui::TreeNode("Datos para transaccion"))
+			{
+				static char CantCoins[1000000000];
+				ImGui::InputText("CANTIDAD:", CantCoins, IM_ARRAYSIZE(CantCoins));
+
+				static char PKey[40000000];
+				ImGui::InputText("PUBLIC KEY:", PKey, IM_ARRAYSIZE(PKey));
+
+				sprintf(bufSPV, "Transaccion");
+				{
+					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
+						selected = GETBLOCKS_Genv;
+				}
+				ImGui::TreePop();
+			}
+
+			sprintf(bufSPV, "Get block headers");
+			{
+				if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Genv))
+					selected = GETBLOCKHEADERS_Genv;
+			}
+
+			sprintf(bufSPV, "Filter");
+			{
+				if (ImGui::Selectable(bufSPV, selected == FILTER_Genv))
+					selected = FILTER_Genv;
+			}
+
+			ImGui::TreePop();
+		}
+		break;
+	}
+
+	ImGui::Text(" ");
+	ImGui::Text(" ");
+
+
+	if (ImGui::Button(" >> ENVIAR MENSAJE << "))
+	{
+
+		Comunicaciones.front().selectedVecino = selectedN;
+		GUIQueue.push(GUIEvent::EnviarMsj);
+
+	}
+
+	if (ImGui::Button(" >>  VOLVER A DASHBOARD  << "))
 	{
 		GUIQueue.push(GUIEvent::Back2Dashboard);
+		cout << "VOLVER  A DASHBOARD BUTTON " << endl;
 	}
 
 	ImGui::End();
@@ -316,15 +448,6 @@ ParticipantesMsj_t GraphicF2::getComunicacion(void)
 	return Comunicacion;
 }
 
-bool GraphicF2::verify(ParticipantesMsj_t Comuni, string mensaje)
-{
-	//ACA IRIA ALGO ASI
-	//if(MENSAJE NO ES VALIDO)
-	GUIQueue.push(GUIEvent::Error);
-	
-
-	return true;
-}
 
 bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 {
@@ -384,6 +507,7 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 
 	this->Comunicaciones.push(tempParticipantes);
 
+	//Comunicaciones = tempParticipantes;
 
 	/*
 	for (auto itnodo : FullNodes)

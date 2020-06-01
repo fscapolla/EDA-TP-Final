@@ -44,9 +44,6 @@
 #include "SPVNode.h"
 #include "Structs.h"
 
-/* FSM */
-//#include "FSM.h"			//La incluyo para tener los implStates
-
 /* DEFINES */
 #define SIZE_SCREEN_X 2000
 #define SIZE_SCREEN_Y 700

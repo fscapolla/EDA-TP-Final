@@ -21,7 +21,7 @@ getEvent(unsigned int estado)
 		break;
 
 	case implEvent::BuscarVecinos:
-		ret = new evBuscarVecinos();
+		ret = new evBuscarVecinos;
 		break;
 
 	case implEvent::EnviarMsj:
@@ -96,7 +96,7 @@ implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
 
 	case GUIEvent::Back2Dashboard:
 		returning = implEvent::Back2Dashboard;
-		break; 
+		break;
 
 	case GUIEvent::Quit:
 		returning = implEvent::Quit;
