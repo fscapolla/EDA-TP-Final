@@ -15,7 +15,6 @@
 #include <iterator>
 #include <stdio.h>
 #include <iostream>
-#include <iostream>
 #include <fstream>
 #include <queue>
 
@@ -78,7 +77,12 @@ public:
 	/*  GETTERS  */
 	RegistroNodo_t getRegistro(void);
 	ParticipantesMsj_t getComunicacion(void);
+
 	std::ofstream BulletinFile;
+
+	std::string BulletinFileName;
+
+	std::string BulletinText; 
 
 private:
 	/* FUNCIONES DE GraphicF2 */

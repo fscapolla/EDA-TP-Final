@@ -8,7 +8,6 @@
 
 #include "Structs.h"
 #include "GraphicF2.h"
-
 #include "eventHandling.h"
 
 /* EVENTOS FASE 2 */
@@ -20,13 +19,15 @@ class evCrearNodo : public genericEvent
 {
 public:
 
-	evCrearNodo(RegistroNodo_t registro_, std::vector<RegistroNodo_t>*vectorArrPtr,unsigned int ID_)
+	evCrearNodo(RegistroNodo_t registro_, std::vector<RegistroNodo_t>*vectorArrPtr,unsigned int ID_, string* nameofFile_)
 	{
 		PUERTO = registro_.PUERTO;
 		IP = registro_.IP;
 		TYPE = registro_.TYPE;
 		NodoArray = vectorArrPtr;
 		ID = ID_;
+		nameofFile = nameofFile_;
+
 	}
 
 	eventTypes getType(void) { return CrearNodo; }		//Esto lo usan las rutinas de accion para verificar que se trata del evento correcto
@@ -35,22 +36,22 @@ public:
 	uint PUERTO;
 	string IP;
 	unsigned int ID;
+	string* nameofFile;
 };
-
 
 class evCrearConexion : public genericEvent
 {
 public:
-	evCrearConexion(RegistroNodo_t nodo1_, RegistroNodo_t nodo2_, std::vector<RegistroNodo_t>* vectorArrPtr) : Nodo1(nodo1_), Nodo2(nodo2_), NodoArrayC(vectorArrPtr) {}
+	evCrearConexion(RegistroNodo_t nodo1_, RegistroNodo_t nodo2_, std::vector<RegistroNodo_t>* vectorArrPtr, string * nameofFile_) : nameofFile(nameofFile_), Nodo1(nodo1_), Nodo2(nodo2_), NodoArrayC(vectorArrPtr) {}
 
 	eventTypes getType(void) { return CrearConexion; }
 
 	RegistroNodo_t Nodo1;
 	RegistroNodo_t Nodo2;
 	std::vector<RegistroNodo_t>* NodoArrayC;
+	string* nameofFile;
 
 };
-
 
 class evMostrarNodos : public genericEvent
 {
@@ -68,10 +69,11 @@ public:
 class evEnviarMsj : public genericEvent
 {
 public:
-	evEnviarMsj(ParticipantesMsj_t comunicacion_) : Comunication(comunicacion_) {}
+	evEnviarMsj(ParticipantesMsj_t comunicacion_, string* nameofFile_) : nameofFile(nameofFile_), Comunication(comunicacion_) {}
 
 	eventTypes getType(void) { return EnviarMsj; }
 	ParticipantesMsj_t Comunication;
+	string* nameofFile;
 };
 
 class evBack2Dashboard :public genericEvent

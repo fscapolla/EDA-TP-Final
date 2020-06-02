@@ -39,6 +39,7 @@ private:
 
 	std::vector<SPVNode> spvArray;
 	std::vector<FullNode> fullArray;
+	std::ofstream BulletinFileR_ACC;
 
 	void RutaDefault(genericEvent* ev);
 	void BuscarVecinos_r_acc(genericEvent* ev);

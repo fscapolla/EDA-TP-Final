@@ -13,12 +13,12 @@ getEvent(unsigned int estado)
 	switch (getGUIevent(estado))
 	{
 	case implEvent::CrearNodo:
-		ret = new evCrearNodo(this->GUI.getRegistro(), this->GUI.getNodoArray(), this->nodeID);
-		nodeID++;
+		ret = new evCrearNodo(this->GUI.getRegistro(), this->GUI.getNodoArray(), this->nodeID, &(this->GUI.BulletinText));
+		this->nodeID++;
 		break;
 
 	case implEvent::CrearConexion:
-		ret = new evCrearConexion(this->GUI.getRegistro(), this->GUI.getRegistro(), this->GUI.getNodoArray());		//Toma los registos en cola
+		ret = new evCrearConexion(this->GUI.getRegistro(), this->GUI.getRegistro(), this->GUI.getNodoArray() , &(this->GUI.BulletinText));		//Toma los registos en cola
 		break;
 
 	case implEvent::MostrarNodos:
@@ -30,7 +30,7 @@ getEvent(unsigned int estado)
 		break;
 
 	case implEvent::EnviarMsj:
-		ret = new evEnviarMsj(this->GUI.getComunicacion());
+		ret = new evEnviarMsj(this->GUI.getComunicacion(), &(this->GUI.BulletinText));
 		break;
 
 	case implEvent::Back2Dashboard:

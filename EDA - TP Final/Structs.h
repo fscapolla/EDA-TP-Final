@@ -24,6 +24,7 @@ typedef struct RegistroNodo_t
 
 	RegistroNodo_t(int ID_, std::string IP_, int PUERTO_, int TYPE_) :ID(ID_), IP(IP_), PUERTO(PUERTO_), TYPE(TYPE_) {}
 	RegistroNodo_t() {}
+
 }RegistroNodo_t;
 
 
@@ -31,7 +32,7 @@ typedef struct RegistroNodo_t
 typedef struct
 {
 	RegistroNodo_t NodoEmisor;
-	std::map<unsigned int, Neighbour> NodosVecinos;
+	std::map<unsigned int, Neighbour> NodosVecinosPT;
 	std::string mensaje;
 	std::vector<std::string> vecinos;	//Esto se usa para la funcion combo de ImGui
 	int selectedVecino;

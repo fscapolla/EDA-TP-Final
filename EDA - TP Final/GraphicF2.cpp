@@ -1,5 +1,5 @@
 
-
+#include "GUIEventGenerator.h"
 #include "GraphicF2.h"
 
 GraphicF2::GraphicF2()
@@ -13,7 +13,7 @@ GraphicF2::GraphicF2()
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 		window_flags |= ImGuiWindowFlags_NoMove;
 
-
+		BulletinFileName = "C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final/MisNoticias.txt";
 	}
 	else
 	{
@@ -219,10 +219,10 @@ void GraphicF2::print_Dashboard()
 	ImGui::Checkbox("SPV:", &type[0]);
 	ImGui::Checkbox("FULL:", &type[1]);
 
+
 	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(atoi(emisor), type[0])))
 	{
-		//GUIQueue.push(GUIEvent::Error);
-		GUIQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
+			GUIQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
 	}
 	ImGui::End();
 
@@ -240,7 +240,7 @@ void GraphicF2::print_Dashboard()
 	ImGui::SetNextWindowSize(ImVec2(300, 100));
 	ImGui::Begin(">> MOSTRAR NODOS CREADOS EN LA RED <<", 0, window_flags);
 
-	if ((ImGui::Button(" Presione aqui ")) && (verify(atoi(emisor), type[0])))
+	if (ImGui::Button(" Presione aqui"))
 	{
 		GUIQueue.push(GUIEvent::MostrarNodos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
 	}
@@ -270,23 +270,20 @@ void GraphicF2::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber cre
 	ImGui::SetNextWindowSize(ImVec2(550, 600));
 	ImGui::Begin(">>    BULLETIN BOARD   <<", 0, window_flags);
 
-	BulletinFile.open("MyBulletinfile.txt", ios::out | ios::binary);		//creo archivo donde guardare info de nodos
+
+	BulletinFile.open(BulletinFileName.c_str(), ios::out | ios::binary);		//archivo donde guardare info de nodos
 
 	if (BulletinFile.is_open())		//verifico denuevo porlas
 	{
-		/* ESTO LO DEBERIAN HACER LOS SERVERS O CLIENTS
-		MyFile.write(this->userFileData.memory, this->userFileData.size);		//escribo lo que me devolvio server en un archivo	
-		*/
-	
-		BulletinFile << "MEAMO VEAMO VEAMO" << endl << "13:30 BLOQUE 1234 RECIBIO 4.2 EDACOINS";
-
-		std::ifstream in("MyBulletinfile.txt");
+		BulletinFile << this->BulletinText.c_str() << endl;
+		std::ifstream in(BulletinFileName.c_str());
 		std::string contents((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
-		
+
 		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), contents.c_str());
 
 		BulletinFile.close();
 	}
+
 
 	ImGui::End();
 }
@@ -461,9 +458,11 @@ void GraphicF2::print_look4Veci(void)
 	{
 		Comunicaciones.front().MENSAJE = selected;
 		Comunicaciones.front().selectedVecino = selectedN;
-		if(selected == TRANSACTION_Genv)
-		Comunicaciones.front().COINS_G = atoi(CantCoins);
-		Comunicaciones.front().PublicKey_G = PKey;
+		if (selected == TRANSACTION_Genv)
+		{
+			Comunicaciones.front().COINS_G = atoi(CantCoins);
+			Comunicaciones.front().PublicKey_G = PKey;
+		}
 		GUIQueue.push(GUIEvent::EnviarMsj);
 
 	}
@@ -500,23 +499,21 @@ void GraphicF2::print_Nodos()
 	static bool h_borders = true;
 	static bool v_borders = true;
 
-	int columns_count = 10;
-	const int lines_count = 30;
+	int columns_count = 5;
+	const int lines_count = 5;
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 
 	ImGui::Columns(columns_count, NULL, v_borders);
-	for (int i = 0; i < columns_count * lines_count; i++)
+	for (int i = 0; i < NodosArray.size() ; i++)
 	{
 		if (h_borders && ImGui::GetColumnIndex() == 0)
 			ImGui::Separator();
-		ImGui::Text("ID: 4454 \nIP:123.233.233\nPUERTO: 32",i);
+		ImGui::Text("ID: %i \nIP: %s\n",NodosArray[i].ID,NodosArray[i].IP.c_str());
 		ImGui::NextColumn();
 	}
 	ImGui::End();
 
 	print_Acciones();
-
-
 	/*************************************************************************************************
 			FIN IMPRESION VENTANAS
 	**************************************************************************************************/
@@ -532,7 +529,7 @@ void GraphicF2::print_Nodos()
 void GraphicF2::print_Acciones()		//Importante llamarla entre newframe y render
 {
 
-	ImGui::SetNextWindowPos(ImVec2(1600, 10));
+	ImGui::SetNextWindowPos(ImVec2(1680, 10));
 	ImGui::SetNextWindowSize(ImVec2(250, 100));
 	ImGui::Begin(">> ACCIONES <<", 0, window_flags);
 
@@ -591,78 +588,18 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 		std::string vecinos;	//Esto se usa para la funcion combo de ImGui
 		int selectedVecino;
 	*/
-
-	Neighbour neighbourTemp = { "0001", 80 };
-
-	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour>(1, neighbourTemp));
-
-	Neighbour neighbourTemp2 = { "0002", 80 };
-
-	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour>(2, neighbourTemp2));
-
-	Neighbour neighbourTemp3 = { "0003", 80 };
-
-	tempParticipantes.NodosVecinos.insert(pair<unsigned int, Neighbour>(3, neighbourTemp3));
-
-
-
-	tempParticipantes.NodoEmisor.ID = 2222;
-	tempParticipantes.NodoEmisor.IP = "3333";
-	tempParticipantes.NodoEmisor.PUERTO = 80;
-
-	string tempIDVecino;
-	std::map<unsigned int, Neighbour>::iterator it = tempParticipantes.NodosVecinos.begin();
-
-
-	for (it = tempParticipantes.NodosVecinos.begin(); it != tempParticipantes.NodosVecinos.end(); ++it)
+	
+	for (auto itnodo : NodosArray)
 	{
-		tempIDVecino = "IP: " + it->second.IP + " - PORT: " + to_string(it->second.port);
-		cout << tempIDVecino << endl;
-		tempParticipantes.vecinos.push_back(tempIDVecino);
-	}
-
-
-	tempIDVecino.append("\0");
-
-	this->Comunicaciones.push(tempParticipantes);
-
-	//Comunicaciones = tempParticipantes;
-
-	/*
-	for (auto itnodo : FullNodes)
-	{
-		if (itnodo.getID() == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
+		if (itnodo.ID == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
 		{
-			ParticipantesMsj_t tempParticipantes;
+			tempParticipantes.NodoEmisor.ID = itnodo.ID;
+			tempParticipantes.NodoEmisor.IP = itnodo.IP;
+			tempParticipantes.NodoEmisor.PUERTO = itnodo.PUERTO;
 
-			tempParticipantes.NodosVecinos = itnodo.getNeighbours();
-			tempParticipantes.NodoEmisor.ID = itnodo.getID();
-			tempParticipantes.NodoEmisor.IP = itnodo.getIP();
-			tempParticipantes.NodoEmisor.PUERTO = itnodo.getPort();
+			tempParticipantes.NodosVecinosPT = itnodo.NodosVecinos;
 			string tempIDVecino;
-			for (auto vecinos : tempParticipantes.NodosVecinos)
-			{
-				tempIDVecino.append("IP: " + vecinos.second.IP + " - PORT: "+ to_string(vecinos.second.port) + "\0");
-			}
-			tempIDVecino.append("\0");
-
-			this->Comunicaciones.push(tempParticipantes);
-			ret = true;
-		}
-	}
-
-	for (auto itnodo : SPVNodes)
-	{
-		if (itnodo.getID() == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
-		{
-			ParticipantesMsj_t tempParticipantes;
-
-			tempParticipantes.NodosVecinos = itnodo.getNeighbours();
-			tempParticipantes.NodoEmisor.ID = itnodo.getID();
-			tempParticipantes.NodoEmisor.IP = itnodo.getIP();
-			tempParticipantes.NodoEmisor.PUERTO = itnodo.getPort();
-			string tempIDVecino;
-			for (auto vecinos : tempParticipantes.NodosVecinos)
+			for (auto vecinos : tempParticipantes.NodoEmisor.NodosVecinos)
 			{
 				tempIDVecino.append("IP: " + vecinos.second.IP + " - PORT: " + to_string(vecinos.second.port) + "\0");
 			}
@@ -676,14 +613,14 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	{
 		GUIQueue.push(GUIEvent::Error);
 	}
-	*/
+	
 
 	return true;
 }
 
 bool GraphicF2::verify(bool* full, bool* spv, string nodo1, string nodo2)
 {
-	if ((spv[0] != spv[1]) && (!nodo1.empty() && !nodo2.empty()))
+	if ((spv[0] != spv[1]) && ((!nodo1.empty()) || (!nodo2.empty())))
 	{
 		return true;
 	}
