@@ -114,3 +114,9 @@ implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
 
 	return returning;
 }
+
+std::vector<RegistroNodo_t>* GUIEventGenerator::getNodosArr(void) {
+
+	return GUI.getNodoArray();
+
+}

@@ -72,6 +72,7 @@ public:
 	~GraphicF2();
 	bool GetError();
 	bool hayEvento(unsigned int estadoActualdeFSM); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
+	std::vector<RegistroNodo_t>* getNodoArray(void);
 	GUIEvent getEvent();
 
 	/*  GETTERS  */
@@ -124,9 +125,6 @@ private:
 	 *      NODOS      *
 	********************/
 	std::queue<RegistroNodo_t> registros;		//Registros temporales por eso cola
-
-	vector <FullNode> FullNodes;		//NOSE SI VECTOR o LISTA. PODRIAMOS BUSCAR A LOS IDS CON UN ALGORITMO ONDA STRING MATCHING TALVEZ
-	vector <SPVNode> SPVNodes;
 
 	std::queue<ParticipantesMsj_t> Comunicaciones;
 

@@ -4,15 +4,11 @@
 #include "NodeServer.h"
 #include <chrono>
 #include <map>
+#include "Structs.h"
 
 typedef enum {FREE,CLIENT,SERVER} state_n;
 typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE} errorType_n;
 typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection_;
-
-struct Neighbour {
-	std::string IP;
-	unsigned int port;
-};
 
 //struct MerkleBlock {
 //	std::string BlockId;
@@ -51,7 +47,7 @@ public:
 	std::vector <std::string> getFilters(void);
 
 
-
+	std::string Node::ERRORreply(void);
 	//Funciones para generar los JSON de los mensajes
 	json createJSONTx(Transaction Tx_);
 
@@ -61,7 +57,7 @@ public:
 
 protected:
 
-	void TxCallback(string respuesta);
+	//void TxCallback(string respuesta);
 
 	std::string IP;
 	unsigned int port;

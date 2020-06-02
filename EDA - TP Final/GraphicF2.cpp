@@ -806,3 +806,8 @@ bool GraphicF2::ImguiInit(void)
 
 	return true;
 }
+
+std::vector<RegistroNodo_t>* GraphicF2::getNodoArray(void) {
+
+	return &NodosArray;
+}

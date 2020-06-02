@@ -28,7 +28,7 @@ public:
 	}
 
 	eventTypes getType(void) { return CrearNodo; }		//Esto lo usan las rutinas de accion para verificar que se trata del evento correcto
-
+	std::vector<RegistroNodo_t>* NodoArray;
 	uint TYPE;
 	uint PUERTO;
 	string IP;
@@ -97,7 +97,7 @@ public:
 
 	GUIEventGenerator();
 
-
+	std::vector<RegistroNodo_t>* getNodosArr(void);
 	genericEvent* getEvent(unsigned int estadoactualdeFSM);
 	bool getGraphicInstallationError();
 

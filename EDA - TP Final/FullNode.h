@@ -1,13 +1,14 @@
 #pragma once
 #include "Node.h"
 
+typedef  json(*pcallback)(std::string msg);
 
 class FullNode :
 	public Node
 {
 public:
 	FullNode();
-	FullNode(unsigned int ID_, std::string IP_, unsigned int port_);
+	FullNode(unsigned int ID_, std::string IP_ ,unsigned int port_);
 	~FullNode();
 
 	json fullCallback(std::string msg);

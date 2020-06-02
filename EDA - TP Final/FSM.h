@@ -1,6 +1,7 @@
 #pragma once
 #include "GenericFSM.h"
 #include "GUIEventGenerator.h"
+#include <vector>
 
 #define TX(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&FSM::x)) //casteo a funcion, por visual
 
@@ -36,6 +37,8 @@ private:
 
 	/* FUNCIONES */
 
+	std::vector<SPVNode> spvArray;
+	std::vector<FullNode> fullArray;
 
 	void RutaDefault(genericEvent* ev);
 	void BuscarVecinos_r_acc(genericEvent* ev);

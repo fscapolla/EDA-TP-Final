@@ -20,6 +20,7 @@ typedef struct
 	int PUERTO;
 	int ID;
 	int TYPE;
+	std::map<unsigned int, Neighbour> NodosVecinos;
 
 }RegistroNodo_t;
 

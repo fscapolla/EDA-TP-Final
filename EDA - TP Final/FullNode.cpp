@@ -13,7 +13,7 @@ FullNode::FullNode(unsigned int ID_, std::string IP_, unsigned int port_)
 	port = port_;
 	client = new NodeClient(IP, port +1);
 	boost::asio::io_context io_context;
-	server = new NodeServer(io_context, IP_, fullCallback,port);
+	server = new NodeServer(io_context , IP , fullCallback , port);
 }
 
 

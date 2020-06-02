@@ -17,7 +17,7 @@ void FSM::BuscarVecinos_r_acc(genericEvent* ev)
 
 void FSM::CrearNodo_r_acc(genericEvent* ev)
 {
-	if (static_cast<evBuscarVecinos*>(ev)->getType() == CrearNodo)
+	if (static_cast<evCrearNodo*>(ev)->getType() == CrearNodo)
 	{
 		cout << "CREAR NODOS " << endl;
 		/*******
@@ -25,6 +25,11 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 			uint PUERTO;
 			string IP;
 		*******/
+		if (static_cast<evCrearNodo*>(ev)->TYPE == SPV)
+		{
+			
+
+		}
 
 	}
 }
