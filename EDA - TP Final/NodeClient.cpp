@@ -5,6 +5,7 @@ NodeClient::NodeClient(std::string IP_, int port_)
 {
 	IP = IP_;
 	own_port = port_;
+	stillRunning = 1;
 	easyHandler = curl_easy_init();
 	if (!easyHandler)
 	{
@@ -17,7 +18,7 @@ NodeClient::NodeClient(std::string IP_, int port_)
 		this->setErrorCode(CURLINIT_ERROR);
 		this->setErrorMsg("Unable to start curl");
 	}
-	host = "127.0.0.1:" + std::to_string(port);
+	host = "127.0.0.1://" + std::to_string(port);
 
 }
 
@@ -79,7 +80,7 @@ void NodeClient::useGETmethod(std::string path_)
 	//struct curl_slist* list = nullptr;
 
 	/*Prosigo a configurar CURL para usar con el método GET*/
-	if (errorCode = ERROR_FREE2)
+	if (errorCode == ERROR_FREE2)
 	{
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());
@@ -113,7 +114,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 	reply.clear();
 
 	/*Prosigo a configurar CURL para usar con el método POST*/
-	if (errorCode = ERROR_FREE2)
+	if (errorCode == ERROR_FREE2)
 	{
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());
