@@ -1,5 +1,7 @@
 
+
 #ifndef GUIEVGENERATOR_H
+
 #define GUIEVGENERATOR_H
 
 #include <array>
@@ -107,4 +109,4 @@ private:
 
 };
 
-#endif //GUIEVGENERATOR_H
+#endif //GUIEVGENE

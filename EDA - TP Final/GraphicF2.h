@@ -55,7 +55,7 @@
 #define FULL 2
 #define MAX_VECINOS 50
 
-#define COLOR al_map_rgb(0,45,255)
+#define COLOR al_map_rgb(100,200,240)
 
 enum STATES { DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWERROR_G };
 
