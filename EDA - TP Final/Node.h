@@ -24,7 +24,7 @@ public:
 	~Node();
 	//Función para agregar vecinos
 
-	bool addNeighbour(unsigned int ID_,std::string& IP_, unsigned int port_);
+	bool addNeighbour(int ID_,std::string& IP_, int port_);
 	
 	//Funciones para enviar mensajes.
 	bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);

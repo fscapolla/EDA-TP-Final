@@ -11,7 +11,7 @@ enum MSJESEnv { BLOCK_Genv, TRANSACTION_Genv, MERKLEBLOCK_Genv, FILTER_Genv, GET
 
 struct Neighbour {
 	std::string IP;
-	unsigned int port;
+	int port;
 };
 
 typedef struct RegistroNodo_t

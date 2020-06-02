@@ -1,5 +1,5 @@
 
-#include "GUIEventGenerator.h"
+
 #include "GraphicF2.h"
 
 GraphicF2::GraphicF2()
@@ -565,6 +565,10 @@ ParticipantesMsj_t GraphicF2::getComunicacion(void)
 	return Comunicacion;
 }
 
+/********************************
+	VERIFY PARA ENVIAR MENSAJE
+*********************************/
+
 bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 {
 	bool ret = false;
@@ -578,17 +582,7 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	else
 	{
 		tempParticipantes.NodoEmisor.TYPE = FULL;
-	}
-
-
-	/*{
-		RegistroNodo_t NodoEmisor;
-		std::map<unsigned int, Neighbour2> NodosVecinos;
-		std::string mensaje;
-		std::string vecinos;	//Esto se usa para la funcion combo de ImGui
-		int selectedVecino;
-	*/
-	
+	}	
 	for (auto itnodo : NodosArray)
 	{
 		if (itnodo.ID == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
@@ -599,7 +593,7 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 
 			tempParticipantes.NodosVecinosPT = itnodo.NodosVecinos;
 			string tempIDVecino;
-			for (auto vecinos : tempParticipantes.NodoEmisor.NodosVecinos)
+			for (auto vecinos : itnodo.NodosVecinos)
 			{
 				tempIDVecino.append("IP: " + vecinos.second.IP + " - PORT: " + to_string(vecinos.second.port) + "\0");
 			}

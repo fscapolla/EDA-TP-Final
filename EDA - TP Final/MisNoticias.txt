@@ -1,11 +1,9 @@
 Se creo un nodo
-IP:111 - ID: 0 - TYPE: FULL
+IP:222 - ID: 0 - TYPE: FULL
+PUERTO:1
 
 Se creo un nodo
-IP:222 - ID: 1 - TYPE: FULL
-
-Conexion creada entre
- Nodo: 1
- Nodo: 0
+IP:333 - ID: 1 - TYPE: FULL
+PUERTO:2
 
 

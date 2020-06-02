@@ -131,7 +131,7 @@ std::vector<std::string> Node::getFilters(void)
 }
 
 
-bool Node::addNeighbour(unsigned int ID_, std::string& IP_, unsigned int port_)
+bool Node::addNeighbour(int ID_, std::string& IP_, int port_)
 {
 	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
 	if (port_ < 0)

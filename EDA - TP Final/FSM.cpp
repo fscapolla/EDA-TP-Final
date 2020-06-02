@@ -21,10 +21,10 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 	{
 		/*******
 			uint TYPE;
-			uint PUERTO;
+			int PUERTO;
 			string IP;
 			std::vector<RegistroNodo_t>* NodoArray;
-			unsigned int nodeID;
+			int nodeID;
 			std::string * nameofFile;
 		*******/
 
@@ -34,13 +34,13 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 		{
 		//	SPVNode tempSpv(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
 		//	spvArray.push_back(tempSpv);
-			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: SPV \n\n";
+			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: SPV \nPUERTO:" + to_string(static_cast<evCrearNodo*>(ev)->PUERTO) + "\n\n";
 		}
 		if (static_cast<evCrearNodo*>(ev)->TYPE == FULL)
 		{
 		//	FullNode tempFull(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
 		//	fullArray.push_back(tempFull);
-			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: FULL\n\n";
+			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: FULL\n" + "PUERTO:" + to_string(static_cast<evCrearNodo*>(ev)->PUERTO) + "\n\n";
 		}
 
 		RegistroNodo_t tempReg(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO, static_cast<evCrearNodo*>(ev)->TYPE);
