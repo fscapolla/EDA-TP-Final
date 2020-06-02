@@ -20,15 +20,6 @@ SPVNode::~SPVNode()
 	delete client;
 }
 
-bool SPVNode::addNeighbour(unsigned int neighbourID, std::string IP_, unsigned int port_)
-{
-	if (port_ < 0)
-		return false;
-	else {
-		neighbours[neighbourID] = { IP_, port_ };
-		return true;
-	}
-}
 
 /************************************************************************************************
 *					                          MENSAJES											*
@@ -53,24 +44,6 @@ bool SPVNode::POSTFilter(unsigned int neighbourID)
 	else return false;
 }
 
-bool SPVNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
-{
-	if (neighbours.find(neighbourID) != neighbours.end())
-	{
-		if (state == FREE)
-		{
-			state = CLIENT;
-			json jsonTx = createJSONTx(Tx_);
-			client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);
-			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
-			//client->performRequest();
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
 bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, unsigned int count) //Falta terminar
 {
@@ -116,20 +89,6 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 	else return false;
 }
 
-/************************************************************************************************
-*					                         Respuestas											*
-*																								*
-*************************************************************************************************/
-
-std::string SPVNode::POSTreply(std::string & receivedRequest)
-{
-	return std::string();
-}
-
-std::string SPVNode::GETreply(std::string & receivedRequest)
-{
-	return std::string();
-}
 
 
 /************************************************************************************************

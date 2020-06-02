@@ -12,6 +12,8 @@ FullNode::FullNode(unsigned int ID_, std::string IP_, unsigned int port_)
 	IP = IP_;
 	port = port_;
 	client = new NodeClient(IP, port);
+	boost::asio::io_context io_context_;
+	server = new NodeServer(io_context_, IP_, fullCallback);
 }
 
 
@@ -23,16 +25,7 @@ FullNode::~FullNode()
 		delete server;
 }
 
-bool FullNode::addNeighbour(unsigned int ID_, std::string IP_, unsigned int port_)
-{
-	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
-	if (port_ < 0)
-		return false;
-	else {
-		neighbours[ID_] = { IP_, port_};
-		return true;
-	}
-}
+
 
 /************************************************************************************************
 *					                          MENSAJES											*
@@ -62,28 +55,7 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 	else return false;
 }
 
-/*POST Transaction
-Recibe el ID del vecino, y la transacción a enviar.
-Convierte la transacción en un JSON para luego adjuntarla como header del mensaje.
-Igual al caso anterior, para terminar de ejecutar llamar a performRequest del nodo (NO de client!!).*/
-bool FullNode::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
-{
-	if (neighbours.find(neighbourID) != neighbours.end())
-	{
-		if (state == FREE)
-		{
-			state = CLIENT;
-			json jsonTx = createJSONTx(Tx_);
-			client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);
-			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
-			//client->performRequest();
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
+
 
 //POST Merkleblock
 //Recibe el ID del vecino

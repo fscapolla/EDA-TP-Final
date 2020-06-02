@@ -4,8 +4,8 @@
 /*Server constructor. Initializes io_context, acceptor and socket.
 Calls waitForConnection to accept connections.*/
 
-NodeServer::NodeServer(boost::asio::io_context& io_context_ , std::string IP) :
-	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::address::from_string("25.135.150.125"), 400)), socket(io_context_) , nodeIP(IP) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
+NodeServer::NodeServer(boost::asio::io_context& io_context_ , std::string IP,pcallback pcback_,int port_) :
+	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::address::from_string("25.135.150.125"), 400)), socket(io_context_) , nodeIP(IP),pcback(pcback_),port(port_) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
 {	
 	if (socket.is_open()) {
 		socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
@@ -99,24 +99,6 @@ void NodeServer::generateTextResponse(void) {
 
 	ServerOutput += msg;
 	ServerOutput += "\r\n\r\n";
-
-	switch (state) {
-	case GET_BLOCKS:
-
-		//aca hay q escribir el json con la resp q va
-		break;
-	case GET_BLOCK_HEADER:
-
-		//aca lo mismo 
-		break;
-	default:
-		break;
-	}
-
-
-
-
-
 	
 }
 
@@ -124,7 +106,8 @@ void NodeServer::generateTextResponse(void) {
 
 
 /*Validates input given in GET request.*/
-void NodeServer::parse(const boost::system::error_code& error, size_t bytes) {
+void NodeServer::parse(const boost::system::error_code& error) {
+	
 	if (!error) {
 
 		bool isInputOk = false;
@@ -145,7 +128,7 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes) {
 
 		auto it = message.find(validator);
 
-		if (it == 0) {
+		if (it != std::string::npos) {
 
 			it = message.find(block_id);
 			if (it != message.npos) {

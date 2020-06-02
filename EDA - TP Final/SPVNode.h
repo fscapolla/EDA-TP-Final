@@ -19,18 +19,13 @@ public:
 	SPVNode(unsigned int ID_, std::string IP_, unsigned int port_);
 	~SPVNode();
 
-	//Función para agregar un vecino
-	virtual bool addNeighbour(unsigned int neighbourID, std::string IP_, unsigned int port_);
-
+	void spvCallback(std::string msg);
 	//Funciones para mensajes
-	virtual bool POSTFilter(unsigned int neighbourID);
-	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
-	virtual bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count);
-	virtual bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
+	bool POSTFilter(unsigned int neighbourID);
+	
+	bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count);
+	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 
-	//Funciones para dar respuestas
-	virtual std::string POSTreply(std::string&receivedRequest);
-	virtual std::string GETreply(std::string&receivedRequest);
 
 	//Funciones para crear jsons.
 	json createJSONTx(Transaction Tx_);
