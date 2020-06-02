@@ -4,7 +4,7 @@
 /*Server constructor. Initializes io_context, acceptor and socket.
 Calls waitForConnection to accept connections.*/
 
-NodeServer::NodeServer(boost::asio::io_context& io_context_ , std::string IP,pcallback pcback_,int port_) :
+NodeServer::NodeServer(boost::asio::io_context& io_context_ , std::string IP , pcallback pcback_, int port_) :
 	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::address::from_string("25.135.150.125"), 400)), socket(io_context_) , nodeIP(IP),pcback(pcback_),port(port_) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
 {	
 	if (socket.is_open()) {
