@@ -620,12 +620,12 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 
 bool GraphicF2::verify(bool* full, bool* spv, string nodo1, string nodo2)
 {
-	if ((spv[0] != spv[1]) && ((!nodo1.empty()) || (!nodo2.empty())))
+	if (  ( (spv[0] == true) && (spv[1] == spv[0]) ) || ((nodo1.empty()) || (nodo2.empty())))
 	{
-		return true;
+		return false;
 	}
 	else
-		return false;
+		return true;
 }
 
 void GraphicF2::print_Error(void)

@@ -1,7 +1,11 @@
 Se creo un nodo
-IP:33.333.333 - ID: 0 - TYPE: FULL
+IP:111 - ID: 0 - TYPE: FULL
 
 Se creo un nodo
-IP:44.444.444 - ID: 1 - TYPE: FULL
+IP:222 - ID: 1 - TYPE: FULL
+
+Conexion creada entre
+ Nodo: 1
+ Nodo: 0
 
 
