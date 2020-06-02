@@ -12,8 +12,6 @@
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
 
-enum { GET_BLOCKS, GET_BLOCK_HEADER };
-
 #define MAXSIZE 1000
 typedef  json (*pcallback)(std::string msg);
 
@@ -25,6 +23,7 @@ public:
 
 	~NodeServer();
 private:
+
 	void waitForConnection(void);
 	void closeConnection(void);
 	void parse(const boost::system::error_code& error);

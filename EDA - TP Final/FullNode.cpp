@@ -12,8 +12,8 @@ FullNode::FullNode(unsigned int ID_, std::string IP_, unsigned int port_)
 	IP = IP_;
 	port = port_;
 	client = new NodeClient(IP, port);
-	boost::asio::io_context io_context_;
-	server = new NodeServer(io_context_, IP_, fullCallback);
+	boost::asio::io_context io_context;
+	server = new NodeServer(io_context, IP_, fullCallback);
 }
 
 
@@ -95,33 +95,6 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 	else return false;
 }
 
-/************************************************************************************************
-*					                         Respuestas											*
-*																								*
-*************************************************************************************************/
-
-//Respuesta a los mensajes del tipo POST.
-std::string FullNode::POSTreply(std::string &receivedRequest, unsigned int clientPort_)
-{
-	json response;
-	response["status"] = "true";
-	response["result"] = NULL;
-	
-
-
-	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
-		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
-		"\r\nContent-Type: text/html; charset=iso-8859-1\r\n\r\n" + response.dump();*/
-}
-
-std::string FullNode::GETreply(std::string &receivedRequest, unsigned int clientPort_)
-{
-
-
-	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
-		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
-		"\r\nContent-Type: " + "text/html" + "; charset=iso-8859-1\r\n\r\n" + response.dump();*/
-}
 
 
 /************************************************************************************************
@@ -129,8 +102,11 @@ std::string FullNode::GETreply(std::string &receivedRequest, unsigned int client
 *																								*
 *************************************************************************************************/
 
+
+
 //Genera un JSON del bloque de la blockchain que coincida con BlockId
-json FullNode::createJSONBlock(std::string & BlockId)
+
+json FullNode::createJSONBlock(std::string& BlockId)
 {
 	json jsonblock;
 	Block block;
@@ -157,30 +133,6 @@ json FullNode::createJSONBlock(std::string & BlockId)
 	return jsonblock;
 }
 
-//Genera el JSON de una transacción.
-json FullNode::createJSONTx(Transaction Tx_)
-{
-	json jsonTx;
-	jsonTx["nTxin"] = Tx_.nTxin;
-	jsonTx["nTxout"] = Tx_.nTxout;
-	jsonTx["txid"] = Tx_.txID;
-
-	auto vin = json::array();	//Cargo el JSON de Vin dentro del JSON de transacciones.
-	for (auto vin_ = 0; vin_ < Tx_.nTxin; vin_++)
-	{
-		vin.push_back(json::object({ {"txid",Tx_.vIn[vin_].txID}, {"outputIndex",Tx_.vIn[vin_].outputIndex}, {"signature",Tx_.vIn[vin_].signature}, {"blockid", Tx_.vIn[vin_].LilblockID} }));
-	}
-	jsonTx["vin"] = vin;
-
-	auto vout = json::array(); //Cargo el JSON de Vout dentro del JSON de transacciones.
-	for (auto vout_ = 0; vout_ < Tx_.nTxout; vout_++)
-	{
-		vout.push_back(json::object({ { "amount",Tx_.vOut[vout_].amount },{ "publicid", Tx_.vOut[vout_].publicID} }));
-	}
-	jsonTx["vout"] = vout;
-
-	return jsonTx;
-}
 
 //En esta fase uso lo que dice la guía, creo que no hay que generar el merkle path
 //Cargo con datos del primer bloque del arreglo.
@@ -203,10 +155,20 @@ json FullNode::createJSONMerkleBlock(void)
 
 
 
+/************************************************************************************************
+*					               CALLBACK										*
+*																								*
+*************************************************************************************************/
+
 json FullNode::fullCallback(string message) {
 
 
 	json result;
+	std::string ID_;
+	unsigned int count_;
+
+	result["state"] = true;
+
 
 	if ((message.find("get_blocks") != std::string::npos) || (message.find("get_block_header") != std::string::npos))
 	{
@@ -218,38 +180,151 @@ json FullNode::fullCallback(string message) {
 		if (idPosition != std::string::npos && countPosition != std::string::npos)
 		{
 
-			std::string ID_ = message.substr(idPosition + block_id.size(), message.find_last_of("&") - idPosition - block_id.size());
+			ID_ = message.substr(idPosition + block_id.size(), message.find_last_of("&") - idPosition - block_id.size());
 			std::string tempcount = message.substr(countPosition + count.size(), message.size() - countPosition - count.size());
-			unsigned int count = std::stoi(tempcount);
+			count_ = std::stoi(tempcount);
+		}
+		else {
+			result["state"] = false;
+			return result;
 		}
 
 		if (message.find("get_blocks"))
 		{
-
+			result["result"] = find_array(ID_ , count_);
 		}
 		if (message.find("get_block_header"))
 		{
 
+			result["result"] = find_headers(ID_,count_);
 		}
 	}
 
 	//Si se trata de un POSTblock guarda el block enviado
 	if (message.find("send_block"))
 	{
-		result = ;// hay q bajar los datos del body q son json
+		result["result"] = findBlockJSON(message);
+		if (result["result"] == "NULL") {
+			result["state"] = false;
+		}
 	}
 	//Si se trata de un POSTtransaction
 	else if (message.find("send_tx"))
 	{
-		result = ;//bajar los datos body tipo json de las tx
+		result["result"] = findTxJSON(message);
 	}
 	//Si se trata de un POSTfilter
 	else if (message.find("send_filter"))
 	{
-		result = ;// guardar los datos
+		result["result"] = findFilterJSON(message);// guardar los datos
+	}
+	else {
+		result["state"] = false;
+		return result;
 	}
 
 	return result;
 
 
+}
+
+
+
+json FullNode::find_array(std::string blockID, int count) {
+
+	auto jsonarray = json::array();
+	Block block;
+	int pointer;
+	int numBlocks = count;
+	for (int i = 0; i < NodeBlockchain.getBlocksSize(); i++)
+	{
+		if (NodeBlockchain.getBlocksArr()[i].getBlockID() == blockID) {
+			block = NodeBlockchain.getBlocksArr()[i];
+			pointer = i;
+			break;
+		}
+	}
+
+	if ((NodeBlockchain.getBlocksSize() - block.getHeight()) < count) {
+		numBlocks = NodeBlockchain.getBlocksSize() - block.getHeight();
+	}
+
+	for (int i = 0;i < numBlocks;i++,pointer++) {
+		jsonarray.push_back(createJSONBlock(NodeBlockchain.getBlocksArr()[pointer].getBlockID()));
+	}
+	return jsonarray;
+}
+
+
+json FullNode::find_headers(std::string blockID, int count) {
+
+	auto jsonarray = json::array();
+	json jsonblock;
+	Block block;
+	int pointer;
+	int numBlocks = count;
+
+	for (int i = 0; i < NodeBlockchain.getBlocksSize(); i++)
+	{
+		if (NodeBlockchain.getBlocksArr()[i].getBlockID() == blockID) {
+			block = NodeBlockchain.getBlocksArr()[i];
+			pointer = i;
+			break;
+		}
+	}
+
+	if ((NodeBlockchain.getBlocksSize() - block.getHeight()) < count) {
+		numBlocks = NodeBlockchain.getBlocksSize() - block.getHeight();
+	}
+
+	for (int i = 0;i < numBlocks;i++, pointer++) {
+
+		jsonblock["blockid"] = NodeBlockchain.getBlocksArr()[pointer].getBlockID();
+		jsonblock["height"] = NodeBlockchain.getBlocksArr()[pointer].getHeight();
+		jsonblock["merkleroot"] = NodeBlockchain.getBlocksArr()[pointer].getMerkleRoot();
+		jsonblock["nTx"] = NodeBlockchain.getBlocksArr()[pointer].getNtx();
+		jsonblock["nonce"] = NodeBlockchain.getBlocksArr()[pointer].getNonce();
+		jsonblock["previousblockid"] = NodeBlockchain.getBlocksArr()[pointer].getPrevBlovkID();
+		
+		jsonarray.push_back(jsonblock);
+
+
+	}
+	return jsonarray;
+
+}
+
+
+
+json FullNode::findBlockJSON(std::string message) {
+
+
+	
+
+	json blockJSON = json::parse(message); // esto es si el parser hace sobrevivir solo los datros json del string 
+	Block block(blockJSON);
+	if (block.createMerkleTree()) {
+		return blockJSON;
+	}
+	else {
+		return "NULL";
+	}
+
+}
+
+json FullNode::findTxJSON(std::string message) {
+
+
+	json TxJSON = json::parse(message);
+
+	return "NULL";
+}
+
+
+json FullNode::findFilterJSON(std::string message) {
+
+
+	json filterJSON = json::parse(message);
+
+	return "NULL";
 }

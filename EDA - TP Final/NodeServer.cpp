@@ -93,9 +93,10 @@ void NodeServer::messageCallback(const boost::system::error_code& error, size_t 
 /*Generates http response, according to validity of input.*/
 void NodeServer::generateTextResponse(void) {
 
-	ServerOutput = "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Content-Length:" + boost::lexical_cast<std::string>(FileLenght) +
+	ServerOutput = "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Content-Length:" + boost::lexical_cast<std::string>(result.size()) +
 		"\r\nContent-Type: application/json; charset=iso-8859-1\r\n\r\n";
 
+	msg = result.dump();
 
 	ServerOutput += msg;
 	ServerOutput += "\r\n\r\n";
@@ -160,23 +161,24 @@ void NodeServer::parse(const boost::system::error_code& error) {
 /*Responds to input.*/
 void NodeServer::answer() {
 
-		generateTextResponse();
 
-		boost::asio::async_write(
-			socket,
-			boost::asio::buffer(ServerOutput), // aca poniamos mensaje
-			boost::bind(
-				&NodeServer::response_sent_cb,
-				this,
-				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred
-			)
-		);
+	generateTextResponse();
+
+	boost::asio::async_write(
+		socket,
+		boost::asio::buffer(ServerOutput), // aca poniamos mensaje
+		boost::bind(
+			&NodeServer::response_sent_cb,
+			this,
+			boost::asio::placeholders::error,
+			boost::asio::placeholders::bytes_transferred
+		)
+	);
 
 
 		
-		socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-		socket.close();
+	socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+	socket.close();
 
 }
 

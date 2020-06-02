@@ -90,35 +90,12 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 }
 
 
-
 /************************************************************************************************
 *					               GENERADORES DE JSON											*
 *																								*
 *************************************************************************************************/
 
-json SPVNode::createJSONTx(Transaction Tx_)
-{
-	json jsonTx;
-	jsonTx["nTxin"] = Tx_.nTxin;
-	jsonTx["nTxout"] = Tx_.nTxout;
-	jsonTx["txid"] = Tx_.txID;
 
-	auto vin = json::array();	//Cargo el JSON de Vin dentro del JSON de transacciones.
-	for (auto vin_ = 0; vin_ < Tx_.nTxin; vin_++)
-	{
-		vin.push_back(json::object({ { "txid",Tx_.vIn[vin_].txID },{ "outputIndex",Tx_.vIn[vin_].outputIndex },{ "signature",Tx_.vIn[vin_].signature },{ "blockid", Tx_.vIn[vin_].LilblockID } }));
-	}
-	jsonTx["vin"] = vin;
-
-	auto vout = json::array(); //Cargo el JSON de Vout dentro del JSON de transacciones.
-	for (auto vout_ = 0; vout_ < Tx_.nTxout; vout_++)
-	{
-		vout.push_back(json::object({ { "amount",Tx_.vOut[vout_].amount },{ "publicid", Tx_.vOut[vout_].publicID } }));
-	}
-	jsonTx["vout"] = vout;
-
-	return jsonTx;
-}
 
 json SPVNode::createJSONFilter(std::string Id_)
 {
@@ -130,7 +107,10 @@ json SPVNode::createJSONFilter(std::string Id_)
 
 
 
-
+/************************************************************************************************
+*					               CALLBACK											*
+*																								*
+*************************************************************************************************/
 
 
 json SPVNode::SpvCallback(string message) {
@@ -138,13 +118,28 @@ json SPVNode::SpvCallback(string message) {
 
 	json result;
 
+	result["state"] = true;
+
 	//Si se trata de un POSTmerkletree
 	if (message.find("send_merkle_block"))
 	{
-		result = ;// guardar los datos
+		result["result"] = findMBlockJSON(message);// guardar los datos
+	}
+	else {
+		result["state"] == false;
 	}
 
 	return result;
 
 
+}
+
+
+
+json SPVNode::findMBlockJSON(std::string message) {
+
+
+	json mBlockJSON = json::parse(message);
+
+	return "NULL";
 }

@@ -17,14 +17,21 @@ public:
 	bool POSTMerkleBlock(unsigned int neighbourID);
 	bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count);
 
-	
-
 	//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string& BlockId);
-	json createJSONTx(Transaction Tx_);
 	json createJSONMerkleBlock(void);
 
-	//virtual bool performRequest(void); Implementada en Node.h
+	// funciones para responder a los GET msg
+
+	json find_array(std::string ID_, int count);
+	json find_headers(std::string ID_, int count);
+
+
+	// funciones para responder a los POSTS
+
+	json findBlockJSON(std::string message);
+	json findTxJSON(std::string message);
+	json findFilterJSON(std::string message);
 
 private:
 	Blockchain NodeBlockchain;

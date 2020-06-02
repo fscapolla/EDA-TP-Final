@@ -27,6 +27,7 @@ public:
 	Node();
 	~Node();
 	//Función para agregar vecinos
+
 	bool addNeighbour(unsigned int ID_,std::string& IP_, unsigned int port_);
 	
 	//Funciones para enviar mensajes.
@@ -50,9 +51,18 @@ public:
 	std::vector <std::string> getFilters(void);
 
 
+
+	//Funciones para generar los JSON de los mensajes
+	json createJSONTx(Transaction Tx_);
+
+
+	bool performRequest(void);
+
+
 protected:
 
 	void TxCallback(string respuesta);
+
 	std::string IP;
 	unsigned int port;
 	unsigned int ID;

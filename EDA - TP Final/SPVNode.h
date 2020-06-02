@@ -28,11 +28,13 @@ public:
 	bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count);
 	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 
+	//Funciones para generar los JSON de los mensajes
 
-	//Funciones para crear jsons.
-	json createJSONTx(Transaction Tx_);
 	json createJSONFilter(std::string Id_);
 
+
+
 private:
+	json findMBlockJSON(std::string message);
 };
 
