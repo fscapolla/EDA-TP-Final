@@ -1,6 +1,9 @@
 #include "GUIEventGenerator.h"
 using namespace std;
 
+GUIEventGenerator::GUIEventGenerator()
+{
+}
 
 genericEvent* GUIEventGenerator::
 getEvent(unsigned int estado)
@@ -35,7 +38,6 @@ getEvent(unsigned int estado)
 	case implEvent::Error:
 		ret = new evError;
 		break;
-
 
 	case implEvent::Quit:
 		ret = new evQuit;

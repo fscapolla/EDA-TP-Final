@@ -55,6 +55,7 @@
 #define FULL 2
 #define MAX_VECINOS 50
 
+#define COLOR al_map_rgb(0,45,255)
 
 enum STATES { DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWERROR_G };
 
@@ -76,6 +77,7 @@ public:
 	/*  GETTERS  */
 	RegistroNodo_t getRegistro(void);
 	ParticipantesMsj_t getComunicacion(void);
+	std::ofstream BulletinFile;
 
 private:
 	/* FUNCIONES DE GraphicF2 */
@@ -88,6 +90,8 @@ private:
 	void print_Error();
 	void print_look4Veci();
 	void print_Bulletin();
+	void print_Nodos();
+	void print_Acciones();
 
 	bool verify(bool*, bool*, string, string);		//Veryfy para creacion de nodo. Si es SPV no puede conectarse a otro SPV. IP PUERTO no pueden ser campos vacios. 
 	bool verify(uint, bool esSPV);			//Verify para BUSCAR VECINOS rellena el objeto ParticipantesMsj con info de emisor y sus vecinos y lo guarda en la queue
@@ -126,6 +130,7 @@ private:
 
 	std::queue<ParticipantesMsj_t> Comunicaciones;
 
+	vector<RegistroNodo_t> NodosArray; 
 
 
 };

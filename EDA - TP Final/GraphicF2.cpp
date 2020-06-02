@@ -85,7 +85,7 @@ void GraphicF2::print_current_state(unsigned int CurrentState)
 		break;
 
 	case SHWNODOS_G:
-		//print_Nodos();
+		print_Nodos();
 
 	default:
 		break;
@@ -107,6 +107,8 @@ void GraphicF2::print_Dashboard()
 	static char Puerto[MAX_PUERTO];
 	static bool nodofull = false;
 	static bool nodospv = false;
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Datos del nodo: ");
+
 	ImGui::Checkbox("NODO FULL", &nodofull);
 	ImGui::Checkbox("NODO SPV", &nodospv);
 	ImGui::InputText("IP DEL SERVIDOR:", IP, sizeof(char) * MAX_IP);
@@ -144,22 +146,28 @@ void GraphicF2::print_Dashboard()
 	**************************************/
 
 	ImGui::SetNextWindowPos(ImVec2(20, 200));
-	ImGui::SetNextWindowSize(ImVec2(380, 180));
+	ImGui::SetNextWindowSize(ImVec2(380, 200));
 	ImGui::Begin(">> CREAR CONEXION ENTRE NODOS <<", 0, window_flags);
+
 	static char NODO1[MAX_ID];
 	static char NODO2[MAX_ID];
 	static bool fulltype[2] = { false };
 	static bool spvtype[2] = { false };
 
-	ImGui::InputText("NODO 1:", NODO1, sizeof(char) * MAX_ID);
-	ImGui::Checkbox("NODO FULL 1 ", &fulltype[0]);
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Datos del nodo 1");
+
+	ImGui::InputText("ID 1", NODO1, sizeof(char) * MAX_ID);
+	ImGui::Checkbox("NODO FULL ", &fulltype[0]);
 	ImGui::SameLine();
-	ImGui::Checkbox("NODO SPV 1", &spvtype[0]);
+	ImGui::Checkbox("NODO SPV", &spvtype[0]);
 	ImGui::Text("  ");
-	ImGui::InputText("NODO 2:", NODO2, sizeof(char) * MAX_ID);
-	ImGui::Checkbox("NODO FULL 2", &fulltype[1]);
+
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Datos del nodo 2 ");
+
+	ImGui::InputText("ID 2", NODO2, sizeof(char) * MAX_ID);
+	ImGui::Checkbox("NODO FULL_", &fulltype[1]);
 	ImGui::SameLine();
-	ImGui::Checkbox("NODO SPV 2", &spvtype[1]);
+	ImGui::Checkbox("NODO SPV_", &spvtype[1]);
 
 
 	if ((ImGui::Button(" >> CREAR << ")) && (verify(fulltype, spvtype, (string)NODO1, (string)NODO2)))
@@ -199,10 +207,10 @@ void GraphicF2::print_Dashboard()
 	   VENTANA: ENVIAR MENSAJE
 	**************************************/
 
-	ImGui::SetNextWindowPos(ImVec2(20, 390));
+	ImGui::SetNextWindowPos(ImVec2(20, 410));
 	ImGui::SetNextWindowSize(ImVec2(380, 150));
 	ImGui::Begin(">> ENVIAR MENSAJER A NODO <<", 0, window_flags);
-	ImGui::Text("Inserte ID del nodo Emisor y su tipo (FULL o SPV)");
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Inserte ID del nodo Emisor y su tipo (FULL o SPV)");
 
 	static char emisor[MAX_ID];
 	static bool type[2] = { false };
@@ -223,13 +231,33 @@ void GraphicF2::print_Dashboard()
 	**************************************/
 	print_Bulletin();
 
+
+	/*************************************
+	VENTANA: MOSTRAR NODOS
+	**************************************/
+
+	ImGui::SetNextWindowPos(ImVec2(450, 10));
+	ImGui::SetNextWindowSize(ImVec2(300, 100));
+	ImGui::Begin(">> MOSTRAR NODOS CREADOS EN LA RED <<", 0, window_flags);
+
+	if ((ImGui::Button(" Presione aqui ")) && (verify(atoi(emisor), type[0])))
+	{
+		GUIQueue.push(GUIEvent::MostrarNodos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
+	}
+	ImGui::End();
+
+	/*************************************
+		VENTANA: ACCIONES
+	**************************************/
+	print_Acciones();
+
 	/*************************************************************************************************
 			FIN IMPRESION VENTANAS
 	**************************************************************************************************/
 	//Rendering
 	ImGui::Render();
 
-	al_clear_to_color(al_map_rgb(179, 255, 255));
+	al_clear_to_color(COLOR);
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
@@ -238,14 +266,27 @@ void GraphicF2::print_Dashboard()
 void GraphicF2::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber creado un NewFrame en otra parte del programa
 {
 
-	ImGui::SetNextWindowPos(ImVec2(600, 10));
+	ImGui::SetNextWindowPos(ImVec2(800, 10));
 	ImGui::SetNextWindowSize(ImVec2(550, 600));
 	ImGui::Begin(">>    BULLETIN BOARD   <<", 0, window_flags);
 
-	//TOY PENSANDO EN VER Q CONVIENE SI COMUNICARNOS MEDIANTE UN ARCHIVO QUE NETWORKING LE 
-	//NOS GUARDA EN LA COMPUTADORA Y ACA LO LEVANTAMOS Y VAMOS IMPRIMIENDO TODO
-	//QUEDARIA COMO UN GRAN TEXTO Y PODES SCROLLEAR Y VER TODO 
-	//QUEDARIA PIOLA GUARDAR LOS ESTADOS CON HORARIO 
+	BulletinFile.open("MyBulletinfile.txt", ios::out | ios::binary);		//creo archivo donde guardare info de nodos
+
+	if (BulletinFile.is_open())		//verifico denuevo porlas
+	{
+		/* ESTO LO DEBERIAN HACER LOS SERVERS O CLIENTS
+		MyFile.write(this->userFileData.memory, this->userFileData.size);		//escribo lo que me devolvio server en un archivo	
+		*/
+	
+		BulletinFile << "MEAMO VEAMO VEAMO" << endl << "13:30 BLOQUE 1234 RECIBIO 4.2 EDACOINS";
+
+		std::ifstream in("MyBulletinfile.txt");
+		std::string contents((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+		
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), contents.c_str());
+
+		BulletinFile.close();
+	}
 
 	ImGui::End();
 }
@@ -271,8 +312,7 @@ void GraphicF2::print_look4Veci(void)
 
 
 	ImGui::Text(" ");
-
-	ImGui::Text(" >> Seleccione un vecino << ");
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> Seleccione un vecino << ");
 
 	//Checkbox con imgui
 	int i;
@@ -296,7 +336,9 @@ void GraphicF2::print_look4Veci(void)
 	{
 	case FULL:
 		char buf[32];
-		ImGui::Text(">> RECIBIR <<");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
+
+		//ImGui::Text(">> RECIBIR <<");
 		if (ImGui::TreeNode("Operaciones para recibir:"))
 		{
 			sprintf(buf, "Get blocks_");
@@ -323,7 +365,7 @@ void GraphicF2::print_look4Veci(void)
 		}
 
 		ImGui::Text(" ");
-		ImGui::Text(">> ENVIAR <<");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> ENVIAR << ");
 
 		if (ImGui::TreeNode("Operaciones para enviar:"))
 		{
@@ -361,7 +403,8 @@ void GraphicF2::print_look4Veci(void)
 	case SPV:
 
 		char bufSPV[32];
-		ImGui::Text(">> RECIBIR <<");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
+
 		if (ImGui::TreeNode("Operaciones para recibir:"))
 		{
 			sprintf(bufSPV, "MerkleBlock");
@@ -373,7 +416,8 @@ void GraphicF2::print_look4Veci(void)
 		}
 
 		ImGui::Text(" ");
-		ImGui::Text(">> ENVIAR <<");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> ENVIAR << ");
+
 
 		if (ImGui::TreeNode("Operaciones para enviar:"))
 		{
@@ -424,6 +468,79 @@ void GraphicF2::print_look4Veci(void)
 
 	}
 
+	ImGui::End();
+
+	/*************************************
+		VENTANA: ACCIONES
+	**************************************/
+	print_Acciones();
+
+
+	//Rendering
+	ImGui::Render();
+
+	al_clear_to_color(COLOR);
+
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+	al_flip_display();
+
+}
+
+void GraphicF2::print_Nodos()
+{
+	ImGui_ImplAllegro5_NewFrame();
+	ImGui::NewFrame();
+
+	/****************************************
+		VENTANA: MOSTRAMOS NODOS CREADOS
+	*****************************************/
+	ImGui::SetNextWindowPos(ImVec2(20, 10));
+	ImGui::SetNextWindowSize(ImVec2(1600, 600));
+	ImGui::Begin(">> NODOS CREADOS EN LA RED <<", 0, window_flags);
+	static bool h_borders = true;
+	static bool v_borders = true;
+
+	int columns_count = 10;
+	const int lines_count = 30;
+	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+
+	ImGui::Columns(columns_count, NULL, v_borders);
+	for (int i = 0; i < columns_count * lines_count; i++)
+	{
+		if (h_borders && ImGui::GetColumnIndex() == 0)
+			ImGui::Separator();
+		ImGui::Text("ID: 4454 \nIP:123.233.233\nPUERTO: 32",i);
+		ImGui::NextColumn();
+	}
+	ImGui::End();
+
+	print_Acciones();
+
+
+	/*************************************************************************************************
+			FIN IMPRESION VENTANAS
+	**************************************************************************************************/
+	//Rendering
+	ImGui::Render();
+
+	al_clear_to_color(COLOR);
+
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+	al_flip_display();
+}
+
+void GraphicF2::print_Acciones()		//Importante llamarla entre newframe y render
+{
+
+	ImGui::SetNextWindowPos(ImVec2(1600, 10));
+	ImGui::SetNextWindowSize(ImVec2(250, 100));
+	ImGui::Begin(">> ACCIONES <<", 0, window_flags);
+
+	if (ImGui::Button(" >> Quit << "))
+	{
+		GUIQueue.push(GUIEvent::Quit);
+	}
+
 	if (ImGui::Button(" >>  VOLVER A DASHBOARD  << "))
 	{
 		GUIQueue.push(GUIEvent::Back2Dashboard);
@@ -431,15 +548,6 @@ void GraphicF2::print_look4Veci(void)
 	}
 
 	ImGui::End();
-
-	//Rendering
-	ImGui::Render();
-
-	al_clear_to_color(al_map_rgb(179, 255, 255));
-
-	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-	al_flip_display();
-
 }
 
 bool GraphicF2::verify(unsigned int tipo, string coinss, string pkeyyyy, int alguienFueSeleccionado)
@@ -459,7 +567,6 @@ ParticipantesMsj_t GraphicF2::getComunicacion(void)
 
 	return Comunicacion;
 }
-
 
 bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 {
@@ -584,7 +691,6 @@ bool GraphicF2::verify(bool* full, bool* spv, string nodo1, string nodo2)
 		return false;
 }
 
-
 void GraphicF2::print_Error(void)
 {
 	ImGui_ImplAllegro5_NewFrame();
@@ -614,7 +720,6 @@ void GraphicF2::print_Error(void)
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
 }
-
 
 RegistroNodo_t GraphicF2::getRegistro(void)
 {

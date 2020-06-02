@@ -86,6 +86,14 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 	}
 }
 
+void FSM::ShwNodos_r_acc(genericEvent* ev)
+{
+	if (static_cast<evBuscarVecinos*>(ev)->getType() == MostrarNodos)
+	{
+		cout << " MUESTRO NODOS " << endl;
+		this->state4Graphic = SHWNODOS_G;
+	}
+}
 
 void FSM::ErrorEncontrado_r_acc(genericEvent* ev)
 {

@@ -93,7 +93,7 @@ class GUIEventGenerator : public eventGenerator
 {
 public:
 
-	//	GUIEventGenerator();
+	GUIEventGenerator();
 
 
 	genericEvent* getEvent(unsigned int estadoactualdeFSM);
