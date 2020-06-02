@@ -118,10 +118,6 @@ void NodeServer::parse(const boost::system::error_code& error) {
 		//Validator has the http protocol form.
 		std::string validator = nodeIP + '/' + "eda_coin" + '/';
 
-		std::string get_blocks = "get_blocks";
-		std::string get_block_header = "get_block_header";
-		std::string block_id = "block_id=";
-		std::string count_ = "&count=";
 
 		//If there's been a match at the beggining of the request...\
 
@@ -130,28 +126,29 @@ void NodeServer::parse(const boost::system::error_code& error) {
 
 		if (it != std::string::npos) {
 
-			it = message.find(block_id);
-			if (it != message.npos) {
-				blockId = message[it + block_id.size()];
-			}
-			it = message.find(count_);
-			if (it != message.npos) {
-				count = message[it + count_.size()];
-			}
-			if (message.find(block_id)) {
-				state = GET_BLOCKS;
-			}
-			if (message.find(count_)) {
-				state = GET_BLOCK_HEADER;
+			result = pcback(message);
+
+			if (result["status"] == true) {
+
+				std::cout << "client sent correct input" << std::endl;
 
 			}
-			answer();
-
+			else
+			{
+				//Error de contenido.
+				result["status"] = false;
+				result["result"] = 2;
+			}
 		}
 		else
+		{
+			//Error de formato
+			result["result"] = false;
+			result["result"] = 1;
 			std::cout << "Client sent wrong input.\n";
 
-		
+		}
+		answer();
 	}
 
 	//If there's been an error, prints the message.
@@ -163,16 +160,6 @@ void NodeServer::parse(const boost::system::error_code& error) {
 /*Responds to input.*/
 void NodeServer::answer() {
 
-
-		std::fstream fileFromServer("blockChain4.json", std::ios::in | std::ios::binary);
-		std::ostringstream text;
-		
-		text << fileFromServer.rdbuf();
-		msg.clear();
-		msg += text.str();
-
-
-		FileLenght = msg.length();
 		generateTextResponse();
 
 		boost::asio::async_write(

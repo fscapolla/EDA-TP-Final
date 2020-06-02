@@ -19,6 +19,8 @@ public:
 	SPVNode(unsigned int ID_, std::string IP_, unsigned int port_);
 	~SPVNode();
 
+	json SpvCallback(std::string message);
+
 	void spvCallback(std::string msg);
 	//Funciones para mensajes
 	bool POSTFilter(unsigned int neighbourID);

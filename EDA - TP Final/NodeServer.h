@@ -15,7 +15,7 @@ using json = nlohmann::json;
 enum { GET_BLOCKS, GET_BLOCK_HEADER };
 
 #define MAXSIZE 1000
-typedef  void (*pcallback)(std::string msg);
+typedef  json (*pcallback)(std::string msg);
 
 class NodeServer{
 
@@ -45,7 +45,9 @@ private:
 	std::string blockId;
 	unsigned int count;
 	unsigned int state;
-	
+
+	json result;
+
 	std::string msg;
 	std::string date;
 	std::string ServerOutput;

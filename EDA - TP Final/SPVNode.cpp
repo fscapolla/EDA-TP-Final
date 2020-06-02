@@ -126,3 +126,25 @@ json SPVNode::createJSONFilter(std::string Id_)
 	jsonFilter["id"] = Id_;
 	return jsonFilter;
 }
+
+
+
+
+
+
+
+json SPVNode::SpvCallback(string message) {
+
+
+	json result;
+
+	//Si se trata de un POSTmerkletree
+	if (message.find("send_merkle_block"))
+	{
+		result = ;// guardar los datos
+	}
+
+	return result;
+
+
+}

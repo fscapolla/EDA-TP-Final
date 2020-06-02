@@ -107,21 +107,7 @@ std::string FullNode::POSTreply(std::string &receivedRequest, unsigned int clien
 	response["status"] = "true";
 	response["result"] = NULL;
 	
-	//Si se trata de un POSTblock guarda el block enviado
-	if (receivedRequest.find("send_block") )
-	{
 
-	}
-
-	//Si se trata de un POSTtransaction
-	else if (receivedRequest.find("send_tx"))
-	{
-	}
-
-	//Si se trata de un POSTfilter
-	else if (receivedRequest.find("send_filter"))
-	{
-	}
 
 	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
 		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
@@ -130,37 +116,7 @@ std::string FullNode::POSTreply(std::string &receivedRequest, unsigned int clien
 
 std::string FullNode::GETreply(std::string &receivedRequest, unsigned int clientPort_)
 {
-	json response;
-	response["status"] = "true";
-	receivedMessage = clientPort_;
 
-	if ((receivedRequest.find("send_block") != std::string::npos) || (receivedRequest.find("send_block_header") != std::string::npos))
-	{
-		unsigned int idPosition = receivedRequest.find("block_id=");
-		unsigned int countPosition = receivedRequest.find("count=");
-
-		if (idPosition != std::string::npos && countPosition != std::string::npos)
-		{
-			//Parseo id y count;
-			std::string ID_ = receivedRequest.substr(idPosition + 9, receivedRequest.find_last_of("&") - idPosition - 9);
-			std::string tempcount = receivedRequest.substr(countPosition + 6, receivedRequest.find("HTTP") - countPosition - 6);
-			unsigned int count = std::stoi(tempcount);
-
-		}
-		else
-		{
-			//Error de formato
-			response["result"] = false;
-			response["result"] = 1;
-		}
-
-	}
-	else
-	{
-		//Error de contenido.
-		response["status"] = false;
-		response["result"] = 2;
-	}
 
 	/*return "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Location: " + "eda_coins" + "\r\nCache-Control: max-age=30\r\nExpires:" +
 		makeDaytimeString(30) + "Content-Length:" + std::to_string(response.dump().length()) +
@@ -243,4 +199,57 @@ json FullNode::createJSONMerkleBlock(void)
 	}
 	MerkleBlock["merklePath"] = path;
 	return MerkleBlock;
+}
+
+
+
+json FullNode::fullCallback(string message) {
+
+
+	json result;
+
+	if ((message.find("get_blocks") != std::string::npos) || (message.find("get_block_header") != std::string::npos))
+	{
+		unsigned int idPosition = message.find("block_id=");
+		unsigned int countPosition = message.find("count=");
+		string block_id("block_id=");
+		string count("count=");
+
+		if (idPosition != std::string::npos && countPosition != std::string::npos)
+		{
+
+			std::string ID_ = message.substr(idPosition + block_id.size(), message.find_last_of("&") - idPosition - block_id.size());
+			std::string tempcount = message.substr(countPosition + count.size(), message.size() - countPosition - count.size());
+			unsigned int count = std::stoi(tempcount);
+		}
+
+		if (message.find("get_blocks"))
+		{
+
+		}
+		if (message.find("get_block_header"))
+		{
+
+		}
+	}
+
+	//Si se trata de un POSTblock guarda el block enviado
+	if (message.find("send_block"))
+	{
+		result = ;// hay q bajar los datos del body q son json
+	}
+	//Si se trata de un POSTtransaction
+	else if (message.find("send_tx"))
+	{
+		result = ;//bajar los datos body tipo json de las tx
+	}
+	//Si se trata de un POSTfilter
+	else if (message.find("send_filter"))
+	{
+		result = ;// guardar los datos
+	}
+
+	return result;
+
+
 }
