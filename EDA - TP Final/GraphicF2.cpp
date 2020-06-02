@@ -380,16 +380,21 @@ void GraphicF2::print_look4Veci(void)
 				ImGui::TreePop();
 			}
 
-			sprintf(buf, "Get blocks");
+			if (ImGui::TreeNode("Otras operaciones"))
 			{
-				if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
-					selected = GETBLOCKS_Genv;
+				sprintf(buf, "Get blocks");
+				{
+					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
+						selected = GETBLOCKS_Genv;
+				}
+				sprintf(buf, "Block");
+				{
+					if (ImGui::Selectable(buf, selected == BLOCK_Genv))
+						selected = BLOCK_Genv;
+				}
+				ImGui::TreePop();
 			}
-			sprintf(buf, "Block");
-			{
-				if (ImGui::Selectable(buf, selected == BLOCK_Genv))
-					selected = BLOCK_Genv;
-			}
+
 			ImGui::TreePop();
 		}
 

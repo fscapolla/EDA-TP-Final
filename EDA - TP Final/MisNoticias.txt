@@ -1,5 +1,5 @@
 Se creo un nodo
-IP:433.434.344 - ID: 0 - TYPE: SPV 
-PUERTO:44
+IP:55.555.666 - ID: 0 - TYPE: SPV 
+PUERTO:66
 
 
