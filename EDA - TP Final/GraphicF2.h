@@ -131,6 +131,7 @@ private:
 	vector<RegistroNodo_t> NodosArray; 
 
 
+
 };
 
 #endif //GRAPHICF2

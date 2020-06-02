@@ -10,7 +10,6 @@ void FSM::BuscarVecinos_r_acc(genericEvent* ev)
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)
 	{
 		this->state4Graphic = LOOK4VECI_G;
-
 		cout << "LOOK 4 VECINOS " << endl;
 	}
 }
@@ -24,19 +23,24 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 			uint TYPE;
 			uint PUERTO;
 			string IP;
+			std::vector<RegistroNodo_t>* NodoArray;
 		*******/
 		if (static_cast<evCrearNodo*>(ev)->TYPE == SPV)
 		{
-			
-
+		//
+		}
+		if (static_cast<evCrearNodo*>(ev)->TYPE == FULL)
+		{
+		//
 		}
 
+		//ACA SI EDITAR VECTOR DE NODOS
 	}
 }
 
 void FSM::VolverADashboard_r_acc(genericEvent* ev)
 {
-	if (static_cast<evBuscarVecinos*>(ev)->getType() == Back2Dashboard)
+	if (static_cast<evBack2Dashboard*>(ev)->getType() == Back2Dashboard)
 	{
 		cout << " VOLVER A DASHBOARD " << endl;
 		this->state4Graphic = DASHBOARD_G;
@@ -60,10 +64,10 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 
 		} ParticipantesMsj_t;
 
-				ParticipantesMsj_t Comunication;
-				};
+		ParticipantesMsj_t Comunication;
+		
+		std::vector<RegistroNodo_t>* NodoArray;
 		*****************/
-
 
 	}
 }
@@ -86,7 +90,8 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 			int TYPE;
 
 		}RegistroNodo_t;
-
+		
+		std::vector<RegistroNodo_t>* NodoArrayC;
 		*/
 	}
 }

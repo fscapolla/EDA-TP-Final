@@ -20,11 +20,12 @@ class evCrearNodo : public genericEvent
 {
 public:
 
-	evCrearNodo(RegistroNodo_t registro_)
+	evCrearNodo(RegistroNodo_t registro_, std::vector<RegistroNodo_t>*vectorArrPtr)
 	{
 		PUERTO = registro_.PUERTO;
 		IP = registro_.IP;
 		TYPE = registro_.TYPE;
+		NodoArray = vectorArrPtr;
 	}
 
 	eventTypes getType(void) { return CrearNodo; }		//Esto lo usan las rutinas de accion para verificar que se trata del evento correcto
@@ -38,12 +39,14 @@ public:
 class evCrearConexion : public genericEvent
 {
 public:
-	evCrearConexion(RegistroNodo_t nodo1_, RegistroNodo_t nodo2_) : Nodo1(nodo1_), Nodo2(nodo2_) {}
+	evCrearConexion(RegistroNodo_t nodo1_, RegistroNodo_t nodo2_, std::vector<RegistroNodo_t>* vectorArrPtr) : Nodo1(nodo1_), Nodo2(nodo2_), NodoArrayC(vectorArrPtr) {}
 
 	eventTypes getType(void) { return CrearConexion; }
 
 	RegistroNodo_t Nodo1;
 	RegistroNodo_t Nodo2;
+	std::vector<RegistroNodo_t>* NodoArrayC;
+
 };
 
 
