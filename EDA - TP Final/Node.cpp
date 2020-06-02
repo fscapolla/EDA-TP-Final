@@ -129,3 +129,75 @@ std::vector<std::string> Node::getFilters(void)
 {
 	return FilterArray;
 }
+
+
+bool Node::addNeighbour(unsigned int ID_, std::string& IP_, unsigned int port_)
+{
+	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
+	if (port_ < 0)
+		return false;
+	else {
+		neighbours[ID_] = { IP_, port_ };
+		return true;
+	}
+}
+
+bool Node::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
+{
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			state = CLIENT;
+			json jsonTx = createJSONTx(Tx_);
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+			//client->performRequest();
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+
+
+
+
+
+
+
+/************************************************************************************************
+*					               GENERADORES DE JSON											*
+*																								*
+*************************************************************************************************/
+
+
+//Genera el JSON de una transacción.
+json Node::createJSONTx(Transaction Tx_)
+{
+	json jsonTx;
+	jsonTx["nTxin"] = Tx_.nTxin;
+	jsonTx["nTxout"] = Tx_.nTxout;
+	jsonTx["txid"] = Tx_.txID;
+
+	auto vin = json::array();	//Cargo el JSON de Vin dentro del JSON de transacciones.
+	for (auto vin_ = 0; vin_ < Tx_.nTxin; vin_++)
+	{
+		vin.push_back(json::object({ {"txid",Tx_.vIn[vin_].txID}, {"outputIndex",Tx_.vIn[vin_].outputIndex}, {"signature",Tx_.vIn[vin_].signature}, {"blockid", Tx_.vIn[vin_].LilblockID} }));
+	}
+	jsonTx["vin"] = vin;
+
+	auto vout = json::array(); //Cargo el JSON de Vout dentro del JSON de transacciones.
+	for (auto vout_ = 0; vout_ < Tx_.nTxout; vout_++)
+	{
+		vout.push_back(json::object({ { "amount",Tx_.vOut[vout_].amount },{ "publicid", Tx_.vOut[vout_].publicID} }));
+	}
+	jsonTx["vout"] = vout;
+
+	return jsonTx;
+}
+
+
+
