@@ -164,7 +164,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeClient.cpp" />
-    <ClCompile Include="NodeServer.cpp" />
     <ClCompile Include="GenericFSM.cpp" />
     <ClCompile Include="SPVNode.cpp" />
   </ItemGroup>
@@ -188,7 +187,6 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodeClient.h" />
-    <ClInclude Include="NodeServer.h" />
     <ClInclude Include="SPVNode.h" />
   </ItemGroup>
   <ItemGroup>

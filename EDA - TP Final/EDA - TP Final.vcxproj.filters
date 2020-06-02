@@ -81,9 +81,6 @@
     <ClCompile Include="Node.cpp">
       <Filter>Source Files\Nodes</Filter>
     </ClCompile>
-    <ClCompile Include="NodeServer.cpp">
-      <Filter>Source Files\Client /Server</Filter>
-    </ClCompile>
     <ClCompile Include="FullNode.cpp">
       <Filter>Source Files\Nodes</Filter>
     </ClCompile>
@@ -148,9 +145,6 @@
     </ClInclude>
     <ClInclude Include="Node.h">
       <Filter>Header Files\Nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeServer.h">
-      <Filter>Header Files\Client /Server</Filter>
     </ClInclude>
     <ClInclude Include="FullNode.h">
       <Filter>Header Files\Nodes</Filter>

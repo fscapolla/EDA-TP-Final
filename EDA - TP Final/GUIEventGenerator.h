@@ -20,12 +20,13 @@ class evCrearNodo : public genericEvent
 {
 public:
 
-	evCrearNodo(RegistroNodo_t registro_, std::vector<RegistroNodo_t>*vectorArrPtr)
+	evCrearNodo(RegistroNodo_t registro_, std::vector<RegistroNodo_t>*vectorArrPtr,unsigned int ID_)
 	{
 		PUERTO = registro_.PUERTO;
 		IP = registro_.IP;
 		TYPE = registro_.TYPE;
 		NodoArray = vectorArrPtr;
+		ID = ID_;
 	}
 
 	eventTypes getType(void) { return CrearNodo; }		//Esto lo usan las rutinas de accion para verificar que se trata del evento correcto
@@ -33,6 +34,7 @@ public:
 	uint TYPE;
 	uint PUERTO;
 	string IP;
+	unsigned int ID;
 };
 
 
@@ -109,7 +111,7 @@ private:
 	GraphicF2 GUI;
 	implEvent getGUIevent(unsigned int estado);
 	implEvent TranslateGUIEvent(GUIEvent ev);
-
+	unsigned int nodeID;
 };
 
 #endif //GUIEVGENE

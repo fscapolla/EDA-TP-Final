@@ -3,6 +3,7 @@ using namespace std;
 
 GUIEventGenerator::GUIEventGenerator()
 {
+	nodeID = 0;
 }
 
 genericEvent* GUIEventGenerator::
@@ -12,7 +13,8 @@ getEvent(unsigned int estado)
 	switch (getGUIevent(estado))
 	{
 	case implEvent::CrearNodo:
-		ret = new evCrearNodo(this->GUI.getRegistro(), this->GUI.getNodoArray());
+		ret = new evCrearNodo(this->GUI.getRegistro(), this->GUI.getNodoArray(), this->nodeID);
+		nodeID++;
 		break;
 
 	case implEvent::CrearConexion:

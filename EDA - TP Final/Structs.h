@@ -14,7 +14,7 @@ struct Neighbour {
 	unsigned int port;
 };
 
-typedef struct
+typedef struct RegistroNodo_t
 {
 	std::string IP;
 	int PUERTO;
@@ -22,6 +22,8 @@ typedef struct
 	int TYPE;
 	std::map<unsigned int, Neighbour> NodosVecinos;
 
+	RegistroNodo_t(int ID_, std::string IP_, int PUERTO_, int TYPE_) :ID(ID_), IP(IP_), PUERTO(PUERTO_), TYPE(TYPE_) {}
+	RegistroNodo_t() {}
 }RegistroNodo_t;
 
 

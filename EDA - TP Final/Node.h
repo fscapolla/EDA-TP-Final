@@ -27,7 +27,7 @@ public:
 	bool addNeighbour(unsigned int ID_,std::string& IP_, unsigned int port_);
 	
 	//Funciones para enviar mensajes.
-	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_)=0;
+	bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
 
 	virtual std::string makeDaytimeString(int secs);
 

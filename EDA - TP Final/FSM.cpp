@@ -24,16 +24,22 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 			uint PUERTO;
 			string IP;
 			std::vector<RegistroNodo_t>* NodoArray;
+			unsigned int nodeID;
 		*******/
+		 
 		if (static_cast<evCrearNodo*>(ev)->TYPE == SPV)
 		{
-		//
+			SPVNode tempSpv(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
+			spvArray.push_back(tempSpv);
 		}
 		if (static_cast<evCrearNodo*>(ev)->TYPE == FULL)
 		{
-		//
+			FullNode tempFull(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
+			fullArray.push_back(tempFull);
 		}
 
+		RegistroNodo_t tempReg(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO, static_cast<evCrearNodo*>(ev)->TYPE);
+		static_cast<evCrearNodo*>(ev)->NodoArray->push_back(tempReg);
 		//ACA SI EDITAR VECTOR DE NODOS
 	}
 }
