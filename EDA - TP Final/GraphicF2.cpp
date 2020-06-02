@@ -338,22 +338,22 @@ void GraphicF2::print_look4Veci(void)
 		//ImGui::Text(">> RECIBIR <<");
 		if (ImGui::TreeNode("Operaciones para recibir:"))
 		{
-			sprintf(buf, "Get blocks_");
+			sprintf(buf, "Get blocks");
 			{
 				if (ImGui::Selectable(buf, selected == GETBLOCKS_Grec))
 					selected = GETBLOCKS_Grec;
 			}
-			sprintf(buf, "Get block headers_");
+			sprintf(buf, "Get block headers");
 			{
 				if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Grec))
 					selected = GETBLOCKHEADERS_Grec;
 			}
-			sprintf(buf, "Block_");
+			sprintf(buf, "Block");
 			{
 				if (ImGui::Selectable(buf, selected == BLOCK_Grec))
 					selected = BLOCK_Grec;
 			}
-			sprintf(buf, "Filter_");
+			sprintf(buf, "Filter");
 			{
 				if (ImGui::Selectable(buf, selected == FILTER_Grec))
 					selected = FILTER_Grec;
@@ -368,13 +368,11 @@ void GraphicF2::print_look4Veci(void)
 		{
 			if (ImGui::TreeNode("Datos para transaccion"))
 			{
-				static char CantCoins[1000000000];
 				ImGui::InputText("CANTIDAD:", CantCoins, IM_ARRAYSIZE(CantCoins));
 
-				static char PKey[40000000];
 				ImGui::InputText("PUBLIC KEY:", PKey, IM_ARRAYSIZE(PKey));
 
-				sprintf(buf, "Transaccion_");
+				sprintf(buf, "Transaccion");
 				{
 					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
 						selected = GETBLOCKS_Genv;
@@ -382,12 +380,12 @@ void GraphicF2::print_look4Veci(void)
 				ImGui::TreePop();
 			}
 
-			sprintf(buf, "Get blocks_");
+			sprintf(buf, "Get blocks");
 			{
 				if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
 					selected = GETBLOCKS_Genv;
 			}
-			sprintf(buf, "Block_");
+			sprintf(buf, "Block");
 			{
 				if (ImGui::Selectable(buf, selected == BLOCK_Genv))
 					selected = BLOCK_Genv;
@@ -427,7 +425,7 @@ void GraphicF2::print_look4Veci(void)
 
 				sprintf(bufSPV,"Transaccion");
 				{
-					if (ImGui::Selectable(buf, selected == TRANSACTION_Genv))
+					if (ImGui::Selectable(bufSPV, selected == TRANSACTION_Genv))
 						selected = TRANSACTION_Genv;
 				}
 				ImGui::TreePop();
@@ -435,7 +433,7 @@ void GraphicF2::print_look4Veci(void)
 
 			sprintf(bufSPV,"Get block headers");
 			{
-				if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Genv))
+				if (ImGui::Selectable(bufSPV, selected == GETBLOCKHEADERS_Genv))
 					selected = GETBLOCKHEADERS_Genv;
 			}
 
@@ -452,7 +450,6 @@ void GraphicF2::print_look4Veci(void)
 
 	ImGui::Text(" ");
 	ImGui::Text(" ");
-
 
 	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(selected,CantCoins,PKey,selectedN))
 	{

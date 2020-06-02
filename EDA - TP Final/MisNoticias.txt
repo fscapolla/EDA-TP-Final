@@ -1,9 +1,5 @@
 Se creo un nodo
-IP:222 - ID: 0 - TYPE: FULL
-PUERTO:1
-
-Se creo un nodo
-IP:333 - ID: 1 - TYPE: FULL
-PUERTO:2
+IP:433.434.344 - ID: 0 - TYPE: SPV 
+PUERTO:44
 
 
