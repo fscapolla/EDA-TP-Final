@@ -4,11 +4,15 @@
 #include "NodeServer.h"
 #include <chrono>
 #include <map>
-#include "Structs.h"
 
 typedef enum {FREE,CLIENT,SERVER} state_n;
 typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE} errorType_n;
 typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection_;
+
+struct Neighbour {
+	std::string IP;
+	unsigned int port;
+};
 
 //struct MerkleBlock {
 //	std::string BlockId;
@@ -23,21 +27,10 @@ public:
 	Node();
 	~Node();
 	//Función para agregar vecinos
-	virtual bool addNeighbour(unsigned int ID_,std::string& IP_, unsigned int port_)=0;
+	bool addNeighbour(unsigned int ID_,std::string& IP_, unsigned int port_);
 	
 	//Funciones para enviar mensajes.
-	virtual bool POSTBlock(unsigned int neighbourID, const json& header)=0;
 	virtual bool POSTTransaction(unsigned int neighbourID, Transaction Tx_)=0;
-	virtual bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID)=0;
-	virtual bool POSTFilter(unsigned int neighbourID)=0;
-	virtual bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
-	virtual bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count) = 0;
-	virtual bool performRequest(void);
-
-	//Funciones para dar respuestas
-	virtual std::string POSTreply(std::string&, unsigned int) = 0;
-	virtual std::string GETreply(std::string&, unsigned int) = 0;
-	virtual std::string ERRORreply(void);
 
 	virtual std::string makeDaytimeString(int secs);
 
@@ -58,11 +51,13 @@ public:
 
 
 protected:
+
+	void TxCallback(string respuesta);
 	std::string IP;
 	unsigned int port;
 	unsigned int ID;
 	int sentMessage;
-	int receivedMessage; //Puerto del cliente que me contactó (para enviar la respuesta).
+	int receivedMessage;
 	state_n state;
 	NodeClient *client;
 	NodeServer *server;
