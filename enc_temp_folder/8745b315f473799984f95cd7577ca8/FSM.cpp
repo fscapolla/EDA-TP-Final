@@ -111,13 +111,11 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 	{
 		cout << " CREAMOS CONEXION " << endl;
 
-		//ESTO NO HARIA FALTA SOLO NECESITAMOS TENER ARREGLO (REFERENCIA COMO CON BCHAIN) DE TODOS LOS NODOS EN GRAPHIC Y FUE
-
-		/****** ACTUALIZAMOS ARREGLO DE NODOS  *******/ 
-/* 	vector<RegistroNodo_t> ptr = *static_cast<evCrearConexion*>(ev)->NodoArrayC;  /*  DESREFERENCIAMOS EL PUNTERO AL VECTOR DE NODOS */
+		/****** ACTUALIZAMOS ARREGLO DE NODOS  *******/
+		vector<RegistroNodo_t> ptr = *static_cast<evCrearConexion*>(ev)->NodoArrayC;  /*  DESREFERENCIAMOS EL PUNTERO AL VECTOR DE NODOS */	
 
 		// ---> NODO 1 CON NODO 2 COMO VECINO
-/*		RegistroNodo_t tempNewNodo;
+		RegistroNodo_t tempNewNodo;
 		Neighbour tempNei;
 
 		tempNewNodo = static_cast<evCrearConexion*>(ev)->Nodo1 ;
@@ -142,7 +140,7 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 		tempNewNodo2.NodosVecinos.insert(pair<unsigned int, Neighbour>(static_cast<evCrearConexion*>(ev)->Nodo1.ID, tempNei2));
 
 		ptr[static_cast<evCrearConexion*>(ev)->Nodo2.ID] = tempNewNodo2;
-*/
+
 
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/

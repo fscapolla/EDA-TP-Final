@@ -176,8 +176,8 @@ void GraphicF3::print_Dashboard()
 	ImGui::SetNextWindowSize(ImVec2(380, 200));
 	ImGui::Begin(">> CREAR CONEXION ENTRE NODOS <<", 0, window_flags);
 
-	static char NODO1[MAX_ID];
-	static char NODO2[MAX_ID];
+	static char NODO1[MAX_IP];
+	static char NODO2[MAX_IP];
 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Datos del nodo 1");
 
@@ -190,6 +190,14 @@ void GraphicF3::print_Dashboard()
 
 	if ((ImGui::Button(" >> CREAR << ")) && (verify((string)NODO1, (string)NODO2)))
 	{
+		RegistroNodo_t tempNodo1;
+		tempNodo1.IP = NODO1;
+		RegistroNodo_t tempNodo2;
+		tempNodo1.IP = NODO2;
+
+		registros.push(tempNodo1);
+		registros.push(tempNodo2);
+
 		GUIQueue.push(GUIEvent::CrearConexion);
 	}
 
