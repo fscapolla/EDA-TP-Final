@@ -1,7 +1,7 @@
 #pragma once
 #include "Node.h"
 
-typedef  json(*pcallback)(std::string msg);
+
 
 class FullNode :
 	public Node

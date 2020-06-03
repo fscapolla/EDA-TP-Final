@@ -4,9 +4,9 @@
 /*Server constructor. Initializes io_context, acceptor and socket.
 Calls waitForConnection to accept connections.*/
 
-NodeServer::NodeServer(boost::asio::io_context& io_context_ , std::string IP , pcallback pcback_, unsigned int port_) :
-	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::address::from_string("25.135.150.125"), 400)), socket(io_context_) , nodeIP(IP),pcback(pcback_),port(port_) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
-{	
+NodeServer::NodeServer(boost::asio::io_context& io_context_, std::string IP, pcallback pcback_, unsigned int port_) :
+	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::tcp::v4(), 1234)), socket(io_context_), nodeIP(IP), pcback(pcback_), port(port_) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
+{
 	if (socket.is_open()) {
 		socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 		socket.close();
@@ -31,16 +31,16 @@ NodeServer::~NodeServer() {
 
 /*Sets acceptor to accept (asynchronously).*/
 void NodeServer::waitForConnection() {
-	
-	
+
+
 	if (socket.is_open()) {
 		std::cout << "Error: Can't accept new connection from an open socket" << std::endl;
 		return;
 	}
-	
+
 	std::cout << "Waiting for connection.\n";
 	acceptor.async_accept(socket, boost::bind(&NodeServer::connectionCallback, this, boost::asio::placeholders::error));
-	
+
 }
 
 //Closes socket and clears message holder.
@@ -48,7 +48,7 @@ void NodeServer::closeConnection() {
 	socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 	socket.close();
 	int i = 0;
-	
+
 }
 
 
@@ -93,22 +93,24 @@ void NodeServer::messageCallback(const boost::system::error_code& error, size_t 
 /*Generates http response, according to validity of input.*/
 void NodeServer::generateTextResponse(void) {
 
-	ServerOutput = "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Content-Length:" + boost::lexical_cast<std::string>(result.size()) +
+	ServerOutput = "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Content-Length:" + std::to_string(result.dump().size()) +
 		"\r\nContent-Type: application/json; charset=iso-8859-1\r\n\r\n";
 
 	msg = result.dump();
+	//std::string mensaje = "{\"name\":\"Lucas\"}";
+	ServerOutput += msg.substr(0, msg.size());
 
-	ServerOutput += msg;
 	ServerOutput += "\r\n\r\n";
-	
+	std::cout << ServerOutput;
+
 }
 
 
 
 
 /*Validates input given in GET request.*/
-void NodeServer::parse(const boost::system::error_code& error) {
-	
+void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent) {
+
 	if (!error) {
 
 		bool isInputOk = false;
@@ -116,8 +118,9 @@ void NodeServer::parse(const boost::system::error_code& error) {
 		//Creates string message from request.
 		std::string message(ClientInput);
 
+
 		//Validator has the http protocol form.
-		std::string validator = nodeIP + '/' + "eda_coin" + '/';
+		std::string validator = "/eda_coin/";
 
 
 		//If there's been a match at the beggining of the request...\
@@ -127,7 +130,9 @@ void NodeServer::parse(const boost::system::error_code& error) {
 
 		if (it != std::string::npos) {
 
+
 			result = pcback(message);
+
 
 			if (result["status"] == true) {
 
@@ -150,6 +155,7 @@ void NodeServer::parse(const boost::system::error_code& error) {
 
 		}
 		answer();
+		waitForConnection();
 	}
 
 	//If there's been an error, prints the message.
@@ -176,7 +182,7 @@ void NodeServer::answer() {
 	);
 
 
-		
+
 	socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 	socket.close();
 
@@ -189,6 +195,7 @@ void NodeServer::response_sent_cb(const boost::system::error_code& error,
 	if (!error) {
 		std::cout << "Response sent. " << bytes_sent << " bytes." << std::endl;
 	}
+
 }
 
 std::string NodeServer::makeDaytimeString(int secs) { //funcion para devolver el tiempo 

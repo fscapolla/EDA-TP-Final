@@ -1,6 +1,6 @@
 
 #include "GraphicF2.h"
-
+#include "GUIEventGenerator.h"
 GraphicF3::GraphicF3()
 {
 	if (AllegroInit() && ImguiInit())
@@ -12,12 +12,12 @@ GraphicF3::GraphicF3()
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 		window_flags |= ImGuiWindowFlags_NoMove;
 
-		BulletinFileName = "C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final/MisNoticias.txt";
+		BulletinFileName = "C:/Users/ique_/source/repos/EDA-TP-Final/EDA - TP Final/MisNoticias.txt";
 		MyHamachiIP = "25.135.158.40";
 		//ESTO ES UNA TRUCHADA 
 		//PERO ES POR AHORA, DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
 
-		fs::path bPath("C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final");
+		fs::path bPath("C:/Users/ique_/source/repos/EDA-TP-Final/EDA - TP Final");
 		if (exists(bPath) && is_directory(bPath))
 		{
 			for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)

@@ -32,14 +32,14 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 
 		if (static_cast<evCrearNodo*>(ev)->TYPE == SPV)
 		{
-		//	SPVNode tempSpv(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
-		//	spvArray.push_back(tempSpv);
+			SPVNode tempSpv(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
+			spvArray.push_back(tempSpv);
 			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: SPV \nPUERTO:" + to_string(static_cast<evCrearNodo*>(ev)->PUERTO) + "\n\n";
 		}
 		if (static_cast<evCrearNodo*>(ev)->TYPE == FULL)
 		{
-		//	FullNode tempFull(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
-		//	fullArray.push_back(tempFull);
+			FullNode tempFull(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
+			fullArray.push_back(tempFull);
 			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: FULL\n" + "PUERTO:" + to_string(static_cast<evCrearNodo*>(ev)->PUERTO) + "\n\n";
 		}
 
@@ -47,7 +47,7 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 			/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		cout << input2file << endl;
 
-		* static_cast<evCrearNodo*>(ev)->nameofFile += input2file; 
+		*static_cast<evCrearNodo*>(ev)->nameofFile += input2file; 
 
 		/****** ACTUALIZAMOS ARREGLO DE NODOS  *******/
 		RegistroNodo_t tempNewNodo;

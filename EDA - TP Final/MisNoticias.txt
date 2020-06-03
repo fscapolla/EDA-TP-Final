@@ -1,5 +1,0 @@
-Conexion creada entre
- Nodo: 333
- Nodo: 333
-
-

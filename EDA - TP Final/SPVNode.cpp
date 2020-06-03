@@ -12,6 +12,7 @@ SPVNode::SPVNode(unsigned int ID_, std::string IP_, unsigned int port_)
 	IP = IP_;
 	port = port_;
 	client = new NodeClient(IP, port);
+	server = new NodeServer(io_context,IP,boost::bind(&SPVNode::SpvCallback,this,_1),port);
 }
 
 
