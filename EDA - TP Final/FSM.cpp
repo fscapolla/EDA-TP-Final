@@ -147,7 +147,8 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
-		input2file = "Conexion creada entre\n Nodo: " + to_string(static_cast<evCrearConexion*>(ev)->Nodo1.ID) + "\n Nodo: " + to_string(static_cast<evCrearConexion*>(ev)->Nodo2.ID) + "\n\n";
+		cout << static_cast<evCrearConexion*>(ev)->Nodo1.IP << endl;
+		input2file = "Conexion creada entre\n Nodo: " + static_cast<evCrearConexion*>(ev)->Nodo1.IP + "\n Nodo: " + static_cast<evCrearConexion*>(ev)->Nodo2.IP + "\n\n";
 		cout << input2file << endl;
 
 		*static_cast<evCrearConexion*>(ev)->nameofFile += input2file;

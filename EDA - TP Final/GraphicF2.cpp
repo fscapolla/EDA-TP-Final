@@ -193,7 +193,7 @@ void GraphicF3::print_Dashboard()
 		RegistroNodo_t tempNodo1;
 		tempNodo1.IP = NODO1;
 		RegistroNodo_t tempNodo2;
-		tempNodo1.IP = NODO2;
+		tempNodo2.IP = NODO2;
 
 		registros.push(tempNodo1);
 		registros.push(tempNodo2);
@@ -974,6 +974,7 @@ RegistroNodo_t GraphicF3::getRegistro(void)
 	RegistroNodo_t returning = registros.front();
 
 	registros.pop();
+
 	return returning;
 }
 

@@ -48,11 +48,12 @@ public:
 
 	eventTypes getType(void) { return CrearConexion; }
 
+	
 	RegistroNodo_t Nodo1;
 	RegistroNodo_t Nodo2;
 	std::vector<RegistroNodo_t>* NodoArrayC;
 	string* nameofFile;
-
+	
 };
 
 class evMostrarNodos : public genericEvent
