@@ -70,12 +70,12 @@ enum { SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE };
 namespace fs = boost::filesystem;
 using json = nlohmann::json;
 
-class GraphicF2
+class GraphicF3
 {
 public:
 
-	GraphicF2();
-	~GraphicF2();
+	GraphicF3();
+	~GraphicF3();
 	bool GetError();
 	bool hayEvento(unsigned int estadoActualdeFSM); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
 	std::vector<RegistroNodo_t>* getNodoArray(void);

@@ -1,7 +1,7 @@
 
 #include "GraphicF2.h"
 
-GraphicF2::GraphicF2()
+GraphicF3::GraphicF3()
 {
 	if (AllegroInit() && ImguiInit())
 	{
@@ -14,7 +14,9 @@ GraphicF2::GraphicF2()
 
 		BulletinFileName = "C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final/MisNoticias.txt";
 
-		//ESTO ES UNA TRUCHADA POR AHORA DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
+		//ESTO ES UNA TRUCHADA 
+		//PERO ES POR AHORA, DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
+
 		fs::path bPath("C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final");
 		if (exists(bPath) && is_directory(bPath))
 		{
@@ -43,7 +45,7 @@ GraphicF2::GraphicF2()
 	}
 }
 
-GraphicF2::~GraphicF2()
+GraphicF3::~GraphicF3()
 {
 	ImGui_ImplAllegro5_Shutdown();
 	ImGui::DestroyContext();
@@ -60,12 +62,12 @@ GraphicF2::~GraphicF2()
 		al_destroy_display(display);
 }
 
-bool GraphicF2::GetError()
+bool GraphicF3::GetError()
 {
 	return Error;
 }
 
-bool GraphicF2::hayEvento(unsigned int EstadoActual)
+bool GraphicF3::hayEvento(unsigned int EstadoActual)
 {
 	while (al_get_next_event(queue, &ev))
 	{
@@ -83,14 +85,14 @@ bool GraphicF2::hayEvento(unsigned int EstadoActual)
 	return !GUIQueue.empty();		//Si NO esta vacia hay evento
 }
 
-GUIEvent GraphicF2::getEvent()
+GUIEvent GraphicF3::getEvent()
 {
 	GUIEvent EventoParaEvGenerator = GUIQueue.front();
 	GUIQueue.pop();
 	return EventoParaEvGenerator;
 }
 
-void GraphicF2::print_current_state(unsigned int CurrentState)
+void GraphicF3::print_current_state(unsigned int CurrentState)
 {
 	switch (CurrentState)
 	{
@@ -119,7 +121,7 @@ void GraphicF2::print_current_state(unsigned int CurrentState)
 	}
 }
 
-void GraphicF2::print_Dashboard()
+void GraphicF3::print_Dashboard()
 {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
@@ -328,7 +330,7 @@ void GraphicF2::print_Dashboard()
 }
 
 
-bool GraphicF2::look4BlocksPath(string ChosenFile)
+bool GraphicF3::look4BlocksPath(string ChosenFile)
 {
 	fs::path bPath(directoryName);
 	if (exists(bPath) && is_directory(bPath))
@@ -355,7 +357,7 @@ bool GraphicF2::look4BlocksPath(string ChosenFile)
 	}
 }
 
-void GraphicF2::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber creado un NewFrame en otra parte del programa
+void GraphicF3::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber creado un NewFrame en otra parte del programa
 {
 
 	ImGui::SetNextWindowPos(ImVec2(800, 10));
@@ -380,7 +382,7 @@ void GraphicF2::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber cre
 	ImGui::End();
 }
 
-void GraphicF2::print_look4Veci(void)
+void GraphicF3::print_look4Veci(void)
 {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
@@ -579,7 +581,7 @@ void GraphicF2::print_look4Veci(void)
 
 }
 
-void GraphicF2::print_Nodos()
+void GraphicF3::print_Nodos()
 {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
@@ -621,7 +623,7 @@ void GraphicF2::print_Nodos()
 	al_flip_display();
 }
 
-unsigned char GraphicF2::clickedBlock(bool* checks, size_t size)
+unsigned char GraphicF3::clickedBlock(bool* checks, size_t size)
 {
 
 	int i;
@@ -634,7 +636,7 @@ unsigned char GraphicF2::clickedBlock(bool* checks, size_t size)
 	return count;
 }
 
-unsigned char GraphicF2::numSelectedBlocks(bool* checks, size_t size) 
+unsigned char GraphicF3::numSelectedBlocks(bool* checks, size_t size) 
 {
 
 	int i;
@@ -646,7 +648,7 @@ unsigned char GraphicF2::numSelectedBlocks(bool* checks, size_t size)
 	return count;
 }
 
-void GraphicF2::print_SelBlockInfo(void) {
+void GraphicF3::print_SelBlockInfo(void) {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
 
@@ -747,7 +749,7 @@ void GraphicF2::print_SelBlockInfo(void) {
 
 }
 
-void GraphicF2::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vector<string>Nodos)
+void GraphicF3::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vector<string>Nodos)
 {
 	uint i;
 	int increase_X = 0, levelIncrease = 0, increase_Y = LEVEL_INCREASE_Y * altura;
@@ -773,7 +775,7 @@ void GraphicF2::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, ve
 	}
 }
 
-void GraphicF2::drawConnections(int altura, uint Nodos) {
+void GraphicF3::drawConnections(int altura, uint Nodos) {
 
 	al_set_target_backbuffer(display);
 	int i;														//falta corregir los pubtos de conexion,creo que sumar medio bloque alcanza
@@ -797,7 +799,7 @@ void GraphicF2::drawConnections(int altura, uint Nodos) {
 
 }
 
-int GraphicF2::starterValue(uint altura, const char* var) {
+int GraphicF3::starterValue(uint altura, const char* var) {
 
 	int increase_x = 0, levelIncrease = 0;
 	switch (altura) {
@@ -834,7 +836,7 @@ int GraphicF2::starterValue(uint altura, const char* var) {
 
 }
 
-void GraphicF2::print_Acciones()		//Importante llamarla entre newframe y render
+void GraphicF3::print_Acciones()		//Importante llamarla entre newframe y render
 {
 
 	ImGui::SetNextWindowPos(ImVec2(1400, 10));
@@ -855,7 +857,7 @@ void GraphicF2::print_Acciones()		//Importante llamarla entre newframe y render
 	ImGui::End();
 }
 
-ParticipantesMsj_t GraphicF2::getComunicacion(void)
+ParticipantesMsj_t GraphicF3::getComunicacion(void)
 {
 	ParticipantesMsj_t Comunicacion = Comunicaciones.front();		//Sabemos que hay una comunicacion en la cola porque lo verifico verify()
 	Comunicaciones.pop();
@@ -866,7 +868,7 @@ ParticipantesMsj_t GraphicF2::getComunicacion(void)
 /********************************
 	VERIFY PARA ENVIAR MENSAJE
 *********************************/
-bool GraphicF2::verify(unsigned int tipo, string coinss, string pkeyyyy, int alguienFueSeleccionado)
+bool GraphicF3::verify(unsigned int tipo, string coinss, string pkeyyyy, int alguienFueSeleccionado)
 {
 	if (((tipo == TRANSACTION_Genv) && (coinss.empty() || pkeyyyy.empty())) || (alguienFueSeleccionado == -1))
 	{
@@ -876,7 +878,7 @@ bool GraphicF2::verify(unsigned int tipo, string coinss, string pkeyyyy, int alg
 		return true;
 }
 
-bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
+bool GraphicF3::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 {
 	bool ret = false;
 
@@ -919,7 +921,7 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	return true;
 }
 
-bool GraphicF2::verify(string nodo1, string nodo2)
+bool GraphicF3::verify(string nodo1, string nodo2)
 {
 	if ((!nodo1.empty() && !nodo2.empty()))
 	{
@@ -929,7 +931,7 @@ bool GraphicF2::verify(string nodo1, string nodo2)
 		return false;
 }
 
-void GraphicF2::print_Error(void)
+void GraphicF3::print_Error(void)
 {
 	ImGui_ImplAllegro5_NewFrame();
 	ImGui::NewFrame();
@@ -959,7 +961,7 @@ void GraphicF2::print_Error(void)
 	al_flip_display();
 }
 
-RegistroNodo_t GraphicF2::getRegistro(void)
+RegistroNodo_t GraphicF3::getRegistro(void)
 {
 	RegistroNodo_t returning = registros.front();
 
@@ -967,7 +969,7 @@ RegistroNodo_t GraphicF2::getRegistro(void)
 	return returning;
 }
 
-bool GraphicF2::AllegroInit()
+bool GraphicF3::AllegroInit()
 {
 	if (al_init())
 	{
@@ -1022,7 +1024,7 @@ bool GraphicF2::AllegroInit()
 	return false;
 }
 
-bool GraphicF2::ImguiInit(void)
+bool GraphicF3::ImguiInit(void)
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -1045,7 +1047,7 @@ bool GraphicF2::ImguiInit(void)
 	return true;
 }
 
-std::vector<RegistroNodo_t>* GraphicF2::getNodoArray(void) {
+std::vector<RegistroNodo_t>* GraphicF3::getNodoArray(void) {
 
 	return &NodosArray;
 }

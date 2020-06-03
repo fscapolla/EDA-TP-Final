@@ -114,7 +114,7 @@ public:
 
 private:
 	/* PRINTING FUNCTIONS */
-	GraphicF2 GUI;
+	GraphicF3 GUI;
 	implEvent getGUIevent(unsigned int estado);
 	implEvent TranslateGUIEvent(GUIEvent ev);
 	unsigned int nodeID;
