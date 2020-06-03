@@ -4,15 +4,17 @@
 
 #define GUIEVGENERATOR_H
 
-#include <array>
 
 #include "Structs.h"
 #include "GraphicF2.h"
+
 #include "eventHandling.h"
+
+#include <array>
 
 /* EVENTOS FASE 2 */
 
-enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error, Back2Dashboard, NoEvent, Quit };
+enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error, Back2Dashboard, NoEvent, BlockSelected, Quit };
 
 //Heredan de clase genericEvent (EventHandling.h)
 class evCrearNodo : public genericEvent
@@ -65,7 +67,6 @@ public:
 	eventTypes getType(void) { return BuscarVecinos; }
 };
 
-
 class evEnviarMsj : public genericEvent
 {
 public:
@@ -94,14 +95,17 @@ public:
 	eventTypes getType(void) { return Error; }
 };
 
-
+class evBlockSelected : public genericEvent
+{
+public:
+	eventTypes getType(void) { return BlockSelected; }
+};
 
 
 //Hereda de clase eventGenerator (EventHandling.h)
 class GUIEventGenerator : public eventGenerator
 {
 public:
-
 	GUIEventGenerator();
 
 	std::vector<RegistroNodo_t>* getNodosArr(void);

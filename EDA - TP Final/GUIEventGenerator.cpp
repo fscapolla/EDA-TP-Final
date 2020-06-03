@@ -1,4 +1,8 @@
+
+
 #include "GUIEventGenerator.h"
+
+#include "GraphicF2.h"
 using namespace std;
 
 GUIEventGenerator::GUIEventGenerator()
@@ -35,6 +39,10 @@ getEvent(unsigned int estado)
 
 	case implEvent::Back2Dashboard:
 		ret = new evBack2Dashboard;
+		break;
+		
+	case implEvent::BlockSelected:
+		ret = new evBlockSelected;
 		break;
 
 	case implEvent::Error:
@@ -84,6 +92,10 @@ implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
 
 	case GUIEvent::CrearConexion:
 		returning = implEvent::CrearConexion;
+		break;
+
+	case GUIEvent::BlockSelected:
+		returning = implEvent::BlockSelected;
 		break;
 
 	case GUIEvent::MostrarNodos:

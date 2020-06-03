@@ -44,7 +44,7 @@
 #include "Structs.h"
 
 /* DEFINES */
-#define SIZE_SCREEN_X 2000
+#define SIZE_SCREEN_X 1700
 #define SIZE_SCREEN_Y 700
 #define MAX_IP 15
 #define MAX_ID 15
@@ -53,12 +53,18 @@
 #define SPV 1
 #define FULL 2
 #define MAX_VECINOS 50
+#define MAX_BLOCKS 60
+#define LEVEL_INCREASE_Y 50
+#define LEVEL_INCREASE_X 40
+#define INITIAL_X 0
+#define INITIAL_Y 500
 
-#define COLOR al_map_rgb(100,200,240)
 
-enum STATES { DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWERROR_G };
+#define COLOR al_map_rgb(20,240,230)
 
+enum STATES { DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWSELB_G, SHWERROR_G  };
 
+enum { SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE };
 
 /* Filesystems namespace */
 namespace fs = boost::filesystem;
@@ -67,6 +73,7 @@ using json = nlohmann::json;
 class GraphicF2
 {
 public:
+
 	GraphicF2();
 	~GraphicF2();
 	bool GetError();
@@ -97,10 +104,20 @@ private:
 	void print_Bulletin();
 	void print_Nodos();
 	void print_Acciones();
+	void print_SelBlockInfo(void);
+	void drawConnections(int, uint);
+	void printLevel(uint, uint, uint, vector<string>Nodos);
 
-	bool verify(bool*, bool*, string, string);		//Veryfy para creacion de nodo. Si es SPV no puede conectarse a otro SPV. IP PUERTO no pueden ser campos vacios. 
+	int starterValue(uint altura, const char* var);
+	unsigned char clickedBlock(bool* checks, size_t size);
+	unsigned char numSelectedBlocks(bool* checks, size_t size);
+
+	/* VERIFICACIONES */
+	bool verify(string, string);		//Veryfy para creacion de nodo. Si es SPV no puede conectarse a otro SPV. IP PUERTO no pueden ser campos vacios. 
 	bool verify(uint, bool esSPV);			//Verify para BUSCAR VECINOS rellena el objeto ParticipantesMsj con info de emisor y sus vecinos y lo guarda en la queue
 	bool verify(unsigned int, string, string, int);		//Verify para ENVIAR MENSAJE relllena los campos faltantes del objeto ParticipantesMsj con el mensaje (verificado) y el vecino receptor
+
+	bool look4BlocksPath(string ChosenFile);
 
 	/* COLA DE EVENTOS QUE LEVANTA EL GUI EVENT GENERATOR */
 	std::queue<GUIEvent> GUIQueue;
@@ -114,11 +131,6 @@ private:
 	/* VARIABLES DE IMGUI */
 	ImGuiWindowFlags window_flags;
 
-	/* VARIABLES DE INPUT */
-	std::string path;
-	std::string directoryName;
-	std::vector<std::string> Files;
-	vector<Block> selectedBlock;
 
 	std::string readString;
 
@@ -134,7 +146,24 @@ private:
 
 	vector<RegistroNodo_t> NodosArray; 
 
+	std::string MyHamachiIP;
 
+	/************************
+	*        BLOCKS         *
+	*************************/
+
+	bool ValidationMerkleRoot;
+	bool ActionsArray[4];
+
+	/* VARIABLES DE INPUT */
+	std::string path;
+	std::string directoryName;
+	std::vector<std::string> Files;
+	vector<Block> selectedBlock;
+
+	/*Puntero a BlockChain*/
+
+	Blockchain pBchain;				//TRUCHADA AHORA NO ES UN PUNTERO ES LA BLOCKCHAIN ENTERA
 
 };
 

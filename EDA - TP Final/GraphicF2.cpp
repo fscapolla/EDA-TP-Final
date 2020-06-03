@@ -1,5 +1,4 @@
 
-
 #include "GraphicF2.h"
 
 GraphicF2::GraphicF2()
@@ -14,6 +13,29 @@ GraphicF2::GraphicF2()
 		window_flags |= ImGuiWindowFlags_NoMove;
 
 		BulletinFileName = "C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final/MisNoticias.txt";
+
+		//ESTO ES UNA TRUCHADA POR AHORA DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
+		fs::path bPath("C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final");
+		if (exists(bPath) && is_directory(bPath))
+		{
+			for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)
+			{
+				if (iterator->path().filename().string() == "blockChain32.json")
+				{
+					if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
+						Error = false;
+					}
+					else 
+					{
+						Error = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			Error = true;
+		}
 	}
 	else
 	{
@@ -86,6 +108,11 @@ void GraphicF2::print_current_state(unsigned int CurrentState)
 
 	case SHWNODOS_G:
 		print_Nodos();
+		break;
+
+	case SHWSELB_G:
+		print_SelBlockInfo();
+		break;
 
 	default:
 		break;
@@ -103,7 +130,6 @@ void GraphicF2::print_Dashboard()
 	ImGui::SetNextWindowPos(ImVec2(20, 10));
 	ImGui::SetNextWindowSize(ImVec2(380, 180));
 	ImGui::Begin(">> CREAR UN NODO <<", 0, window_flags);
-	static char IP[MAX_IP];
 	static char Puerto[MAX_PUERTO];
 	static bool nodofull = false;
 	static bool nodospv = false;
@@ -111,15 +137,14 @@ void GraphicF2::print_Dashboard()
 
 	ImGui::Checkbox("NODO FULL", &nodofull);
 	ImGui::Checkbox("NODO SPV", &nodospv);
-	ImGui::InputText("IP DEL SERVIDOR:", IP, sizeof(char) * MAX_IP);
 	ImGui::InputText("PUERTO DEL SERVIDOR:", Puerto, sizeof(char) * MAX_PUERTO);
 
-	if (ImGui::Button(" >> CREAR NODO << ") && ((nodofull == true) || (nodospv == true)) && ((sizeof(IP) != 0) && (sizeof(Puerto) != 0)))
+	if (ImGui::Button(" >> CREAR NODO << ") && ((nodofull == true) || (nodospv == true)) && (sizeof(Puerto) != 0))
 	{
 		if (nodofull == true)
 		{
 			RegistroNodo_t tempRegistro;
-			tempRegistro.IP = IP;
+			tempRegistro.IP = MyHamachiIP;
 			tempRegistro.TYPE = FULL;
 			tempRegistro.PUERTO = atoi(Puerto);
 			registros.push(tempRegistro);
@@ -128,7 +153,7 @@ void GraphicF2::print_Dashboard()
 		if (nodospv == true)
 		{
 			RegistroNodo_t tempRegistro;
-			tempRegistro.IP = IP;
+			tempRegistro.IP = MyHamachiIP;
 			tempRegistro.TYPE = SPV;
 			tempRegistro.PUERTO = atoi(Puerto);
 			registros.push(tempRegistro);
@@ -151,56 +176,21 @@ void GraphicF2::print_Dashboard()
 
 	static char NODO1[MAX_ID];
 	static char NODO2[MAX_ID];
-	static bool fulltype[2] = { false };
-	static bool spvtype[2] = { false };
 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Datos del nodo 1");
 
-	ImGui::InputText("ID 1", NODO1, sizeof(char) * MAX_ID);
-	ImGui::Checkbox("NODO FULL ", &fulltype[0]);
-	ImGui::SameLine();
-	ImGui::Checkbox("NODO SPV", &spvtype[0]);
-	ImGui::Text("  ");
+	ImGui::InputText("IP 1", NODO1, sizeof(char) * MAX_ID);
 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Datos del nodo 2 ");
 
-	ImGui::InputText("ID 2", NODO2, sizeof(char) * MAX_ID);
-	ImGui::Checkbox("NODO FULL_", &fulltype[1]);
-	ImGui::SameLine();
-	ImGui::Checkbox("NODO SPV_", &spvtype[1]);
+	ImGui::InputText("IP 2", NODO2, sizeof(char) * MAX_ID);
 
 
-	if ((ImGui::Button(" >> CREAR << ")) && (verify(fulltype, spvtype, (string)NODO1, (string)NODO2)))
+	if ((ImGui::Button(" >> CREAR << ")) && (verify((string)NODO1, (string)NODO2)))
 	{
-		if (fulltype[0]) {
-			RegistroNodo_t tempNodo1;
-			tempNodo1.TYPE = FULL;
-			tempNodo1.ID = atoi(NODO1);
-			registros.push(tempNodo1);
-
-		}
-		else {
-			RegistroNodo_t tempNodo1;
-			tempNodo1.TYPE = SPV;
-			tempNodo1.ID = atoi(NODO1);
-			registros.push(tempNodo1);
-		}
-
-		if (fulltype[1]) {
-			RegistroNodo_t tempNodo2;
-			tempNodo2.TYPE = FULL;
-			tempNodo2.ID = atoi(NODO2);
-			registros.push(tempNodo2);
-		}
-		else {
-			RegistroNodo_t tempNodo2;
-			tempNodo2.TYPE = SPV;
-			tempNodo2.ID = atoi(NODO2);
-			registros.push(tempNodo2);
-		}
-
 		GUIQueue.push(GUIEvent::CrearConexion);
 	}
+
 	ImGui::End();
 
 	/*************************************
@@ -242,8 +232,82 @@ void GraphicF2::print_Dashboard()
 
 	if (ImGui::Button(" Presione aqui"))
 	{
-		GUIQueue.push(GUIEvent::MostrarNodos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
+		GUIQueue.push(GUIEvent::MostrarNodos);		
 	}
+	ImGui::End();
+
+
+	/*************************************
+		VENTANA: MOSTRAR BLOCK INFO
+	**************************************/
+	/* FILE CON BLOCKCHAIN SE CARGO EN CONSTRUCTOR ESTOTAMBN ES POR AHORA DESPS LO TOMAMOS DE UN NODOFULL*/
+
+	ImGui::SetNextWindowPos(ImVec2(450, 200));
+	ImGui::SetNextWindowSize(ImVec2(300, 400));
+	ImGui::Begin(">> MOSTRAR BLOQUE <<", 0, window_flags);
+
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Seleccione un bloque");
+
+	int i;
+	//Checkbox con imgui
+	static bool checks[MAX_BLOCKS] = { false };
+	unsigned char box = clickedBlock(checks, (pBchain.getBlocksArr()).size());
+	for (i = 0; i < pBchain.getBlocksSize(); i++)
+	{
+
+		ImGui::Checkbox((pBchain.getBlocksArr())[i].getBlockID().c_str(), &checks[i]);
+		if (numSelectedBlocks(checks, (pBchain.getBlocksArr()).size()) > 1)
+			checks[box] = false;
+	}
+	ImGui::Text("");
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Informacion que desea ver:");
+
+	static bool Actions[4];		//4 acciones posibles
+
+	ImGui::Checkbox("Show block information ", &Actions[SHOWINFO]);
+
+	ImGui::Checkbox("Calculate Merkle Root", &Actions[CALCULATEMERKLE]);
+
+	ImGui::Checkbox("Validate Merkle Root", &Actions[VALIDATEMERKLE]);
+
+	ImGui::Checkbox("Show Merkle Tree", &Actions[SHOWMERKLE]);
+
+	if (ImGui::Button(" Select All "))
+	{
+		int i;
+		for (i = 0; i < 4; i++)
+			Actions[i] = true;
+	}
+
+	if (ImGui::Button(" >> GET RESULTS << "))
+	{
+	
+		bool AlgunoSelected = false;
+		for (i = 0; i < (pBchain.getBlocksArr()).size(); i++) {
+			if (checks[i] == true)
+			{
+				selectedBlock.push_back((pBchain.getBlocksArr())[i]);
+				i = pBchain.getBlocksArr().size();		//Solo selecciono uno
+				AlgunoSelected = true;
+			}
+		}
+		if (AlgunoSelected)
+		{
+			if (Actions[CALCULATEMERKLE] || Actions[SHOWMERKLE])
+			{
+				//Calculamos merkle tree y guardamos si es valido o no
+				ValidationMerkleRoot = selectedBlock[0].createMerkleTree();
+			}
+			int i;
+			for (i = 0; i < 4; i++)
+				ActionsArray[i] = Actions[i];
+
+			GUIQueue.push(GUIEvent::BlockSelected);
+		}
+		else
+			GUIQueue.push(GUIEvent::Back2Dashboard);
+	}
+	
 	ImGui::End();
 
 	/*************************************
@@ -261,6 +325,34 @@ void GraphicF2::print_Dashboard()
 
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
+}
+
+
+bool GraphicF2::look4BlocksPath(string ChosenFile)
+{
+	fs::path bPath(directoryName);
+	if (exists(bPath) && is_directory(bPath))
+	{
+		for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)
+		{
+			if (iterator->path().filename().string() == ChosenFile.c_str())
+			{
+				std::cout << iterator->path().string() << std::endl;
+				if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
+					return true;
+				}
+				else {
+					GUIQueue.push(GUIEvent::Error);
+					return false;
+				}
+			}
+		}
+	}
+	else
+	{
+		GUIQueue.push(GUIEvent::Error);
+		return false;
+	}
 }
 
 void GraphicF2::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber creado un NewFrame en otra parte del programa
@@ -496,7 +588,7 @@ void GraphicF2::print_Nodos()
 		VENTANA: MOSTRAMOS NODOS CREADOS
 	*****************************************/
 	ImGui::SetNextWindowPos(ImVec2(20, 10));
-	ImGui::SetNextWindowSize(ImVec2(1600, 600));
+	ImGui::SetNextWindowSize(ImVec2(600, 600));
 	ImGui::Begin(">> NODOS CREADOS EN LA RED <<", 0, window_flags);
 	static bool h_borders = true;
 	static bool v_borders = true;
@@ -515,6 +607,7 @@ void GraphicF2::print_Nodos()
 	}
 	ImGui::End();
 
+
 	print_Acciones();
 	/*************************************************************************************************
 			FIN IMPRESION VENTANAS
@@ -528,10 +621,223 @@ void GraphicF2::print_Nodos()
 	al_flip_display();
 }
 
+unsigned char GraphicF2::clickedBlock(bool* checks, size_t size)
+{
+
+	int i;
+	unsigned char count = 0;
+	for (i = 0; i < size; i++) {
+		if (*(checks + i))
+			return count;
+		count++;
+	}
+	return count;
+}
+
+unsigned char GraphicF2::numSelectedBlocks(bool* checks, size_t size) 
+{
+
+	int i;
+	unsigned char count = 0;
+	for (i = 0; i < size; i++) {
+		if (*(checks + i))
+			count++;
+	}
+	return count;
+}
+
+void GraphicF2::print_SelBlockInfo(void) {
+	ImGui_ImplAllegro5_NewFrame();
+	ImGui::NewFrame();
+
+	if (ActionsArray[SHOWINFO])
+	{
+		ImGui::SetNextWindowPos(ImVec2(50, 10));
+		ImGui::SetNextWindowSize(ImVec2(350, 150));
+		ImGui::Begin(" INFORMACION DEL BLOQUE ");
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Block ID: ");
+		ImGui::SameLine();
+		ImGui::Text("%s", selectedBlock[0].getBlockID().c_str());
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Previous Block ID: ");
+		ImGui::SameLine();
+		ImGui::Text("%s", selectedBlock[0].getPrevBlovkID().c_str());
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Cantidad de transacciones: ");
+		ImGui::SameLine();
+		ImGui::Text("%u", selectedBlock[0].getNtx());
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Numero de bloque: ");
+		ImGui::SameLine();
+		ImGui::Text("%u", selectedBlock[0].getHeight());
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Nounce: ");
+		ImGui::SameLine();
+		ImGui::Text("%u", selectedBlock[0].getNonce());
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Merkle Root: ");
+		ImGui::SameLine();
+		ImGui::Text("%s", selectedBlock[0].getMerkleRoot().c_str());
+		ImGui::End();
+
+	}
+
+	if (ActionsArray[CALCULATEMERKLE])
+	{
+		ImGui::SetNextWindowPos(ImVec2(420, 10));
+		ImGui::SetNextWindowSize(ImVec2(230, 70));
+		ImGui::Begin(" CALCULO DE MERKLE ROOT");
+
+		ImGui::Text("Merkel Root: %s", selectedBlock[0].getCalculatedMerkleRoot().c_str());		//Se calculó merkleRoot al presionar boton start
+		ImGui::End();
+	}
+
+	if (ActionsArray[VALIDATEMERKLE])
+	{
+		ImGui::SetNextWindowPos(ImVec2(670, 10));
+		ImGui::SetNextWindowSize(ImVec2(200, 70));
+		ImGui::Begin(" VALIDACION DE MERKLE ROOT");
+
+		if (ValidationMerkleRoot)
+		{
+			ImGui::Text(" MERKLE ROOT IS");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), " VALID");
+
+		}
+		else
+		{
+			ImGui::Text(" MERKLE ROOT IS");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "NOT VALID");
+		}
+		ImGui::End();
+	}
+
+	if (ActionsArray[SHOWMERKLE])
+	{
+		//printLevel(uint altura, MerkleTree tree) Imprimos recursivamente
+		//Empezamos imprimiendo todas las hojas de la base	
+		printLevel(0, selectedBlock[0].getNumLeaves(), selectedBlock[0].getMerkleHeight(), selectedBlock[0].getNodos());
+	}
+
+	print_Acciones();
+
+	ImGui::Render();
+
+	al_clear_to_color(COLOR);
+
+	if (ActionsArray[SHOWMERKLE])		//Imprimios las conexiones entre nodos del Merkle Tree con allegro
+	{
+		int i, j;
+		uint Nodos = selectedBlock[0].getNumLeaves();
+
+		for (i = 0; i <= (selectedBlock[0].getMerkleHeight()); i++)
+		{
+			for (j = 0; j <= Nodos; j++)		//Empiezo imprimiendo las hojas
+			{
+				if (Nodos != 1)
+				{
+					drawConnections(i, Nodos);
+				}
+			}
+			Nodos = Nodos / 2;
+		}
+
+	}
+
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+
+	al_flip_display();
+
+}
+
+void GraphicF2::printLevel(uint altura, uint NodosAImprimir, uint TreeHeight, vector<string>Nodos)
+{
+	uint i;
+	int increase_X = 0, levelIncrease = 0, increase_Y = LEVEL_INCREASE_Y * altura;
+	increase_X = starterValue(altura, "increaseX");
+	levelIncrease = starterValue(altura, "levelInc");
+
+	char level = 'A' + altura;
+
+	if (altura != TreeHeight + 1)		//Cuando lleguemos a altura 5 dejamos de imprimir. Altura empieza en 0
+	{
+		for (i = 0; i < NodosAImprimir; i++)		//Imprimimos una fila de hojas (empezamos por nivel de abajo y vamos subiendo)
+		{
+			string nodolabel = level + to_string(i + 1);
+			ImGui::SetNextWindowPos(ImVec2(INITIAL_X + increase_X, INITIAL_Y - increase_Y));
+			ImGui::Begin(nodolabel.c_str(), 0, window_flags);
+			ImGui::Text("%s", Nodos[i].c_str());
+			ImGui::End();
+			increase_X += levelIncrease;
+		}
+
+		vector<string> NodosSiguienteNivel = vector<string>(Nodos.begin() + NodosAImprimir, Nodos.end());
+		printLevel(++altura, NodosAImprimir / 2, TreeHeight, NodosSiguienteNivel);
+	}
+}
+
+void GraphicF2::drawConnections(int altura, uint Nodos) {
+
+	al_set_target_backbuffer(display);
+	int i;														//falta corregir los pubtos de conexion,creo que sumar medio bloque alcanza
+	int lowerNodeX = INITIAL_X + starterValue(altura, "increaseX")
+		, lowerNodeY = INITIAL_Y - LEVEL_INCREASE_Y * altura
+		, upperNodeX = INITIAL_X + starterValue(altura + 1, "increaseX")
+		, upperNodeY = INITIAL_Y - LEVEL_INCREASE_Y * (altura + 1);
+
+	int lnodeIncrease = starterValue(altura, "levelIncrease"),
+		unodeIncrease = starterValue(altura + 1, "levelIncrease");
+
+	for (i = 0; i < Nodos; i++) {
+
+		al_draw_line(lowerNodeX, lowerNodeY, upperNodeX, upperNodeY, al_color_name("black"), 1.0);
+		lowerNodeX += lnodeIncrease;
+		if (i % 2) {
+			upperNodeX += unodeIncrease;
+		}
+
+	}
+
+}
+
+int GraphicF2::starterValue(uint altura, const char* var) {
+
+	int increase_x = 0, levelIncrease = 0;
+	switch (altura) {
+	case 0:
+		increase_x = 0;
+		levelIncrease = LEVEL_INCREASE_X;
+		break;
+	case 1:
+		increase_x = LEVEL_INCREASE_X / 2;
+		levelIncrease = LEVEL_INCREASE_X * 2;
+		break;
+	case 2:
+		increase_x = LEVEL_INCREASE_X * 3 / 2;
+		levelIncrease = LEVEL_INCREASE_X * 4;
+		break;
+	case 3:
+		increase_x = LEVEL_INCREASE_X * 7 / 2;
+		levelIncrease = LEVEL_INCREASE_X * 8;
+		break;
+	case 4:
+		increase_x = LEVEL_INCREASE_X * 15 / 2;
+		levelIncrease = LEVEL_INCREASE_X * 16;
+		break;
+	case 5:
+		increase_x = LEVEL_INCREASE_X * 31 / 2;
+		levelIncrease = LEVEL_INCREASE_X * 32;
+		break;
+	}
+
+	if (var == "increaseX")
+		return increase_x;
+	else
+		return levelIncrease;
+
+}
+
 void GraphicF2::print_Acciones()		//Importante llamarla entre newframe y render
 {
 
-	ImGui::SetNextWindowPos(ImVec2(1680, 10));
+	ImGui::SetNextWindowPos(ImVec2(1400, 10));
 	ImGui::SetNextWindowSize(ImVec2(250, 100));
 	ImGui::Begin(">> ACCIONES <<", 0, window_flags);
 
@@ -549,16 +855,6 @@ void GraphicF2::print_Acciones()		//Importante llamarla entre newframe y render
 	ImGui::End();
 }
 
-bool GraphicF2::verify(unsigned int tipo, string coinss, string pkeyyyy, int alguienFueSeleccionado)
-{
-	if ( ((tipo == TRANSACTION_Genv) && (coinss.empty() || pkeyyyy.empty()))  || (alguienFueSeleccionado == -1)  )
-	{
-		return false;
-	}
-	else
-		return true;
-}
-
 ParticipantesMsj_t GraphicF2::getComunicacion(void)
 {
 	ParticipantesMsj_t Comunicacion = Comunicaciones.front();		//Sabemos que hay una comunicacion en la cola porque lo verifico verify()
@@ -570,6 +866,15 @@ ParticipantesMsj_t GraphicF2::getComunicacion(void)
 /********************************
 	VERIFY PARA ENVIAR MENSAJE
 *********************************/
+bool GraphicF2::verify(unsigned int tipo, string coinss, string pkeyyyy, int alguienFueSeleccionado)
+{
+	if (((tipo == TRANSACTION_Genv) && (coinss.empty() || pkeyyyy.empty())) || (alguienFueSeleccionado == -1))
+	{
+		return false;
+	}
+	else
+		return true;
+}
 
 bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 {
@@ -614,14 +919,14 @@ bool GraphicF2::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	return true;
 }
 
-bool GraphicF2::verify(bool* full, bool* spv, string nodo1, string nodo2)
+bool GraphicF2::verify(string nodo1, string nodo2)
 {
-	if (  ( (spv[0] == true) && (spv[1] == spv[0]) ) || ((nodo1.empty()) || (nodo2.empty())))
+	if ((!nodo1.empty() && !nodo2.empty()))
 	{
-		return false;
+		return true;
 	}
 	else
-		return true;
+		return false;
 }
 
 void GraphicF2::print_Error(void)

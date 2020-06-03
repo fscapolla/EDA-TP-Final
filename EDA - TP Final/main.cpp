@@ -11,9 +11,6 @@
 
 int main(void)
 {
-
-    Blockchain bchain;
-
     uint myCounter = 0;
  
 	FSM fsm;

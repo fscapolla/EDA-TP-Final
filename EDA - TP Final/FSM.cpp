@@ -162,6 +162,13 @@ void FSM::ShwNodos_r_acc(genericEvent* ev)
 	}
 }
 
+void FSM::BlockSelected_r_acc(genericEvent* ev)
+{
+	if (static_cast<evBlockSelected*>(ev)->getType() == BlockSelected)
+	{
+		this->state4Graphic = SHWSELB_G;
+	}
+}
 void FSM::ErrorEncontrado_r_acc(genericEvent* ev)
 {
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == Error)
