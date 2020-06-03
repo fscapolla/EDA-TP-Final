@@ -1,5 +1,5 @@
 #include "NodeClient.h"
-#include "json.hpp"
+
 
 NodeClient::NodeClient(std::string IP_, int port_)
 {
@@ -18,8 +18,6 @@ NodeClient::NodeClient(std::string IP_, int port_)
 		this->setErrorCode(CURLINIT_ERROR);
 		this->setErrorMsg("Unable to start curl");
 	}
-	host = "127.0.0.1://" + std::to_string(port);
-
 }
 
 NodeClient::NodeClient()
@@ -44,8 +42,8 @@ bool NodeClient::performRequest(void)
 		bool res = true;
 		if (stillRunning)
 		{
-			multiError=curl_multi_perform(multiHandle, &stillRunning);
-			if (multiError!=CURLE_OK)
+			multiError = curl_multi_perform(multiHandle, &stillRunning);
+			if (multiError != CURLE_OK)
 			{
 				errorCode = CURLPERFORM_ERROR;
 				errorMsg = "Could not perform curl.";
@@ -61,7 +59,7 @@ bool NodeClient::performRequest(void)
 			parsedReply = json::parse(reply);
 			res = false;
 		}
-		
+
 		return res;
 	}
 	else
@@ -112,10 +110,18 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 	url = "http://" + host + path_;
 	struct curl_slist* list = nullptr;
 	reply.clear();
+	myjson = data.dump();
+
+	std::string line("Content-Type: application/json;charset=UTF-8");
 
 	/*Prosigo a configurar CURL para usar con el método POST*/
 	if (errorCode == ERROR_FREE2)
 	{
+		list = curl_slist_append(list, line.c_str());
+		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
+		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDS, myjson.c_str());
+		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, -1);
+		curl_easy_setopt(easyHandler, CURLOPT_POST, 1);
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());
 		//Configuro el propio puerto
@@ -134,11 +140,11 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 		//Set handler y multiHandle
 		curl_multi_add_handle(multiHandle, easyHandler);
 		//Configuro el header
-		list = curl_slist_append(list, data.dump().c_str());
-		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
+
+
+
 		//Cofiguro el header
-		//curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, (long)(data.dump().size()) + 1);
-		//curl_easy_setopt(easyHandler, CURLOPT_COPYPOSTFIELDS, data.dump().c_str());
+
 	}
 }
 
@@ -227,10 +233,10 @@ std::string NodeClient::getErrorMsg(void)
 	return errorMsg;
 }
 
-size_t myCallback(void * contents, size_t size, size_t nmemb, void * userp)
+size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp)
 {
 	size_t realsize = size * nmemb;
-	char* data = (char *)contents;
+	char* data = (char*)contents;
 	//fprintf(stdout, "%s",data);
 	std::string* s = (std::string*)userp;
 	s->append(data, realsize);

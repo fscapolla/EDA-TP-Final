@@ -2,12 +2,11 @@
 #include <iostream>
 #include <string>
 #include "json.hpp"
-//#include "C:\VCPKG\vcpkg\installed\x64-windows\include\curl\curl.h"
-#include <curl/curl.h>
+#include <curl\curl.h>
 
-typedef enum {GET, POST} method_n;
-typedef enum {ERROR_FREE2, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA} errorCode_n;
-size_t myCallback(void *contents, size_t size, size_t nmemb, void *userp);
+typedef enum { GET, POST } method_n;
+typedef enum { ERROR_FREE2, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA } errorCode_n;
+size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp);
 using json = nlohmann::json;
 
 class NodeClient
@@ -17,7 +16,7 @@ public:
 	NodeClient();
 	~NodeClient();
 
-	
+
 	bool performRequest(void);
 	void useGETmethod(std::string path_);
 	void usePOSTmethod(std::string path_, const json& data);
@@ -41,7 +40,7 @@ public:
 	std::string getErrorMsg(void);
 
 private:
-	CURL *easyHandler, *multiHandle;
+	CURL* easyHandler, * multiHandle;
 	CURLcode easyError;
 	CURLMcode multiError;
 	method_n method;
@@ -53,6 +52,7 @@ private:
 	errorCode_n errorCode;
 	std::string errorMsg;
 	json data_;
+	std::string myjson;
 	json parsedReply;
 
 };

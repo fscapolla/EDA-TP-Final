@@ -165,6 +165,7 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeClient.cpp" />
     <ClCompile Include="GenericFSM.cpp" />
+    <ClCompile Include="NodeServer.cpp" />
     <ClCompile Include="SPVNode.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +177,7 @@
     <ClInclude Include="FullNode.h" />
     <ClInclude Include="GenericFSM.h" />
     <ClInclude Include="GUIEventGenerator.h" />
+    <ClInclude Include="NodeServer.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="Imgui_files\imconfig.h" />
     <ClInclude Include="Imgui_files\imgui.h" />

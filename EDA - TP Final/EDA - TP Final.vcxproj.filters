@@ -108,6 +108,9 @@
     <ClCompile Include="GraphicF2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NodeServer.cpp">
+      <Filter>Source Files\Client /Server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="json.hpp">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="Structs.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeServer.h">
+      <Filter>Header Files\Client /Server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
