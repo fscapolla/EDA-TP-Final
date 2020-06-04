@@ -176,7 +176,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 			//Si se tiene el puerto del vecino pero no su ID puede hacerse int neighbourID=getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes neighbourType);
-			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice en el arreglo de nodos SPV (sólo SPV pueden enviar mensajes tipo Filter).
 			unsigned int senderIndex = getIndex(senderID, SPV);
@@ -189,7 +188,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos full usan envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, FULL);
@@ -204,7 +202,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos spv envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, SPV);
@@ -219,7 +216,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, FULL);
@@ -234,7 +230,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, FULL);
@@ -249,7 +244,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			nodeTypes type = (nodeTypes)static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.TYPE;
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo
 			if (type == FULL)
