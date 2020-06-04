@@ -7,8 +7,9 @@
 #include "Structs.h"
 
 typedef enum {FREE,CLIENT,SERVER} state_n;
-typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE} errorType_n;
-typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection_;
+typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE, NOT_NEIGHBOUR} errorType_n;
+typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection__;
+typedef enum {SPV, FULL} nodeTypes;
 
 //struct MerkleBlock {
 //	std::string BlockId;

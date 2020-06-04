@@ -55,6 +55,8 @@ private:
 	void ShwNodos_r_acc(genericEvent* ev);
 	void BlockSelected_r_acc(genericEvent* ev);
 	void MultiiPerform(genericEvent* ev);
+	unsigned int getIndex(unsigned int senderID, nodeTypes nodeType);
+	unsigned int getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes nodetype);
 
 	std::vector<SPVNode*> spvArray;
 	std::vector<FullNode*> fullArray;

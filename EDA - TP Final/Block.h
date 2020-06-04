@@ -73,7 +73,7 @@ struct MerkleTree {
 class Block
 {
 public:
-	//Block(const json& j);
+	Block(const json& j);
 	Block();
 	Block(const json& j);
 	string getBlockID(void);
@@ -123,6 +123,7 @@ private:
 	vector<string> stringMerkleRoot; //String usado para llenar el árbol?
 	vector<Transaction> TxVector; 
 	Transaction tx; 
+	json jsonBlock;
 
 };
 

@@ -34,21 +34,31 @@ FullNode::~FullNode()
 //Sólo configura el mensaje, la idea sería llamar a perform request (del nodo no del cliente) una vez seteado (por ahí desde el método performRequest de cada nodo)
 bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 {
-	if (neighbours.find(neighbourID) != neighbours.end())
 	{
-		if (state == FREE)
+		if (neighbours.find(neighbourID) != neighbours.end())
 		{
-			state = CLIENT;
-			json block = createJSONBlock(blockId);
-			client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);
-			client->usePOSTmethod("/eda_coin/send_block", block);
-			//client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-			return true;
+			if (state == FREE)
+			{
+				state = CLIENT;
+				json block = createJSONBlock(blockId);
+				client->setIP(neighbours[neighbourID].IP);
+				client->setPort(neighbours[neighbourID].port);
+				client->usePOSTmethod("/eda_coin/send_block", block);
+				//client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+				return true;
+			}
+			else {
+				errorType = BUSY_NODE;
+				errorMessage = "Node is not available to perform as client";
+				return false;
+			}
 		}
-		else return false;
-	}	
-	else return false;
+		else {
+			errorType = NOT_NEIGHBOUR;
+			errorMessage = "Requested server is not a Neighbour of current Node";
+			return false;
+		}
+	}
 }
 
 
@@ -56,23 +66,31 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 //POST Merkleblock
 //Recibe el ID del vecino
 //Para terminar de ejecutar usar performRequest del nodo (NO de client!!)
-bool FullNode::POSTMerkleBlock(unsigned int neighbourID)
+bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID)
 {
 	if (neighbours.find(neighbourID) != neighbours.end())
 	{
 		if (state == FREE)
 		{
 			state = CLIENT;
-			json jsonMerkleBlock = createJSONMerkleBlock();
+			json jsonMerkleBlock = createJSONMerkleBlock(BlockID_, TxID);
 			client->setIP(neighbours[neighbourID].IP);
 			client->setPort(neighbours[neighbourID].port);
 			client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
 			//client->performRequest();
 			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count)
@@ -89,6 +107,42 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 		else return false;
 	}
 	else return false;
+}
+
+bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
+{
+	if (neighbours.find(neighbourID) != neighbours.end())
+	{
+		if (state == FREE)
+		{
+			json jsonTx;
+
+			jsonTx["nTxin"] = 0;
+			jsonTx["nTxout"] = 1;
+			jsonTx["txid"] = "7E46A3BC";
+			jsonTx["vin"] = json();
+			json vout_;
+			vout_["amount"] = amount;
+			vout_["publicid"] = wallet;
+			jsonTx["vout"] = vout_;
+
+			state = CLIENT;
+			client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);
+			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+			return true;
+		}
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
+	}
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 
@@ -134,19 +188,62 @@ json FullNode::createJSONBlock(std::string& BlockId)
 //Cargo con datos del primer bloque del arreglo.
 //Para fases futuros hay que agregar en Block.h una función que recupere el MerklePath
 //Genera el JSON de un Merkle Block.
-json FullNode::createJSONMerkleBlock(void)
+json FullNode::createJSONMerkleBlock(std::string BlockID_, std::string TxID)
 {
 	json MerkleBlock;
-	json path = json::array();
+	Block block;
+	Transaction tx;
+	for (int i = 0; i < NodeBlockchain.getBlocksSize(); i++)
+	{
+		if (NodeBlockchain.getBlocksArr()[i].getBlockID() == BlockID_) {
+			block = NodeBlockchain.getBlocksArr()[i];
+			break;
+		}
+	}
+	MerkleBlock["blockid"] = block.getBlockID();
+	for (int i = 0; i < block.getTxVector().size(); i++)
+	{
+		if (block.getTxVector()[i].txID == TxID)
+		{
+			tx = block.getTxVector()[i];
+			break;
+		}
+	}
+	MerkleBlock["tx"] = createJSONTx(tx);
+	MerkleBlock["txPos"] = 1;
+	MerkleBlock["merklePath"] = block.getMerklePath(tx);
+	/*json path = json::array();
 	MerkleBlock["blockid"] = NodeBlockchain.getBlocksArr()[0].getBlockID();
 	MerkleBlock["tx"] = createJSONTx(NodeBlockchain.getBlocksArr()[0].getTxVector()[0]);
 	MerkleBlock["txPos"] = 1;
 	for (int i = 0; i < NodeBlockchain.getBlocksArr()[0].getTxVector()[0].nTxin; i++)
 	{
-		path.push_back(json::object({ {"ID","1234"} }));
+	path.push_back(json::object({ {"ID","1234"} }));
 	}
 	MerkleBlock["merklePath"] = path;
+	return MerkleBlock;*/
 	return MerkleBlock;
+}
+
+json FullNode::createJSONheader(std::string BlockID_)
+{
+	json jsonHeader;
+	Block block;
+	for (int i = 0; i < NodeBlockchain.getBlocksSize(); i++)
+	{
+		if (NodeBlockchain.getBlocksArr()[i].getBlockID() == BlockID_) {
+			block = NodeBlockchain.getBlocksArr()[i];
+			break;
+		}
+	}
+	jsonHeader["blockid"] = block.getBlockID();
+	jsonHeader["height"] = block.getHeight();
+	jsonHeader["merkleroot"] = block.getMerkleRoot();
+	jsonHeader["nTx"] = block.getNtx();
+	jsonHeader["nonce"] = block.getNonce();
+	jsonHeader["previousblockid"] = block.getPrevBlovkID();
+
+	return jsonHeader;
 }
 
 

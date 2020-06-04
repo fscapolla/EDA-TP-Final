@@ -21,20 +21,30 @@ SPVNode::~SPVNode()
 	delete client;
 }
 
+std::string SPVNode::getKey(void)
+{
+	return publickey;
+}
+
+void SPVNode::setKey(std::string Key_)
+{
+	publickey = Key_;
+}
+
 
 /************************************************************************************************
 *					                          MENSAJES											*
 *																								*
 *************************************************************************************************/
 
-bool SPVNode::POSTFilter(unsigned int neighbourID)
+bool SPVNode::POSTFilter(unsigned int neighbourID, std::string key)
 {
 	if (neighbours.find(neighbourID) != neighbours.end())
 	{
 		if (state == FREE)
 		{
 			state = CLIENT;
-			json jsonFilter = createJSONFilter(to_string(ID));
+			json jsonFilter = createJSONFilter(key);
 			client->setIP(neighbours[neighbourID].IP);
 			client->setPort(neighbours[neighbourID].port);
 			client->usePOSTmethod("/eda_coin/send_filter", jsonFilter);
@@ -84,10 +94,19 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 			client->setIP(neighbours[neighbourID].IP);
 			client->setPort(neighbours[neighbourID].port);
 			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+			return true;
 		}
-		else return false;
+		else {
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client";
+			return false;
+		}
 	}
-	else return false;
+	else {
+		errorType = NOT_NEIGHBOUR;
+		errorMessage = "Requested server is not a Neighbour of current Node";
+		return false;
+	}
 }
 
 

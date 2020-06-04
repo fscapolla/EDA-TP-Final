@@ -8,6 +8,8 @@ Block::Block() {
 
 Block::Block(const json & j)
 {
+	jsonBlock = j;
+
 	/*Cargo los datos del bloque*/
 	height = j["height"].get<unsigned int>();
 	BigBlockID = j["blockid"].get<string>();

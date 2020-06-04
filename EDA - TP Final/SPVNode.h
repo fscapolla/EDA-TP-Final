@@ -19,9 +19,13 @@ public:
 	SPVNode(unsigned int ID_, std::string IP_, unsigned int port_);
 	~SPVNode();
 
+	std::string getKey(void);
+	void setKey(std::string Key_);
+
+
 	json SpvCallback(std::string message);
 	//Funciones para mensajes
-	bool POSTFilter(unsigned int neighbourID);
+	bool POSTFilter(unsigned int neighbourID, std::string key);
 	
 	bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count);
 	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
@@ -34,5 +38,7 @@ public:
 
 private:
 	json findMBlockJSON(std::string message);
+	std::string publickey;
+	json jsonheaders;
 };
 

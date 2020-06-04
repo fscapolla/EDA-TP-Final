@@ -7,6 +7,7 @@
 #include <map>
 
 enum MSJESRec { BLOCK_Grec, TRANSACTION_Grec, MERKLEBLOCK_Grec, FILTER_Grec, GETBLOCKHEADERS_Grec, GETBLOCKS_Grec, BLOCK_Genv, TRANSACTION_Genv, MERKLEBLOCK_Genv, FILTER_Genv, GETBLOCKHEADERS_Genv, GETBLOCKS_Genv };
+//typedef enum {SPV,FULL} nodeTypes;
 
 struct Neighbour {
 	std::string IP;
@@ -18,7 +19,7 @@ typedef struct RegistroNodo_t
 	std::string IP;
 	int PUERTO;
 	int ID;
-	int TYPE;
+	nodeTypes TYPE;
 	std::map<unsigned int, Neighbour> NodosVecinos;
 
 	RegistroNodo_t(int ID_, std::string IP_, int PUERTO_, int TYPE_) :ID(ID_), IP(IP_), PUERTO(PUERTO_), TYPE(TYPE_) {}

@@ -50,8 +50,6 @@
 #define MAX_ID 15
 #define MAX_PUERTO 10
 #define MAX_MSJ 500
-#define SPV 1
-#define FULL 2
 #define MAX_VECINOS 50
 #define MAX_BLOCKS 60
 #define LEVEL_INCREASE_Y 50
