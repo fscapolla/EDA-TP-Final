@@ -102,6 +102,11 @@ public:
 	eventTypes getType(void) { return BlockSelected; }
 };
 
+class evMulti : public genericEvent
+{
+public:
+	eventTypes getType(void) { return NoEvent; }
+};
 
 //Hereda de clase eventGenerator (EventHandling.h)
 class GUIEventGenerator : public eventGenerator

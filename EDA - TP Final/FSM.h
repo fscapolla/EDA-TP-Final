@@ -13,6 +13,8 @@ class FSM : public genericFSM
 {
 public:
 	FSM() : genericFSM(&fsmTable[0][0], 5, 9, ShwDashboard), state4Graphic(DASHBOARD_G) {}
+	~FSM();
+
 	unsigned int state4Graphic;
 	std::vector<SPVNode*>* getSPVArrayPTR(void);
 	std::vector<FullNode*>* getFULLArrayPTR(void);
@@ -24,15 +26,15 @@ private:
 
 				//EVENTOS:		          Crear Nodo							 Crear Conexion									Mostrar Nodos						Buscar Vecinos								EnviarMsj									Error										Back2Dashboard										No event							BlockSelected
 		//ESTADOS 
-		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwNodos,TX(ShwNodos_r_acc)},		{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{ShwDashboard,TX(RutaDefault)} ,	{ShwSelBlock,TX(BlockSelected_r_acc) }},
+		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwNodos,TX(ShwNodos_r_acc)},		{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{ShwDashboard,TX(MultiiPerform)} ,	{ShwSelBlock,TX(BlockSelected_r_acc) }},
 
-		/*  Look4Veci  */		{{Look4Veci,TX(RutaDefault)},			{Look4Veci,TX(RutaDefault)},					{Look4Veci,TX(RutaDefault)},		{Look4Veci,TX(RutaDefault)},				{ShwDashboard,TX(EnviarMensaje_r_acc)},     {ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{Look4Veci, TX(RutaDefault) } ,		{ShwDashboard,TX(RutaDefault) }},
+		/*  Look4Veci  */		{{Look4Veci,TX(RutaDefault)},			{Look4Veci,TX(RutaDefault)},					{Look4Veci,TX(RutaDefault)},		{Look4Veci,TX(RutaDefault)},				{ShwDashboard,TX(EnviarMensaje_r_acc)},     {ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{Look4Veci, TX(MultiiPerform) } ,		{ShwDashboard,TX(RutaDefault) }},
 
-		/*  ShwNodos   */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)}	,		{ShwNodos, TX(RutaDefault)} ,		{ShwDashboard,TX(RutaDefault) }},
+		/*  ShwNodos   */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)}	,		{ShwNodos, TX(MultiiPerform)} ,		{ShwDashboard,TX(RutaDefault) }},
 
-	/*  ShwSelectedBlock */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)}	,		{ShwNodos, TX(RutaDefault)} ,		{ShwDashboard,TX(RutaDefault) }},
+	/*  ShwSelectedBlock */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)}	,		{ShwSelBlock, TX(MultiiPerform)} ,		{ShwDashboard,TX(RutaDefault) }},
 		
-	/*   ShwError  */			{{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},						{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} , 		{ShwError,TX(RutaDefault)} ,		{ShwDashboard,TX(RutaDefault) }}
+	/*   ShwError  */			{{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},						{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} , 		{ShwError,TX(MultiiPerform)} ,		{ShwDashboard,TX(RutaDefault) }}
 
 	};
 
@@ -52,7 +54,7 @@ private:
 	void ErrorEncontrado_r_acc(genericEvent* ev);
 	void ShwNodos_r_acc(genericEvent* ev);
 	void BlockSelected_r_acc(genericEvent* ev);
-
+	void MultiiPerform(genericEvent* ev);
 
 	std::vector<SPVNode*> spvArray;
 	std::vector<FullNode*> fullArray;

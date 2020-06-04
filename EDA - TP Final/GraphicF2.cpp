@@ -374,11 +374,6 @@ void GraphicF3::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber cre
 	ImGui::SetNextWindowSize(ImVec2(550, 600));
 	ImGui::Begin(">>    BULLETIN BOARD   <<", 0, window_flags);
 
-	//	std::vector<SPVNode*>* SPVArrayPTR;
-	//std::vector<SPVNode*>* FULLArrayPTR;
-
-
-	cout <<  (*SPVArrayPTR).size() << endl;
 	BulletinFile.open(BulletinFileName.c_str(), ios::out | ios::binary);		//archivo donde guardare info de nodos
 
 	if (BulletinFile.is_open())		//verifico denuevo porlas

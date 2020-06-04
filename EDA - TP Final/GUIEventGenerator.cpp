@@ -53,6 +53,10 @@ getEvent(unsigned int estado)
 	case implEvent::Quit:
 		ret = new evQuit;
 		break;
+
+	case implEvent::NoEvent:
+		ret = new evMulti;
+		break;
 	}
 
 	return ret;

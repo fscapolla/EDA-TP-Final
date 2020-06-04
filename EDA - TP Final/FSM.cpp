@@ -1,6 +1,18 @@
 
 #include "FSM.h"
 
+FSM::~FSM()
+{
+	for (auto& node : spvArray) {
+		if (node)
+			delete node;
+	}
+	for (auto& node : fullArray) {
+		if (node)
+			delete node;
+	}
+}
+
 void FSM::RutaDefault(genericEvent* ev)
 {
 	return;
@@ -72,6 +84,15 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 	}
 }
 
+void FSM::MultiiPerform(genericEvent* ev)
+{
+	for (const auto& spvnode : spvArray)
+		spvnode->performRequest();
+
+	for (const auto& fullnode : fullArray)
+		fullnode->performRequest();
+}
+
 void FSM::VolverADashboard_r_acc(genericEvent* ev)
 {
 	if (static_cast<evBack2Dashboard*>(ev)->getType() == Back2Dashboard)
@@ -122,6 +143,14 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 	{
 		cout << " CREAMOS CONEXION " << endl;
 
+		/*
+			
+		RegistroNodo_t Nodo1;
+		RegistroNodo_t Nodo2;
+		std::vector<RegistroNodo_t>* NodoArrayC;
+		string* nameofFile;
+		
+		*/
 
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
