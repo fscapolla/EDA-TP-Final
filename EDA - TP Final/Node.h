@@ -11,6 +11,7 @@ typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE, NOT_NEIGHBOUR} 
 typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection__;
 typedef enum {SPV, FULL} nodeTypes;
 
+
 //struct MerkleBlock {
 //	std::string BlockId;
 //	vector<Transaction> TxVector_;

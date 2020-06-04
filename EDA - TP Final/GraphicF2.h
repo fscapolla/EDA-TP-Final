@@ -60,7 +60,7 @@
 
 #define COLOR al_map_rgb(20,240,230)
 
-enum STATES { DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWSELB_G, SHWERROR_G  };
+enum STATES { INITSTATE_G, CREATING_CONNECTION_G, DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWSELB_G, SHWERROR_G  };
 
 enum { SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE };
 
@@ -87,7 +87,11 @@ public:
 
 	std::string BulletinFileName;
 
+	std::string BlockJSONFile;
 	std::string BulletinText; 
+
+	std::string MyHamachiIP;
+
 
 
 private:
@@ -97,6 +101,7 @@ private:
 
 	/* FUNCIONES DE IMPRESION */
 	void print_current_state(unsigned int CurrentState);
+	void print_Init_State();
 	void print_Dashboard();//Imprime el menu principal al comienzo del programa
 	void print_Error();
 	void print_look4Veci();
@@ -133,7 +138,6 @@ private:
 
 	std::string readString;
 
-
 	bool Error;
 
 	/*******************
@@ -146,8 +150,6 @@ private:
 	std::vector<RegistroNodo_t> NodosArray; 
 	std::vector<SPVNode*>* SPVArrayPTR;
 	std::vector<FullNode*>* FULLArrayPTR;
-
-	std::string MyHamachiIP;
 
 	/************************
 	*        BLOCKS         *

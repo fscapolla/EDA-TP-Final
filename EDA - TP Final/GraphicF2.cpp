@@ -16,7 +16,7 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 		FULLArrayPTR = FULLArrayPTR_;
 
 		BulletinFileName = "C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final/MisNoticias.txt";
-		MyHamachiIP = "localhost";
+		MyHamachiIP = "";
 		//ESTO ES UNA TRUCHADA 
 		//PERO ES POR AHORA, DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
 
@@ -119,10 +119,78 @@ void GraphicF3::print_current_state(unsigned int CurrentState)
 		print_SelBlockInfo();
 		break;
 
+	case INITSTATE_G:
+		print_Init_State();
+		break;
+
 	default:
 		break;
 	}
 }
+
+void GraphicF3::print_Init_State()
+{
+	ImGui_ImplAllegro5_NewFrame();
+	ImGui::NewFrame();
+
+	/***********************************
+		VENTANA: VAMO A MODO GENESIS
+	************************************/
+	ImGui::SetNextWindowPos(ImVec2(200, 50));
+	ImGui::SetNextWindowSize(ImVec2(450, 300));
+	ImGui::Begin(">> MODO 1 <<", 0, window_flags);
+
+
+	static char	PATH[MAX_PUERTO];
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "           GENESIS");
+
+	ImGui::InputText("PATH A ARCHIVO JSON CON NODOS:", PATH, sizeof(char) * MAX_PUERTO);
+
+	if (ImGui::Button(" >> INICIAR PROGRAMA << ") && (sizeof(PATH) != 0))
+	{
+		MyHamachiIP = "localhost";				
+		GUIQueue.push(GUIEvent::BuscarVecinos);	
+	}
+
+	ImGui::End();
+
+
+	ImGui::SetNextWindowPos(ImVec2(800, 50));
+	ImGui::SetNextWindowSize(ImVec2(450, 300));
+	ImGui::Begin(">> MODO 2 <<", 0, window_flags);
+
+
+	static char IP[MAX_IP];
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "           APENDICE");
+
+	ImGui::InputText("IP DEL SERVIDOR:", IP, sizeof(char) * MAX_IP);
+
+	if (ImGui::Button(" >> INICIAR PROGRAMA << ") && (sizeof(IP) != 0))
+	{
+		MyHamachiIP = "localhost";
+		GUIQueue.push(GUIEvent::MostrarNodos);
+
+		/* ACA DEBERIAN LEERSE LOS NODOS DE LA RED y copiarlos???
+		
+		o habria q hacer que el servidor edite el puntero de los nodos en la fsm? */
+	}
+
+	ImGui::End();
+
+
+	/*************************************************************************************************
+			FIN IMPRESION VENTANAS
+	**************************************************************************************************/
+	//Rendering
+	ImGui::Render();
+
+	al_clear_to_color(COLOR);
+
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+	al_flip_display();
+
+}
+
 
 void GraphicF3::print_Dashboard()
 {
@@ -416,6 +484,7 @@ void GraphicF3::print_look4Veci(void)
 
 	//Checkbox con imgui
 	int i;
+	ImGui::Indent(8);
 	static int selectedN = -1;
 	for (i = 0; i < ComEnProgreso.vecinos.size(); i++)
 	{
@@ -438,7 +507,6 @@ void GraphicF3::print_look4Veci(void)
 		char buf[32];
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
 
-		//ImGui::Text(">> RECIBIR <<");
 		if (ImGui::TreeNode("Operaciones para recibir:"))
 		{
 			sprintf(buf, "Get blocks");
@@ -471,9 +539,11 @@ void GraphicF3::print_look4Veci(void)
 		{
 			if (ImGui::TreeNode("Datos para transaccion"))
 			{
-				ImGui::InputText("CANTIDAD:", CantCoins, IM_ARRAYSIZE(CantCoins));
+				ImGui::InputText("CANTIDAD DE MONEDAS:", CantCoins, IM_ARRAYSIZE(CantCoins));
 
 				ImGui::InputText("PUBLIC KEY:", PKey, IM_ARRAYSIZE(PKey));
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Cotizacion:\n   1 EDACoin = 3 alfajores Guaymallén Triverde\n   1 EDACoin = 1.2 jorgelines blancos\n");
 
 				sprintf(buf, "Transaccion");
 				{
@@ -537,6 +607,10 @@ void GraphicF3::print_look4Veci(void)
 						selected = TRANSACTION_Genv;
 				}
 				ImGui::TreePop();
+			}
+			else
+			{
+				selected = -1;
 			}
 
 			sprintf(bufSPV, "Get block headers");
@@ -635,7 +709,6 @@ void GraphicF3::print_Nodos()
 
 unsigned char GraphicF3::clickedBlock(bool* checks, size_t size)
 {
-
 	int i;
 	unsigned char count = 0;
 	for (i = 0; i < size; i++) {
@@ -897,37 +970,62 @@ bool GraphicF3::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	if (esUnNodoSPV)		//Si es SPV esto es TRUE
 	{
 		tempParticipantes.NodoEmisor.TYPE = SPV;
+
+		for (auto itnodo : *SPVArrayPTR)
+		{
+			if (itnodo->getID() == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
+			{
+				tempParticipantes.NodoEmisor.ID = itnodo->getID();
+				tempParticipantes.NodoEmisor.IP = itnodo->getIP();
+				tempParticipantes.NodoEmisor.PUERTO = itnodo->getPort();
+
+				tempParticipantes.NodosVecinosPT = itnodo->getNeighbours();
+				string tempIDVecino;
+
+				for (auto vecinos : tempParticipantes.NodosVecinosPT)
+				{
+					tempIDVecino.append("IP: " + vecinos.second.IP + " - PORT: " + to_string(vecinos.second.port) + "\0");
+				}
+				tempIDVecino.append("\0");
+
+				this->Comunicaciones.push(tempParticipantes);
+				ret = true;
+			}
+		}
+
 	}
 	else
 	{
 		tempParticipantes.NodoEmisor.TYPE = FULL;
-	}
-	for (auto itnodo : NodosArray)
-	{
-		if (itnodo.ID == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
+
+		for (auto itnodo : *FULLArrayPTR)
 		{
-			tempParticipantes.NodoEmisor.ID = itnodo.ID;
-			tempParticipantes.NodoEmisor.IP = itnodo.IP;
-			tempParticipantes.NodoEmisor.PUERTO = itnodo.PUERTO;
-
-			tempParticipantes.NodosVecinosPT = itnodo.NodosVecinos;
-			string tempIDVecino;
-			for (auto vecinos : itnodo.NodosVecinos)
+			if (itnodo->getID() == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
 			{
-				tempIDVecino.append("IP: " + vecinos.second.IP + " - PORT: " + to_string(vecinos.second.port) + "\0");
-			}
-			tempIDVecino.append("\0");
+				tempParticipantes.NodoEmisor.ID = itnodo->getID();
+				tempParticipantes.NodoEmisor.IP = itnodo->getIP();
+				tempParticipantes.NodoEmisor.PUERTO = itnodo->getPort();
 
-			this->Comunicaciones.push(tempParticipantes);
-			ret = true;
+				tempParticipantes.NodosVecinosPT = itnodo->getNeighbours();
+				string tempIDVecino;
+
+				for (auto vecinos : tempParticipantes.NodosVecinosPT)
+				{
+					tempIDVecino.append("IP: " + vecinos.second.IP + " - PORT: " + to_string(vecinos.second.port) + "\0");
+				}
+				tempIDVecino.append("\0");
+
+				this->Comunicaciones.push(tempParticipantes);
+				ret = true;
+			}
 		}
 	}
+
+
 	if (ret == false)
 	{
 		GUIQueue.push(GUIEvent::Error);
 	}
-
-
 	return true;
 }
 

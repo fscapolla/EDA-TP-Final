@@ -60,12 +60,20 @@ class evMostrarNodos : public genericEvent
 {
 public:
 	eventTypes getType(void) { return MostrarNodos; }
+	string IP2Connect; 
+
+	evMostrarNodos(void) {}
+	evMostrarNodos(string IP_) : IP2Connect(IP_) {}
 };
 
 class evBuscarVecinos : public genericEvent
 {
 public:
 	eventTypes getType(void) { return BuscarVecinos; }
+
+	string JSONPath;
+	evBuscarVecinos(void) {}
+	evBuscarVecinos(string JPATH_) : JSONPath(JPATH_){}
 };
 
 class evEnviarMsj : public genericEvent

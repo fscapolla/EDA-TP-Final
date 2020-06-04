@@ -27,11 +27,11 @@ getEvent(unsigned int estado)
 		break;
 
 	case implEvent::MostrarNodos:
-		ret = new evMostrarNodos;
+		ret = new evMostrarNodos(this->GUI->MyHamachiIP);
 		break;
 
 	case implEvent::BuscarVecinos:
-		ret = new evBuscarVecinos;
+		ret = new evBuscarVecinos(this->GUI->BlockJSONFile);
 		break;
 
 	case implEvent::EnviarMsj:

@@ -75,7 +75,6 @@ class Block
 public:
 	Block(const json& j);
 	Block();
-	Block(const json& j);
 	string getBlockID(void);
 	uint getHeight(void);
 	string getMerkleRoot(void);

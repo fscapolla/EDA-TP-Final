@@ -72,12 +72,11 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 
 		*static_cast<evCrearNodo*>(ev)->nameofFile += input2file; 
 
-		/****** ACTUALIZAMOS ARREGLO DE NODOS  *******/
+		/***** ACTUALIZAMOS ARREGLO DE NODOS CREADOS EN ESTA INSTANCIA ******/
 		RegistroNodo_t tempNewNodo;
 		tempNewNodo.ID = static_cast<evCrearNodo*>(ev)->ID;
-		tempNewNodo.IP = static_cast<evCrearNodo*>(ev)->IP;
 		tempNewNodo.TYPE = static_cast<evCrearNodo*>(ev)->TYPE;
-		tempNewNodo.TYPE = static_cast<evCrearNodo*>(ev)->PUERTO;
+		tempNewNodo.PUERTO = static_cast<evCrearNodo*>(ev)->PUERTO;
 
 		static_cast<evCrearNodo*>(ev)->NodoArray->push_back(tempNewNodo);
 
@@ -101,7 +100,7 @@ unsigned int FSM::getIndex(unsigned int senderID, nodeTypes nodeType)
 	{
 		for (int i = 0; i < spvArray.size() && index == -1; i++)
 		{
-			if (fullArray[i]->getID == senderID)
+			if (fullArray[i]->getID() == senderID)
 				index = i;
 		}
 		return index;
@@ -110,7 +109,7 @@ unsigned int FSM::getIndex(unsigned int senderID, nodeTypes nodeType)
 	{
 		for (int i = 0; i < spvArray.size() && index == -1; i++)
 		{
-			if (spvArray[i]->getID == senderID)
+			if (spvArray[i]->getID() == senderID)
 				index = i;
 		}
 		return index;
@@ -172,7 +171,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		*****************/
 
 		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino];
-		
+		/*
 		switch ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE))
 		{
 		case FILTER_Genv:
@@ -244,7 +243,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 
 		case TRANSACTION_Genv:
 			//Recupero el tipo de nodo
-			nodeTypes type = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.TYPE;
+			nodeTypes type = (nodeTypes)static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.TYPE;
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
@@ -265,7 +264,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			break;
 		}
 
-
+		*/
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
 		input2file = "Se envió un mensaje\n Emisor: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID) + "\n Receptor\n   IP: " + NodoReceptor.IP + "    PUERTO:" + to_string(NodoReceptor.port) + "\n\n";
@@ -282,13 +281,11 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 	{
 		cout << " CREAMOS CONEXION " << endl;
 
-		/*
-			
+		/*			
 		RegistroNodo_t Nodo1;
 		RegistroNodo_t Nodo2;
 		std::vector<RegistroNodo_t>* NodoArrayC;
-		string* nameofFile;
-		
+		string* nameofFile;		
 		*/
 
 
@@ -319,11 +316,36 @@ void FSM::BlockSelected_r_acc(genericEvent* ev)
 		this->state4Graphic = SHWSELB_G;
 	}
 }
+
 void FSM::ErrorEncontrado_r_acc(genericEvent* ev)
 {
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == Error)
 	{
 		cout << " ERROR ENCONTRADO " << endl;
 		this->state4Graphic = SHWERROR_G;
+	}
+}
+
+void FSM::Start_genesis_r_acc(genericEvent* ev)
+{
+	/*
+		string JSONPath;
+	*/
+	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)			//Usamos evento mostrar vecinos para no tener q crear evento nuevo 
+	{
+		cout << " START MODO GENESIS  " << static_cast<evBuscarVecinos*>(ev)->JSONPath << endl;
+		this->state4Graphic = CREATING_CONNECTION_G;
+	}
+
+}
+
+
+void FSM::Start_app_r_acc(genericEvent* ev)
+{
+	if (static_cast<evMostrarNodos*>(ev)->getType() == MostrarNodos)			//Usamos evento mostrar nodos para no tener q crear evento nuevo 
+	{
+		cout << " START MODO appendice  " << static_cast<evMostrarNodos*>(ev)->IP2Connect << endl;
+
+		this->state4Graphic = DASHBOARD_G;
 	}
 }

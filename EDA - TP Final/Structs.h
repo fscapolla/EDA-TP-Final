@@ -19,7 +19,7 @@ typedef struct RegistroNodo_t
 	std::string IP;
 	int PUERTO;
 	int ID;
-	nodeTypes TYPE;
+	unsigned int TYPE;
 	std::map<unsigned int, Neighbour> NodosVecinos;
 
 	RegistroNodo_t(int ID_, std::string IP_, int PUERTO_, int TYPE_) :ID(ID_), IP(IP_), PUERTO(PUERTO_), TYPE(TYPE_) {}
