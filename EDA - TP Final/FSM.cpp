@@ -94,7 +94,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 unsigned int FSM::getIndex(unsigned int senderID, nodeTypes nodeType)
 {
-	unsigned int index = -1;
+	int index = -1;
 
 	if (nodeType == FULL)
 	{
@@ -119,7 +119,7 @@ unsigned int FSM::getIndex(unsigned int senderID, nodeTypes nodeType)
 
 unsigned int FSM::getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes nodetype)
 {
-	unsigned int neighbourID = -1;
+	int neighbourID = -1;
 	if (nodetype == FULL)
 	{
 		for (int i = 0; i < fullArray.size() && neighbourID == -1; i++)
@@ -171,37 +171,37 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		*****************/
 
 		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino];
-		/*
-		switch ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE))
+		if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == FILTER_Genv)
 		{
-		case FILTER_Genv:
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 			//Si se tiene el puerto del vecino pero no su ID puede hacerse int neighbourID=getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes neighbourType);
-			unsigned int neighbourPort=(static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
-			unsigned int senderID=static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
+			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
+			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice en el arreglo de nodos SPV (sólo SPV pueden enviar mensajes tipo Filter).
-			unsigned int senderIndex = getIndex(senderID,SPV);
+			unsigned int senderIndex = getIndex(senderID, SPV);
 			//Recupero la publickey del nodo y configuro para enviar el mensaje.
 			spvArray[senderIndex]->POSTFilter(neighbourID, spvArray[senderIndex]->getKey());
 			//¿Se puede forzar a que ocurra una vez el estado NOTHING acá? sino igual creo que no importa
-			break;
+		}
 
-		case GETBLOCKS_Genv:
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKS_Genv)
+		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos full usan envían este mensaje)
-			unsigned int senderIndex = getIndex(senderID,FULL);
+			unsigned int senderIndex = getIndex(senderID, FULL);
 			//Recupero valores de count y blockID (en esta fase no importan)
 			//unsigned int count = 1;
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-				fullArray[senderIndex]->GETBlocks(neighbourID, (string) "75FF25E0", 1);
-			break;
+			fullArray[senderIndex]->GETBlocks(neighbourID, (string) "75FF25E0", 1);
+		}
 
-		case GETBLOCKHEADERS_Genv:
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKHEADERS_Genv)
+		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
@@ -213,9 +213,10 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
 			spvArray[senderIndex]->GETBlockHeader(neighbourID, (string) "75FF25E0", 1);
-			break;
+		}
 
-		case MERKLEBLOCK_Genv:
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == MERKLEBLOCK_Genv)
+		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
@@ -227,9 +228,10 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
 			fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string) "75FF25E0", (string) "7B857A14");
-			break;
+		}
 
-		case BLOCK_Genv:
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == BLOCK_Genv)
+		{
 			//Recupero el ID del vecino y el del sender
 			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 			unsigned int neighbourPort = (static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[neighbourID].port);
@@ -239,9 +241,10 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//Recupero valor de BlockID (en esta fase no importa)
 			//std::string BlockID="75FF25E0";
 			fullArray[senderIndex]->POSTBlock(neighbourID, (string) "75FF25E0");
-			break;
+		}
 
-		case TRANSACTION_Genv:
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == TRANSACTION_Genv)
+		{
 			//Recupero el tipo de nodo
 			nodeTypes type = (nodeTypes)static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.TYPE;
 			//Recupero el ID del vecino y el del sender
@@ -255,16 +258,11 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 				unsigned int senderIndex = getIndex(senderID, SPV);
 			//Recupero el monto a enviar y la wallet a donde enviar y configuro el mensaje
 			if (type == FULL)
-				fullArray[senderIndex]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
+				fullArray[getIndex(senderID, FULL)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
 			else
-				spvArray[senderIndex]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
-			break;
-
-		default:
-			break;
+				spvArray[getIndex(senderID, SPV)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
 		}
 
-		*/
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
 		input2file = "Se envió un mensaje\n Emisor: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID) + "\n Receptor\n   IP: " + NodoReceptor.IP + "    PUERTO:" + to_string(NodoReceptor.port) + "\n\n";
