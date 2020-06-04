@@ -74,7 +74,7 @@ class GraphicF3
 {
 public:
 
-	GraphicF3();
+	GraphicF3(std::vector<SPVNode*>* SPVArrayPTR, std::vector<FullNode*>* FULLArrayPTR);
 	~GraphicF3();
 	bool GetError();
 	bool hayEvento(unsigned int estadoActualdeFSM); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
@@ -90,6 +90,7 @@ public:
 	std::string BulletinFileName;
 
 	std::string BulletinText; 
+
 
 private:
 	/* FUNCIONES DE GraphicF2 */
@@ -144,7 +145,9 @@ private:
 
 	std::queue<ParticipantesMsj_t> Comunicaciones;
 
-	vector<RegistroNodo_t> NodosArray; 
+	std::vector<RegistroNodo_t> NodosArray; 
+	std::vector<SPVNode*>* SPVArrayPTR;
+	std::vector<FullNode*>* FULLArrayPTR;
 
 	std::string MyHamachiIP;
 

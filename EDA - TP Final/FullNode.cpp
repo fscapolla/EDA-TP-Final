@@ -1,10 +1,7 @@
 #include "FullNode.h"
 
 
-
-FullNode::FullNode()
-{
-}
+FullNode::FullNode(FullNode&){}
 
 FullNode::FullNode(unsigned int ID_, std::string IP_, unsigned int port_)
 {

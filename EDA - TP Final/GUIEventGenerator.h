@@ -6,11 +6,13 @@
 
 
 #include "Structs.h"
+
 #include "GraphicF2.h"
 
 #include "eventHandling.h"
 
 #include <array>
+#include <vector>
 
 /* EVENTOS FASE 2 */
 
@@ -29,7 +31,6 @@ public:
 		NodoArray = vectorArrPtr;
 		ID = ID_;
 		nameofFile = nameofFile_;
-
 	}
 
 	eventTypes getType(void) { return CrearNodo; }		//Esto lo usan las rutinas de accion para verificar que se trata del evento correcto
@@ -47,7 +48,6 @@ public:
 	evCrearConexion(RegistroNodo_t nodo1_, RegistroNodo_t nodo2_, std::vector<RegistroNodo_t>* vectorArrPtr, string * nameofFile_) : nameofFile(nameofFile_), Nodo1(nodo1_), Nodo2(nodo2_), NodoArrayC(vectorArrPtr) {}
 
 	eventTypes getType(void) { return CrearConexion; }
-
 	
 	RegistroNodo_t Nodo1;
 	RegistroNodo_t Nodo2;
@@ -107,7 +107,7 @@ public:
 class GUIEventGenerator : public eventGenerator
 {
 public:
-	GUIEventGenerator();
+	GUIEventGenerator(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_);
 
 	std::vector<RegistroNodo_t>* getNodosArr(void);
 	genericEvent* getEvent(unsigned int estadoactualdeFSM);
@@ -115,7 +115,7 @@ public:
 
 private:
 	/* PRINTING FUNCTIONS */
-	GraphicF3 GUI;
+	GraphicF3* GUI;
 	implEvent getGUIevent(unsigned int estado);
 	implEvent TranslateGUIEvent(GUIEvent ev);
 	unsigned int nodeID;

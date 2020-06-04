@@ -28,6 +28,7 @@ typedef struct RegistroNodo_t
 
 
 
+
 typedef struct
 {
 	RegistroNodo_t NodoEmisor;

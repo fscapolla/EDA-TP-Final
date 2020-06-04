@@ -1,7 +1,8 @@
 
 #include "GraphicF2.h"
-#include "GUIEventGenerator.h"
-GraphicF3::GraphicF3()
+
+
+GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_)
 {
 	if (AllegroInit() && ImguiInit())
 	{
@@ -11,13 +12,15 @@ GraphicF3::GraphicF3()
 
 		window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 		window_flags |= ImGuiWindowFlags_NoMove;
+		SPVArrayPTR = SPVArrayPTR_;
+		FULLArrayPTR = FULLArrayPTR_;
 
-		BulletinFileName = "C:/Users/ique_/source/repos/EDA-TP-Final/EDA - TP Final/MisNoticias.txt";
-		MyHamachiIP = "25.135.158.40";
+		BulletinFileName = "C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final/MisNoticias.txt";
+		MyHamachiIP = "localhost";
 		//ESTO ES UNA TRUCHADA 
 		//PERO ES POR AHORA, DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
 
-		fs::path bPath("C:/Users/ique_/source/repos/EDA-TP-Final/EDA - TP Final");
+		fs::path bPath("C:/Users/inequ/source/repos/EDA-TP-FinalLPM/EDA - TP Final");
 		if (exists(bPath) && is_directory(bPath))
 		{
 			for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)
@@ -27,7 +30,7 @@ GraphicF3::GraphicF3()
 					if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
 						Error = false;
 					}
-					else 
+					else
 					{
 						Error = true;
 					}
@@ -176,24 +179,24 @@ void GraphicF3::print_Dashboard()
 	ImGui::SetNextWindowSize(ImVec2(380, 200));
 	ImGui::Begin(">> CREAR CONEXION ENTRE NODOS <<", 0, window_flags);
 
-	static char NODO1[MAX_IP];
-	static char NODO2[MAX_IP];
+	static char NODO1[MAX_PUERTO];
+	static char NODO2[MAX_PUERTO];
 
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Datos del nodo 1");
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Puerto del nodo 1");
 
-	ImGui::InputText("IP 1", NODO1, sizeof(char) * MAX_ID);
+	ImGui::InputText("PUERTO 1", NODO1, sizeof(char) * MAX_PUERTO);
 
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Datos del nodo 2 ");
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Puerto del nodo 2 ");
 
-	ImGui::InputText("IP 2", NODO2, sizeof(char) * MAX_ID);
+	ImGui::InputText("PUERTO 2", NODO2, sizeof(char) * MAX_PUERTO);
 
 
 	if ((ImGui::Button(" >> CREAR << ")) && (verify((string)NODO1, (string)NODO2)))
 	{
 		RegistroNodo_t tempNodo1;
-		tempNodo1.IP = NODO1;
+		tempNodo1.PUERTO = atoi(NODO1);
 		RegistroNodo_t tempNodo2;
-		tempNodo2.IP = NODO2;
+		tempNodo2.IP = atoi(NODO2);
 
 		registros.push(tempNodo1);
 		registros.push(tempNodo2);
@@ -222,7 +225,7 @@ void GraphicF3::print_Dashboard()
 
 	if ((ImGui::Button(" >> BUSCAR VECINOS << ")) && (verify(atoi(emisor), type[0])))
 	{
-			GUIQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
+		GUIQueue.push(GUIEvent::BuscarVecinos);		//Se cambiara de estado en fsm para imprimir "Selecting Vecino"
 	}
 	ImGui::End();
 
@@ -242,7 +245,7 @@ void GraphicF3::print_Dashboard()
 
 	if (ImGui::Button(" Presione aqui"))
 	{
-		GUIQueue.push(GUIEvent::MostrarNodos);		
+		GUIQueue.push(GUIEvent::MostrarNodos);
 	}
 	ImGui::End();
 
@@ -291,7 +294,7 @@ void GraphicF3::print_Dashboard()
 
 	if (ImGui::Button(" >> GET RESULTS << "))
 	{
-	
+
 		bool AlgunoSelected = false;
 		for (i = 0; i < (pBchain.getBlocksArr()).size(); i++) {
 			if (checks[i] == true)
@@ -317,7 +320,7 @@ void GraphicF3::print_Dashboard()
 		else
 			GUIQueue.push(GUIEvent::Back2Dashboard);
 	}
-	
+
 	ImGui::End();
 
 	/*************************************
@@ -336,7 +339,6 @@ void GraphicF3::print_Dashboard()
 	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 	al_flip_display();
 }
-
 
 bool GraphicF3::look4BlocksPath(string ChosenFile)
 {
@@ -372,7 +374,11 @@ void GraphicF3::print_Bulletin(void)		//IMPORTANTE se llama depsues de haber cre
 	ImGui::SetNextWindowSize(ImVec2(550, 600));
 	ImGui::Begin(">>    BULLETIN BOARD   <<", 0, window_flags);
 
+	//	std::vector<SPVNode*>* SPVArrayPTR;
+	//std::vector<SPVNode*>* FULLArrayPTR;
 
+
+	cout <<  (*SPVArrayPTR).size() << endl;
 	BulletinFile.open(BulletinFileName.c_str(), ios::out | ios::binary);		//archivo donde guardare info de nodos
 
 	if (BulletinFile.is_open())		//verifico denuevo porlas
@@ -530,7 +536,7 @@ void GraphicF3::print_look4Veci(void)
 
 				ImGui::InputText("PUBLIC KEY:", PKey, IM_ARRAYSIZE(PKey));
 
-				sprintf(bufSPV,"Transaccion");
+				sprintf(bufSPV, "Transaccion");
 				{
 					if (ImGui::Selectable(bufSPV, selected == TRANSACTION_Genv))
 						selected = TRANSACTION_Genv;
@@ -538,13 +544,13 @@ void GraphicF3::print_look4Veci(void)
 				ImGui::TreePop();
 			}
 
-			sprintf(bufSPV,"Get block headers");
+			sprintf(bufSPV, "Get block headers");
 			{
 				if (ImGui::Selectable(bufSPV, selected == GETBLOCKHEADERS_Genv))
 					selected = GETBLOCKHEADERS_Genv;
 			}
 
-			sprintf(bufSPV,"Filter");
+			sprintf(bufSPV, "Filter");
 			{
 				if (ImGui::Selectable(bufSPV, selected == FILTER_Genv))
 					selected = FILTER_Genv;
@@ -558,7 +564,7 @@ void GraphicF3::print_look4Veci(void)
 	ImGui::Text(" ");
 	ImGui::Text(" ");
 
-	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(selected,CantCoins,PKey,selectedN))
+	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(selected, CantCoins, PKey, selectedN))
 	{
 		Comunicaciones.front().MENSAJE = selected;
 		Comunicaciones.front().selectedVecino = selectedN;
@@ -608,13 +614,14 @@ void GraphicF3::print_Nodos()
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 
 	ImGui::Columns(columns_count, NULL, v_borders);
-	for (int i = 0; i < NodosArray.size() ; i++)
+	for (int i = 0; i < NodosArray.size(); i++)
 	{
 		if (h_borders && ImGui::GetColumnIndex() == 0)
 			ImGui::Separator();
-		ImGui::Text("ID: %i \nIP: %s\n",NodosArray[i].ID,NodosArray[i].IP.c_str());
+		ImGui::Text("ID: %i \nIP: %s\n", NodosArray[i].ID, NodosArray[i].IP.c_str());
 		ImGui::NextColumn();
 	}
+	
 	ImGui::End();
 
 
@@ -644,7 +651,7 @@ unsigned char GraphicF3::clickedBlock(bool* checks, size_t size)
 	return count;
 }
 
-unsigned char GraphicF3::numSelectedBlocks(bool* checks, size_t size) 
+unsigned char GraphicF3::numSelectedBlocks(bool* checks, size_t size)
 {
 
 	int i;
@@ -899,7 +906,7 @@ bool GraphicF3::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	else
 	{
 		tempParticipantes.NodoEmisor.TYPE = FULL;
-	}	
+	}
 	for (auto itnodo : NodosArray)
 	{
 		if (itnodo.ID == ExisteEsteNodo)		//Si encontramos ese ID entonces existe nodo proseguimos a buscar sus vecinos
@@ -924,7 +931,7 @@ bool GraphicF3::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 	{
 		GUIQueue.push(GUIEvent::Error);
 	}
-	
+
 
 	return true;
 }

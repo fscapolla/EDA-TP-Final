@@ -2,11 +2,12 @@
 
 #include "GUIEventGenerator.h"
 
-#include "GraphicF2.h"
 using namespace std;
 
-GUIEventGenerator::GUIEventGenerator()
+GUIEventGenerator::GUIEventGenerator(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_)
 {
+	GUI = new GraphicF3(SPVArrayPTR_,FULLArrayPTR_);
+
 	nodeID = 0;
 }
 
@@ -17,12 +18,12 @@ getEvent(unsigned int estado)
 	switch (getGUIevent(estado))
 	{
 	case implEvent::CrearNodo:
-		ret = new evCrearNodo(this->GUI.getRegistro(), this->GUI.getNodoArray(), this->nodeID, &(this->GUI.BulletinText));
+		ret = new evCrearNodo(this->GUI->getRegistro(), this->GUI->getNodoArray(), this->nodeID, &(this->GUI->BulletinText));
 		this->nodeID++;
 		break;
 
 	case implEvent::CrearConexion:
-		ret = new evCrearConexion(this->GUI.getRegistro(), this->GUI.getRegistro(), this->GUI.getNodoArray() , &(this->GUI.BulletinText));		//Toma los registos en cola
+		ret = new evCrearConexion(this->GUI->getRegistro(), this->GUI->getRegistro(), this->GUI->getNodoArray() , &(this->GUI->BulletinText));		//Toma los registos en cola
 		break;
 
 	case implEvent::MostrarNodos:
@@ -34,7 +35,7 @@ getEvent(unsigned int estado)
 		break;
 
 	case implEvent::EnviarMsj:
-		ret = new evEnviarMsj(this->GUI.getComunicacion(), &(this->GUI.BulletinText));
+		ret = new evEnviarMsj(this->GUI->getComunicacion(), &(this->GUI->BulletinText));
 		break;
 
 	case implEvent::Back2Dashboard:
@@ -61,9 +62,9 @@ implEvent GUIEventGenerator::getGUIevent(unsigned int estadoActual)
 {
 	implEvent sendingEvent = implEvent::NoEvent;
 
-	if (GUI.hayEvento(estadoActual))
+	if (GUI->hayEvento(estadoActual))
 	{
-		GUIEvent sendingEv = GUI.getEvent();
+		GUIEvent sendingEv = GUI->getEvent();
 		sendingEvent = TranslateGUIEvent(sendingEv);
 	}
 
@@ -74,7 +75,7 @@ implEvent GUIEventGenerator::getGUIevent(unsigned int estadoActual)
 
 bool GUIEventGenerator::getGraphicInstallationError()
 {
-	return GUI.GetError();
+	return GUI->GetError();
 }
 
 implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
@@ -131,6 +132,6 @@ implEvent GUIEventGenerator::TranslateGUIEvent(GUIEvent ev)
 
 std::vector<RegistroNodo_t>* GUIEventGenerator::getNodosArr(void) {
 
-	return GUI.getNodoArray();
+	return GUI->getNodoArray();
 
 }

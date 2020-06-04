@@ -11,10 +11,12 @@ enum implStates : stateTypes { ShwDashboard, Look4Veci, ShwNodos, ShwSelBlock , 
 using namespace std;
 class FSM : public genericFSM
 {
-
 public:
 	FSM() : genericFSM(&fsmTable[0][0], 5, 9, ShwDashboard), state4Graphic(DASHBOARD_G) {}
 	unsigned int state4Graphic;
+	std::vector<SPVNode*>* getSPVArrayPTR(void);
+	std::vector<FullNode*>* getFULLArrayPTR(void);
+
 
 private:
 	const fsmCell fsmTable[5][9] = {
@@ -39,8 +41,6 @@ private:
 
 	/* FUNCIONES */
 
-	std::vector<SPVNode> spvArray;
-	std::vector<FullNode> fullArray;
 	std::ofstream BulletinFileR_ACC;
 
 	void RutaDefault(genericEvent* ev);
@@ -52,4 +52,12 @@ private:
 	void ErrorEncontrado_r_acc(genericEvent* ev);
 	void ShwNodos_r_acc(genericEvent* ev);
 	void BlockSelected_r_acc(genericEvent* ev);
+
+
+	std::vector<SPVNode*> spvArray;
+	std::vector<FullNode*> fullArray;
+
+//	void SaveNode(SPVNode& spvNode);
+//	void SaveNode(FullNode& fullNode);
+
 };

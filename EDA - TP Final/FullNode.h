@@ -7,7 +7,8 @@ class FullNode :
 	public Node
 {
 public:
-	FullNode();
+
+	FullNode(FullNode& );
 	FullNode(unsigned int ID_, std::string IP_ ,unsigned int port_);
 	~FullNode();
 

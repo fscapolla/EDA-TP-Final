@@ -14,7 +14,7 @@ int main(void)
     uint myCounter = 0;
  
 	FSM fsm;
-	GUIEventGenerator evTipoGUI;	//generador de UN tipo de eventos 
+	GUIEventGenerator evTipoGUI(fsm.getSPVArrayPTR(), fsm.getFULLArrayPTR());	//generador de UN tipo de eventos 
 
 	if (!evTipoGUI.getGraphicInstallationError())
 	{
